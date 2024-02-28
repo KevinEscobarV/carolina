@@ -5,14 +5,14 @@
 </x-slot>
 
 <div class="container mx-auto sm:px-6 lg:px-8 flex flex-col gap-8">
-    <x-card title="Crear Usuario">
+    <x-card title="Nuevo Comprador">
         <x-slot name="action">
             <x-wireui-icon name="user" class="w-6 h-6 text-gray-500" />
         </x-slot>
         <form wire:submit.prevent="save">
             <div class="grid grid-cols-6 gap-4">
                 <div class="col-span-6 sm:col-span-3">
-                    <x-wireui-input label="Variedad" placeholder="Codigo de la Variedad" wire:model="variety" />
+                    <x-wireui-input label="Nombres" placeholder="Nombres del Usuario" wire:model="names" />
                 </div>
                 <div class="col-span-6 sm:col-span-3">
                     <x-wireui-textarea label="Descripción (Opcional)" placeholder="Descripción del Capuchón"
@@ -20,7 +20,7 @@
                 </div>
             </div>
             <div class="flex items-center justify-end gap-2 mt-6">
-                <x-wireui-button type="submit" spinner="save" lime label="Guardar" />
+                <x-wireui-button type="submit" spinner="save" lime label="Crear" />
             </div>
         </form>
     </x-card>

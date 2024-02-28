@@ -7,7 +7,7 @@ enum PromisePaymentMethod: string
     case CASH = 'cash';
     case CREDIT = 'credit';
 
-    public function getLabel(): string
+    public function label(): string
     {
         return match ($this) {
             self::CASH => 'Contado',

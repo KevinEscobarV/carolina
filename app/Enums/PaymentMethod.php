@@ -11,7 +11,7 @@ enum PaymentMethod: string
     case DEPOSIT = 'deposit';
     case OTHER = 'other';
 
-    public function getLabel(): string
+    public function label(): string
     {
         return match ($this) {
             self::CASH => 'Efectivo',

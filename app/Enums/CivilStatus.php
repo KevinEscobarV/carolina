@@ -9,7 +9,7 @@ enum CivilStatus: string
     case DIVORCED = 'divorced';
     case WIDOWER = 'widower';
 
-    public function getLabel(): string
+    public function label(): string
     {
         return match ($this) {
             self::SINGLE => 'Soltero',
@@ -17,5 +17,15 @@ enum CivilStatus: string
             self::DIVORCED => 'Divorciado',
             self::WIDOWER => 'Viudo',
         };
+    }
+
+    public static function select(): array
+    {
+        return collect(self::cases())->map(function ($case) {
+            return [
+                'value' => $case,
+                'label'=> $case->label(),
+            ];
+        })->toArray();
     }
 }

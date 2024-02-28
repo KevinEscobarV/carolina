@@ -1,9 +1,6 @@
 <?php
 
-use App\Livewire\Buyers\BuyerComponent;
-use App\Livewire\Parcels\ParcelComponent;
-use App\Livewire\Payments\PaymentComponent;
-use App\Models\Payment;
+use App\Enums\DocumentType;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -21,6 +18,12 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::get('/test', function () {
+    $types = DocumentType::select();
+
+    return $types;
+});
+
 Route::middleware([
     'auth:sanctum',
     config('jetstream.auth_session'),
@@ -30,9 +33,9 @@ Route::middleware([
         return view('dashboard');
     })->name('dashboard');
 
-    Route::get('/buyers', BuyerComponent::class)->name('buyers');
+    Route::get('/buyers', App\Livewire\Buyer\Index\Page::class)->name('buyers');
 
-    Route::get('/parcels', ParcelComponent::class)->name('parcels');
+    Route::get('/parcels', App\Livewire\Parcel\Index\Page::class)->name('parcels');
 
-    Route::get('/payments', PaymentComponent::class)->name('payments');
+    Route::get('/payments', App\Livewire\Payment\Index\Page::class)->name('payments');
 });

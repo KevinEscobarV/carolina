@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
+use App\Models\Buyer;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 
@@ -21,5 +22,7 @@ class DatabaseSeeder extends Seeder
             'email' => 'admin@rivarca.com',
             'password' => bcrypt('admin'),
         ]);
+
+        Buyer::factory(100)->create();
     }
 }

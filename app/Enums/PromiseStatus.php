@@ -8,7 +8,7 @@ enum PromiseStatus: string
     case PAID = 'paid';
     case CANCELLED = 'cancelled';
 
-    public function getLabel(): string
+    public function label(): string
     {
         return match ($this) {
             self::PENDING => 'Pendiente',

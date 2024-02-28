@@ -11,7 +11,7 @@ enum DocumentType: string
     case RUT = 'rut';
     case PASSPORT = 'passport';
 
-    public function getLabel(): string
+    public function label(): string
     {
         return match ($this) {
             self::CC => 'Cédula de ciudadanía',
@@ -21,5 +21,15 @@ enum DocumentType: string
             self::RUT => 'RUT',
             self::PASSPORT => 'Pasaporte',
         };
+    }
+
+    public static function select(): array
+    {
+        return collect(self::cases())->map(function ($case) {
+            return [
+                'value' => $case,
+                'label'=> $case->label(),
+            ];
+        })->toArray();
     }
 }
