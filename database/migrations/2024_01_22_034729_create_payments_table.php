@@ -22,8 +22,7 @@ return new class extends Migration
             $table->string('observations')->nullable();
             $table->string('bill_path', 2048)->nullable();
 
-            $table->foreignId('promise_id')->constrained('buyer_parcel')->cascadeOnDelete()->cascadeOnUpdate();
-            $table->foreignId('buyer_id')->constrained('buyers')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreignId('promise_id')->constrained('promises')->cascadeOnDelete()->cascadeOnUpdate();
 
             $table->timestamps();
             $table->softDeletes();

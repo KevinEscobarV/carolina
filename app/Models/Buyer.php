@@ -2,8 +2,12 @@
 
 namespace App\Models;
 
+use App\Enums\CivilStatus;
+use App\Enums\DocumentType;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -29,57 +33,23 @@ class Buyer extends Model
         'address',
     ];
 
-    const CIVIL_STATUS_SINGLE = 'single';
-    const CIVIL_STATUS_MARRIED = 'married';
-    const CIVIL_STATUS_DIVORCED = 'divorced';
-    const CIVIL_STATUS_WIDOWER = 'widower';
-
-    const CIVIL_STATUSES = [
-        self::CIVIL_STATUS_SINGLE => 'Soltero',
-        self::CIVIL_STATUS_MARRIED => 'Casado',
-        self::CIVIL_STATUS_DIVORCED => 'Divorciado',
-        self::CIVIL_STATUS_WIDOWER => 'Viudo',
-    ];
-
-    const DOCUMENT_TYPE_CC = 'cc';
-    const DOCUMENT_TYPE_CE = 'ce';
-    const DOCUMENT_TYPE_TI = 'ti';
-    const DOCUMENT_TYPE_NIT = 'nit';
-    const DOCUMENT_TYPE_RUT = 'rut';
-    const DOCUMENT_TYPE_PASSPORT = 'passport';
-
-    const DOCUMENT_TYPES = [
-        self::DOCUMENT_TYPE_CC => 'Cédula de ciudadanía',
-        self::DOCUMENT_TYPE_CE => 'Cédula de extranjería',
-        self::DOCUMENT_TYPE_TI => 'Tarjeta de identidad',
-        self::DOCUMENT_TYPE_NIT => 'NIT',
-        self::DOCUMENT_TYPE_RUT => 'RUT',
-        self::DOCUMENT_TYPE_PASSPORT => 'Pasaporte',
-    ];
-
     /**
-     * Get the civil status label.
+     * The attributes that should be cast.
+     *
+     * @var array<string, string>
      */
-    public function getCivilStatusLabelAttribute(): string
-    {
-        return self::CIVIL_STATUSES[$this->civil_status];
-    }
-
-    /**
-     * Get the document type label.
-     */
-    public function getDocumentTypeLabelAttribute(): string
-    {
-        return self::DOCUMENT_TYPES[$this->document_type];
-    }
+    protected $casts = [
+        'document_type' => DocumentType::class,
+        'civil_status' => CivilStatus::class,
+    ];
 
 
     /**
      * Get the promises for the buyer.
      */
-    public function promises(): HasMany
+    public function promises(): BelongsToMany
     {
-        return $this->hasMany(Promise::class);
+        return $this->belongsToMany(Promise::class);
     }
 
     /**
@@ -91,10 +61,39 @@ class Buyer extends Model
     }
 
     /**
-     * Get the payments for the buyer.
+     * Scope a query to only include buyers that match the search.
+     * 
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @param  string  $search
+     * @return void
      */
-    public function payments(): HasMany
+    public function scopeSearch(Builder $query, string $search): void
     {
-        return $this->hasMany(Payment::class);
+        if ($search)
+            $query->where('names', 'like', "%$search%")
+                ->orWhere('surnames', 'like', "%$search%")
+                ->orWhere('email', 'like', "%$search%")
+                ->orWhere('document_number', 'like', "%$search%");
+    }
+
+    /**
+     * Scope a query to sort buyers by the specified column.
+     * 
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @param  string  $column
+     * @param  bool  $asc
+     * @return void
+     */
+    public function scopeSort(Builder $query, string $column = null, bool $asc): void
+    {
+        if ($column) {
+            if ($column === 'civil_status') {
+                $query->orderByRaw("FIELD(civil_status, 'single', 'married', 'divorced', 'widower') " . ($asc ? 'asc' : 'desc'));
+            } else if ($column === 'document_type') {
+                $query->orderByRaw("FIELD(document_type, 'cc', 'ce', 'ti', 'nit', 'rut', 'passport') " . ($asc ? 'asc' : 'desc'));
+            } else {
+                $query->orderBy($column, $asc ? 'asc' : 'desc');
+            }
+        }
     }
 }

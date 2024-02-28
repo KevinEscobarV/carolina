@@ -11,10 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('buyer_parcel', function (Blueprint $table) {
+        Schema::create('promises', function (Blueprint $table) {
             $table->id();
 
-            $table->foreignId('buyer_id')->constrained('buyers')->cascadeOnDelete()->cascadeOnUpdate();
             $table->foreignId('parcel_id')->constrained('parcels')->cascadeOnDelete()->cascadeOnUpdate();
 
             $table->string('promise')->nullable();

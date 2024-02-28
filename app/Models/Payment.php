@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\PaymentMethod;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOneThrough;
@@ -28,44 +29,11 @@ class Payment extends Model
         'buyer_id',
     ];
 
-    const PAYMENT_METHOD_CASH = 'cash';
-    const PAYMENT_METHOD_CARD = 'card';
-    const PAYMENT_METHOD_CHECK = 'check';
-    const PAYMENT_METHOD_TRANSFER = 'transfer';
-    const PAYMENT_METHOD_DEPOSIT = 'deposit';
-
-    const PAYMENT_METHODS = [
-        [
-            'value' => self::PAYMENT_METHOD_CASH,
-            'label' => 'Efectivo',
-        ],
-        [
-            'value' => self::PAYMENT_METHOD_CARD,
-            'label' => 'Tarjeta de crédito o débito',
-        ],
-        [
-            'value' => self::PAYMENT_METHOD_CHECK,
-            'label' => 'Cheque',
-        ],
-        [
-            'value' => self::PAYMENT_METHOD_TRANSFER,
-            'label' => 'Transferencia bancaria',
-        ],
-        [
-            'value' => self::PAYMENT_METHOD_DEPOSIT,
-            'label' => 'Depósito',
-        ],
+    protected $casts = [
+        'agreement_date' => 'date',
+        'payment_date' => 'date',
+        'payment_method' => PaymentMethod::class,
     ];
-
-    /**
-     * Get the payment method label.
-     * 
-     * @return string
-     */
-    public function getPaymentMethodLabelAttribute(): string
-    {
-        return collect(self::PAYMENT_METHODS)->firstWhere('value', $this->payment_method)['label'] ?? 'N/A';
-    }
 
 
     /**

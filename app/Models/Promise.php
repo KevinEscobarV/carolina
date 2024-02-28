@@ -2,8 +2,13 @@
 
 namespace App\Models;
 
+use App\Enums\PromisePaymentMethod;
+use App\Enums\PromiseStatus;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Promise extends Model
@@ -16,7 +21,6 @@ class Promise extends Model
      * @var array<int, string>
      */
     protected $fillable = [
-        'buyer_id',
         'parcel_id',
         'promise',
         'signature_date',
@@ -32,72 +36,35 @@ class Promise extends Model
         'status',
     ];
 
-    const PAYMENT_METHOD_CASH = 'cash';
-    const PAYMENT_METHOD_CREDIT = 'credit';
-
-    const PAYMENT_METHODS = [
-        [
-            'value' => self::PAYMENT_METHOD_CASH,
-            'label' => 'Contado',
-        ],
-        [
-            'value' => self::PAYMENT_METHOD_CREDIT,
-            'label' => 'Crédito',
-        ],
+    /**
+     * The attributes that should be cast.
+     *
+     * @var array<string, string>
+     */
+    protected $casts = [
+        'signature_date' => 'date',
+        'deed_date' => 'date',
+        'payment_method' => PromisePaymentMethod::class,
+        'status' => PromiseStatus::class,
     ];
 
-    const STATUS_PENDING = 'pending';
-    const STATUS_PAID = 'paid';
-    const STATUS_CANCELED = 'canceled';
-
-    const STATUSES = [
-        [
-            'value' => self::STATUS_PENDING,
-            'label' => 'Pendiente',
-        ],
-        [
-            'value' => self::STATUS_PAID,
-            'label' => 'Pagado',
-        ],
-        [
-            'value' => self::STATUS_CANCELED,
-            'label' => 'Cancelado',
-        ],
-    ];
-
-    /**
-     * Get the status label.
-     * 
-     * @return string
-     */
-    public function getStatusLabelAttribute(): string
+    public function payments(): HasMany
     {
-        return collect(self::STATUSES)->firstWhere('value', $this->status)['label'] ?? 'N/A';
+        return $this->hasMany(Payment::class);
     }
-
-    /**
-     * Get the payment method label.
-     * 
-     * @return string
-     */
-    public function getPaymentMethodLabelAttribute(): string
-    {
-        return collect(self::PAYMENT_METHODS)->firstWhere('value', $this->payment_method)['label'] ?? 'N/A';
-    }
-    
 
     /**
      * Get the buyer that owns the promise.
      */
-    public function buyer()
+    public function buyer(): BelongsToMany
     {
-        return $this->belongsTo(Buyer::class);
+        return $this->belongsToMany(Buyer::class);
     }
 
     /**
      * Get the parcel that owns the promise.
      */
-    public function parcel()
+    public function parcel(): BelongsTo
     {
         return $this->belongsTo(Parcel::class);
     }

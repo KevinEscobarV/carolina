@@ -1,5 +1,9 @@
 <?php
 
+use App\Livewire\Buyers\BuyerComponent;
+use App\Livewire\Parcels\ParcelComponent;
+use App\Livewire\Payments\PaymentComponent;
+use App\Models\Payment;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -25,4 +29,10 @@ Route::middleware([
     Route::get('/dashboard', function () {
         return view('dashboard');
     })->name('dashboard');
+
+    Route::get('/buyers', BuyerComponent::class)->name('buyers');
+
+    Route::get('/parcels', ParcelComponent::class)->name('parcels');
+
+    Route::get('/payments', PaymentComponent::class)->name('payments');
 });

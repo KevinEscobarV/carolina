@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\ParcelPosition;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -35,33 +36,10 @@ class Parcel extends Model
      * @var array<string, string>
      */
     protected $casts = [
+        'position' => ParcelPosition::class,
         'location' => Point::class,
         'area' => Polygon::class,
     ];
-
-    const POSITION_CORNER = 'corner';
-    const POSITION_MIDDLE = 'middle';
-
-    const POSITIONS = [
-        [
-            'value' => self::POSITION_CORNER,
-            'label' => 'Esquinero',
-        ],
-        [
-            'value' => self::POSITION_MIDDLE,
-            'label' => 'Medianero',
-        ]
-    ];
-
-    /**
-     * Get the position label.
-     * 
-     * @return string
-     */
-    public function getPositionLabelAttribute(): string
-    {
-        return collect(self::POSITIONS)->firstWhere('value', $this->position)['label'] ?? 'N/A';
-    }
 
 
     /**
