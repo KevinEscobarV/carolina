@@ -1,6 +1,5 @@
 <?php
 
-use App\Enums\DocumentType;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -19,9 +18,7 @@ Route::get('/', function () {
 });
 
 Route::get('/test', function () {
-    $types = DocumentType::select();
-
-    return $types;
+    return "Hello World";
 });
 
 Route::middleware([

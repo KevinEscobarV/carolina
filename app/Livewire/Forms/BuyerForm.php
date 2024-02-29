@@ -12,45 +12,47 @@ class BuyerForm extends Form
 {
     public ?Buyer $buyer;
 
-    #[Validate('required|string|max:255')]
+    #[Validate('required|string|max:255', 'nombres')]
     public $names;
 
-    #[Validate('required|string|max:255')]
+    #[Validate('required|string|max:255', 'apellidos')]
     public $surnames;
 
-    #[Validate('required|email|max:255|unique:buyers,email')]
+    #[Validate('required|email|max:255|unique:buyers,email', 'correo electrónico')]
     public $email;
 
-    #[Validate('required')]
+    #[Validate('required', 'tipo de documento')]
     public DocumentType $document_type = DocumentType::CC;
 
-    #[Validate('required|string|max:255|unique:buyers,document_number')]
+    #[Validate('required|string|max:255|unique:buyers,document_number', 'número de documento')]
     public $document_number;
 
-    #[Validate('required')]
+    #[Validate('required', 'estado civil')]
     public CivilStatus $civil_status = CivilStatus::SINGLE;
 
-    #[Validate('required|string|max:255')]
+    #[Validate('required|string|max:255', 'teléfono principal')]
     public $phone_one;
 
-    #[Validate('nullable|string|max:255')]
+    #[Validate('nullable|string|max:255', 'teléfono alternativo')]
     public $phone_two;
 
-    #[Validate('required|string|max:255')]
+    #[Validate('required|string|max:255', 'direccion')]
     public $address;
 
     public function setBuyer(Buyer $buyer): void
     {
         $this->buyer = $buyer;
-        $this->names = $buyer->names;
-        $this->surnames = $buyer->surnames;
-        $this->email = $buyer->email;
-        $this->document_type = $buyer->document_type;
-        $this->document_number = $buyer->document_number;
-        $this->civil_status = $buyer->civil_status;
-        $this->phone_one = $buyer->phone_one;
-        $this->phone_two = $buyer->phone_two;
-        $this->address = $buyer->address;
+        $this->fill($buyer->only([
+            'names',
+            'surnames',
+            'email',
+            'document_type',
+            'document_number',
+            'civil_status',
+            'phone_one',
+            'phone_two',
+            'address',
+        ]));
     }
 
     public function save(): void

@@ -26,6 +26,7 @@ export default {
             },
             colors: {
                 primary: colors.lime,
+                secondary: colors.gray,
             },
         },
     },

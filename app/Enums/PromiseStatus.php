@@ -16,4 +16,21 @@ enum PromiseStatus: string
             self::CANCELLED => 'Cancelado',
         };
     }
+
+    public static function select(): array
+    {
+        return collect(self::cases())->map(function ($case) {
+            return [
+                'value' => $case,
+                'label'=> $case->label(),
+            ];
+        })->toArray();
+    }
+
+    public static function implode(): string
+    {
+        return collect(self::cases())->map(function ($case) {
+            return '\'' . $case->value . '\''; // Add quotes to the value
+        })->implode(',');
+    }
 }

@@ -86,6 +86,6 @@ class User extends Authenticatable
             return mb_substr($segment, 0, 1);
         })->join(' '));
 
-        return 'https://ui-avatars.com/api/?name='.urlencode($name).'&color=6FAF00&background=CFEAA0';
+        return 'https://ui-avatars.com/api/?name='.urlencode($name). '&color=FFFFFF&background=629900';
     }
 }

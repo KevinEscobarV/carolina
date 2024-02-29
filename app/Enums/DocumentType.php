@@ -32,4 +32,11 @@ enum DocumentType: string
             ];
         })->toArray();
     }
+
+    public static function implode(): string
+    {
+        return collect(self::cases())->map(function ($case) {
+            return '\'' . $case->value . '\''; // Add quotes to the value
+        })->implode(',');
+    }
 }

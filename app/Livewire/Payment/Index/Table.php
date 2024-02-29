@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Livewire\Buyer\Index;
+namespace App\Livewire\Payment\Index;
 
-use App\Models\Buyer;
+use App\Models\Payment;
 use Livewire\Attributes\On;
 use Livewire\Attributes\Renderless;
 use Livewire\Attributes\Url;
@@ -22,9 +22,9 @@ class Table extends Component
     #[Url]
     public $sortAsc = false;
 
-    public $selectedUserIds = [];
+    public $selectedPaymentIds = [];
 
-    public $userIdsOnPage = [];
+    public $paymentIdsOnPage = [];
 
     public function updatedSearch()
     {
@@ -44,33 +44,33 @@ class Table extends Component
     #[Renderless]
     public function export()
     {
-        return Buyer::toCsv();
+        return Payment::toCsv();
     }
 
     public function deleteSelected()
     {
-        $buyers = Buyer::whereIn('id', $this->selectedUserIds)->get();
+        $payments = Payment::whereIn('id', $this->selectedPaymentIds)->get();
 
-        foreach ($buyers as $buyer) {
-            $this->archive($buyer);
+        foreach ($payments as $payment) {
+            $this->archive($payment);
         }
     }
 
-    public function archive(Buyer $buyer)
+    public function archive(Payment $payment)
     {
-        $buyer->delete();
-    }
-
-    #[On('refresh-buyer-table')] 
-    public function render()
-    {
-        return view('livewire.buyer.index.table', [
-            'buyers' => Buyer::search($this->search)->sort($this->sortCol, $this->sortAsc)->paginate(8),
-        ]);
+        $payment->delete();
     }
 
     public function placeholder()
     {
         return view('components.table.placeholder');
+    }
+
+    #[On('refresh-payment-table')] 
+    public function render()
+    {
+        return view('livewire.payment.index.table', [
+            'payments' => Payment::search($this->search)->sort($this->sortCol, $this->sortAsc)->paginate(8),
+        ]);
     }
 }

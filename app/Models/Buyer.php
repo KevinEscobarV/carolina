@@ -71,7 +71,7 @@ class Buyer extends Model
             return mb_substr($segment, 0, 1);
         })->join(' '));
 
-        return 'https://ui-avatars.com/api/?name=' . urlencode($names) . '&color=6FAF00&background=CFEAA0';
+        return 'https://ui-avatars.com/api/?name=' . urlencode($names) . '&color=FFFFFF&background=629900';
     }
 
     /**
@@ -102,9 +102,9 @@ class Buyer extends Model
     {
         if ($column) {
             if ($column === 'civil_status') {
-                $query->orderByRaw("FIELD(civil_status, 'single', 'married', 'divorced', 'widower') " . ($asc ? 'asc' : 'desc'));
+                $query->orderByRaw("FIELD(civil_status, " . CivilStatus::implode() . ") " . ($asc ? 'asc' : 'desc'));
             } else if ($column === 'document_type') {
-                $query->orderByRaw("FIELD(document_type, 'cc', 'ce', 'ti', 'nit', 'rut', 'passport') " . ($asc ? 'asc' : 'desc'));
+                $query->orderByRaw("FIELD(document_type, " . DocumentType::implode() . ") " . ($asc ? 'asc' : 'desc'));
             } else {
                 $query->orderBy($column, $asc ? 'asc' : 'desc');
             }

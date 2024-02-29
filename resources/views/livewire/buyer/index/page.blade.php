@@ -11,10 +11,6 @@
         </x-slot>
         <livewire:buyer.index.create />
     </x-card>
-    <x-card title="Tabla de Usuarios">
-        <x-slot name="action">
-            <x-wireui-icon name="table" class="w-6 h-6 text-gray-500" />
-        </x-slot>
-        <livewire:buyer.index.table lazy />
-    </x-card>
+
+    <livewire:buyer.index.table lazy />
 </div>

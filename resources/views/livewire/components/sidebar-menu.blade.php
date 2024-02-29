@@ -1,4 +1,4 @@
-<aside class="flex-shrink-0 hidden z-20 bg-gray-50 dark:bg-gray-800 border-r border-lime-800 dark:border-gray-700 md:block" x-data="{ open: '{{ Auth::user()->expanded_sidebar }}' }">
+<aside class="flex-shrink-0 hidden z-20 bg-gray-50 dark:bg-gray-800 border-r border-lime-800/50 dark:border-gray-700 md:block" x-data="{ open: '{{ Auth::user()->expanded_sidebar }}' }">
     <div class="flex flex-col h-full transition-all duration-500" :class="{ 'w-52': open, 'w-20': !open }">
 
         <div class="flex items-center justify-center px-4 my-10">

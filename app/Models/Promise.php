@@ -56,7 +56,7 @@ class Promise extends Model
     /**
      * Get the buyer that owns the promise.
      */
-    public function buyer(): BelongsToMany
+    public function buyers(): BelongsToMany
     {
         return $this->belongsToMany(Buyer::class);
     }
