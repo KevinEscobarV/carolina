@@ -21,7 +21,6 @@ class Promise extends Model
      * @var array<int, string>
      */
     protected $fillable = [
-        'parcel_id',
         'promise',
         'signature_date',
         'value',
@@ -64,8 +63,8 @@ class Promise extends Model
     /**
      * Get the parcel that owns the promise.
      */
-    public function parcel(): BelongsTo
+    public function parcels(): HasMany
     {
-        return $this->belongsTo(Parcel::class);
+        return $this->hasMany(Parcel::class);
     }
 }

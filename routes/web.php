@@ -1,6 +1,10 @@
 <?php
 
+use App\Enums\ParcelPosition;
+use App\Imports\DataImport;
+use App\Models\Block;
 use Illuminate\Support\Facades\Route;
+use Maatwebsite\Excel\Facades\Excel;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,11 +18,11 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return redirect()->route('login');
 });
 
 Route::get('/test', function () {
-    return "Hello World";
+
 });
 
 Route::middleware([

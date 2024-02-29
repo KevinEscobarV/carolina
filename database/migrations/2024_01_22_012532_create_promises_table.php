@@ -14,8 +14,6 @@ return new class extends Migration
         Schema::create('promises', function (Blueprint $table) {
             $table->id();
 
-            $table->foreignId('parcel_id')->constrained('parcels')->cascadeOnDelete()->cascadeOnUpdate();
-
             $table->string('promise')->nullable();
             $table->date('signature_date')->nullable();
 

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" x-cloak x-data="{ darkMode: $persist(true) }" :class="{ 'dark': darkMode === true }">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" x-cloak x-data="{ darkMode: $persist(false) }" :class="{ 'dark': darkMode === true }">
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -23,11 +23,11 @@
         <x-wireui-notifications position="bottom-right" />
         <x-wireui-dialog blur="md" align="center" />
     
-        <div class="flex h-screen bg-gray-100 dark:bg-gradient-to-tl dark:from-teal-950 dark:via-gray-800 dark:to-gray-800 transition">
+        <div class="flex h-screen bg-cover bg-center" style="background-image: url('{{ asset('img/background.jpg')}}')">
     
             @livewire('components.sidebar-menu')
     
-            <div class="flex-1 h-full overflow-x-hidden overflow-y-auto soft-scrollbar dark:bg-black/30">
+            <div class="flex-1 h-full overflow-x-hidden overflow-y-auto soft-scrollbar bg-gray-50/80 dark:bg-gray-800/90 transition">
     
                 @livewire('navigation-menu')
     

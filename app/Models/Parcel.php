@@ -6,6 +6,7 @@ use App\Enums\ParcelPosition;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasOneThrough;
@@ -27,7 +28,9 @@ class Parcel extends Model
         'location',
         'area',
         'area_m2',
+        'value',
         'block_id',
+        'promise_id',
     ];
 
     /**
@@ -53,9 +56,9 @@ class Parcel extends Model
     /**
      * Get the promise that owns the parcel.
      */
-    public function promise(): HasOne
+    public function promise(): BelongsTo
     {
-        return $this->hasOne(Promise::class);
+        return $this->belongsTo(Promise::class);
     }
 
     /**

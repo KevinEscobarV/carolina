@@ -12,20 +12,20 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('promise_buyer', function (Blueprint $table) {
-            $table->unsignedBigInteger('buyer_id');
             $table->unsignedBigInteger('promise_id');
-
-            $table->foreign('buyer_id')
-                ->references('id')
-                ->on('buyers')
-                ->onDelete('cascade');
+            $table->unsignedBigInteger('buyer_id');
 
             $table->foreign('promise_id')
                 ->references('id')
                 ->on('promises')
                 ->onDelete('cascade');
 
-            $table->primary(['buyer_id', 'promise_id'], 'promise_buyer_primary');
+            $table->foreign('buyer_id')
+                ->references('id')
+                ->on('buyers')
+                ->onDelete('cascade');
+
+            $table->primary(['promise_id', 'buyer_id'], 'promise_buyer_primary');
         });
     }
 

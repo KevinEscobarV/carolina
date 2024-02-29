@@ -31,7 +31,7 @@ class Index extends Controller
             ->get()
             ->map(function (Promise $promise) {
                 $promise->description = 'Compradores: ' . $promise->buyers->pluck('names')->join(', ')
-                    . '<br>Lote: ' . $promise->parcel->number;
+                    . '<br>Lotes: ' . $promise->parcels->pluck('number')->join(', ');
                 return $promise;
             });
     }

@@ -20,8 +20,10 @@ return new class extends Migration
             $table->point('location')->nullable();
             $table->polygon('area')->nullable();
             $table->decimal('area_m2', 15, 2)->nullable();
+            $table->decimal('value', 15, 2)->default(0);
 
             $table->foreignId('block_id')->constrained('blocks')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreignId('promise_id')->nullable()->constrained('promises')->cascadeOnDelete()->cascadeOnUpdate();
 
             $table->timestamps();
             $table->softDeletes();
