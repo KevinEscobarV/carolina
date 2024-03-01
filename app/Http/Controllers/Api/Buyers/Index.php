@@ -5,8 +5,9 @@ namespace App\Http\Controllers\Api\Buyers;
 use App\Http\Controllers\Controller;
 use App\Models\Buyer;
 use Illuminate\Http\Request;
-use Illuminate\Contracts\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
+
 
 class Index extends Controller
 {
@@ -17,8 +18,7 @@ class Index extends Controller
             ->orderBy('names')
             ->when(
                 $request->search,
-                fn (Builder $query) => $query
-                    ->where('name', 'like', "%{$request->search}%")
+                fn (Builder $query) => $query->where('name', 'like', "%{$request->search}%")
                     ->orWhere('surnames', 'like', "%{$request->search}%")
                     ->orWhere('document_number', 'like', "%{$request->search}%")
                     ->orWhere('email', 'like', "%{$request->search}%")

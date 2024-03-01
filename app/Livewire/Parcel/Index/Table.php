@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Livewire\Category\Index;
+namespace App\Livewire\Parcel\Index;
 
-use App\Models\Category;
+use App\Models\Parcel;
 use Livewire\Attributes\On;
 use Livewire\Attributes\Renderless;
 use Livewire\Attributes\Url;
@@ -22,9 +22,9 @@ class Table extends Component
     #[Url]
     public $sortAsc = false;
 
-    public $selectedCategoryIds = [];
+    public $selectedParcelIds = [];
 
-    public $categoryIdsOnPage = [];
+    public $parcelIdsOnPage = [];
 
     public function updatedSearch()
     {
@@ -44,21 +44,21 @@ class Table extends Component
     #[Renderless]
     public function export()
     {
-        return Category::toCsv();
+        return Parcel::toCsv();
     }
 
     public function deleteSelected()
     {
-        $categories = Category::whereIn('id', $this->selectedCategoryIds)->get();
+        $parcels = Parcel::whereIn('id', $this->selectedParcelIds)->get();
 
-        foreach ($categories as $category) {
-            $this->archive($category);
+        foreach ($parcels as $parcel) {
+            $this->archive($parcel);
         }
     }
 
-    public function archive(Category $category)
+    public function archive(Parcel $parcel)
     {
-        $category->delete();
+        $parcel->delete();
     }
 
     public function placeholder()
@@ -66,11 +66,11 @@ class Table extends Component
         return view('components.table.placeholder');
     }
 
-    #[On('refresh-category-table')] 
+    #[On('refresh-parcel-table')] 
     public function render()
     {
-        return view('livewire.category.index.table', [
-            'categories' => Category::search($this->search)->sort($this->sortCol, $this->sortAsc)->paginate(8),
+        return view('livewire.parcel.index.table', [
+            'parcels' => Parcel::search($this->search)->sort($this->sortCol, $this->sortAsc)->with('block.category', 'promise')->paginate(10),
         ]);
     }
 }

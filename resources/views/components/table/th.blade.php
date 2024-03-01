@@ -1,3 +1,3 @@
-<th {{ $attributes->merge(['class' => 'p-3 text-left text-sm font-semibold text-gray-900 dark:text-gray-300'])}}>
+<th {{ $attributes->merge(['class' => 'py-3 px-6 text-sm font-semibold text-gray-900 dark:text-gray-300'])}}>
     {{ $slot }}
 </th>

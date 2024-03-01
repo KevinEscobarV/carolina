@@ -12,18 +12,24 @@
                 </h2>
             </div>
         </div>
-        <div class="col-span-6 sm:col-span-3">
-            <x-wireui-select label="Clientes" wire:model="form.promise_id"
+        <div class="col-span-6 sm:col-span-4">
+            <x-wireui-select label="Clientes" wire:model="form.buyers"
                 placeholder="Marque los usuarios" :async-data="route('api.buyers.index')" option-label="names"
                 option-value="id" multiselect />
         </div>
         <div class="col-span-6 sm:col-span-3">
-            <x-wireui-select label="Lotes" wire:model="form.promise_id"
-                placeholder="Marque los lotes" :async-data="route('api.buyers.index')" option-label="names"
+            <x-wireui-select label="Manzanas" wire:model.live="block_id"
+                placeholder="Seleccione una Manzana" :async-data="route('api.blocks.index')" option-label="code"
                 option-value="id" />
         </div>
         <div class="col-span-6 sm:col-span-3">
-            <x-wireui-inputs.currency label="Valor Bienes" placeholder="Suma de valor de Lotes" right-icon="trending-up" prefix="$" thousands="," precision="0" wire:model="form.value" />
+            <x-wireui-select label="Lotes" wire:model.live.debounce.500ms="form.parcels" empty-message="Seleccione una manzana primero"
+                :async-data="route('api.blocks.parcels.index', $block_id)"
+                placeholder="Marque los lotes"  option-label="number"
+                option-value="id" multiselect />
+        </div>
+        <div class="col-span-6 sm:col-span-3">
+            <x-wireui-inputs.currency disabled label="Valor Bienes" placeholder="Suma de valor de Lotes" right-icon="trending-up" prefix="$" thousands="," precision="0" wire:model="form.value" />
         </div>
         <div class="col-span-6 sm:col-span-3">
             <x-wireui-datetime-picker label="Fecha de firma" placeholder="Fecha de promesa" wire:model="form.signature_date" without-time />
@@ -51,7 +57,14 @@
             <x-wireui-inputs.number label="Numero de Cuotas" min="0" placeholder="Cantidad de Cuotas" wire:model="form.number_of_fees"/>
         </div>
         <div class="col-span-6 sm:col-span-3">
-            <x-wireui-inputs.number label="Tasa de interés (Opcional)" placeholder="Tasa de Interes %" wire:model="form.interest_rate"/>
+            <x-wireui-inputs.number label="Tasa de Interés (Opcional)" placeholder="Tasa de Interes %" wire:model="form.interest_rate"/>
+        </div>
+        <div class="col-span-6 sm:col-span-3">
+            <x-wireui-datetime-picker label="Primera Fecha de Corte" placeholder="Fecha de corte" wire:model="form.cut_off_date" without-time />
+        </div>
+        <div class="col-span-6 sm:col-span-3">
+            <x-wireui-select label="Periodicidad de Pago" placeholder="Seleccione una frecuencia" :options="App\Enums\PaymentFrequency::select()"
+                option-label="label" option-value="value" wire:model="form.payment_frequency" autocomplete="off" />
         </div>
         <div class="col-span-6">
             <div class="flex items-center gap-3 mt-6">
@@ -96,6 +109,6 @@
         </div>
     </div>
     <div class="flex items-center justify-end gap-2 mt-6">
-        <x-wireui-button type="submit" spinner="save" lime label="Crear Pago" />
+        <x-wireui-button type="submit" spinner="save" lime label="Crear Promesa" />
     </div>
 </form>

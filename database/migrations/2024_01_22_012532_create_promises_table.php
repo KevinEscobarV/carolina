@@ -21,6 +21,9 @@ return new class extends Migration
             $table->integer('number_of_fees')->default(0);
             $table->float('interest_rate')->default(0);
 
+            $table->date('cut_off_date')->nullable();
+            $table->string('payment_frequency')->nullable();
+
             $table->decimal('deed_value', 15, 2)->default(0);
             $table->string('deed_number')->nullable();
             $table->date('deed_date')->nullable();

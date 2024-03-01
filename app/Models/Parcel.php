@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\ParcelPosition;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -10,6 +11,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasOneThrough;
+use Illuminate\Support\Number;
 use MatanYadaev\EloquentSpatial\Objects\Point;
 use MatanYadaev\EloquentSpatial\Objects\Polygon;
 
@@ -44,6 +46,10 @@ class Parcel extends Model
         'area' => Polygon::class,
     ];
 
+    public function getValueFormattedAttribute(): string
+    {
+        return number_format($this->value, 0, ',', '.');
+    }
 
     /**
      * Get the block that owns the parcel.
@@ -75,5 +81,46 @@ class Parcel extends Model
     public function payments(): HasMany
     {
         return $this->hasMany(Payment::class);
+    }
+
+    /**
+     * Scope a query to only include buyers that match the search.
+     * 
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @param  string  $search
+     * @return void
+     */
+    public function scopeSearch(Builder $query, string $search): void
+    {
+        if ($search) {
+            $query->where('number', 'like', '%' . $search . '%')
+                ->orWhereHas('block', function (Builder $query) use ($search) {
+                    $query->where('code', 'like', '%' . $search . '%');
+                });
+        }
+    }
+
+    /**
+     * Scope a query to only include buyers that match the search.
+     * 
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @param  string  $search
+     * @return void
+     */
+    public function scopeSort(Builder $query, string $column = null, bool $asc): void
+    {
+        if ($column) {
+            if ($column == 'block') {
+                $query->join('blocks', 'parcels.block_id', '=', 'blocks.id')
+                    ->orderBy('blocks.code', $asc ? 'asc' : 'desc')
+                    ->select('parcels.*');
+            } else if ($column == 'promise') {
+                $query->join('promises', 'parcels.promise_id', '=', 'promises.id')
+                    ->orderBy('promises.deed_number', $asc ? 'asc' : 'desc')
+                    ->select('parcels.*');
+            } else {
+                $query->orderBy($column, $asc ? 'asc' : 'desc');
+            }
+        }
     }
 }

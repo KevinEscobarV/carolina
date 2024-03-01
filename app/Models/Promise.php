@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\PaymentFrequency;
 use App\Enums\PromisePaymentMethod;
 use App\Enums\PromiseStatus;
 use Illuminate\Database\Eloquent\Builder;
@@ -27,6 +28,8 @@ class Promise extends Model
         'initial_fee',
         'number_of_fees',
         'interest_rate',
+        'cut_off_date',
+        'payment_frequency',
         'deed_value',
         'deed_number',
         'deed_date',
@@ -43,6 +46,8 @@ class Promise extends Model
     protected $casts = [
         'signature_date' => 'date',
         'deed_date' => 'date',
+        'cut_off_date' => 'date',
+        'payment_frequency' => PaymentFrequency::class,
         'payment_method' => PromisePaymentMethod::class,
         'status' => PromiseStatus::class,
     ];

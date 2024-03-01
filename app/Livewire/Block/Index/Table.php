@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Livewire\Category\Index;
+namespace App\Livewire\Block\Index;
 
-use App\Models\Category;
+use App\Models\Block;
 use Livewire\Attributes\On;
 use Livewire\Attributes\Renderless;
 use Livewire\Attributes\Url;
@@ -13,18 +13,18 @@ class Table extends Component
 {
     use WithPagination;
 
-    #[Url]
+    #[Url('seachBlock')]
     public $search = '';
 
-    #[Url]
+    #[Url('sortColBlock')]
     public $sortCol;
 
-    #[Url]
+    #[Url('sortAscBlock')]
     public $sortAsc = false;
 
-    public $selectedCategoryIds = [];
+    public $selectedBlockIds = [];
 
-    public $categoryIdsOnPage = [];
+    public $BlockIdsOnPage = [];
 
     public function updatedSearch()
     {
@@ -44,21 +44,21 @@ class Table extends Component
     #[Renderless]
     public function export()
     {
-        return Category::toCsv();
+        return Block::toCsv();
     }
 
     public function deleteSelected()
     {
-        $categories = Category::whereIn('id', $this->selectedCategoryIds)->get();
+        $Blocks = Block::whereIn('id', $this->selectedBlockIds)->get();
 
-        foreach ($categories as $category) {
-            $this->archive($category);
+        foreach ($Blocks as $Block) {
+            $this->archive($Block);
         }
     }
 
-    public function archive(Category $category)
+    public function archive(Block $Block)
     {
-        $category->delete();
+        $Block->delete();
     }
 
     public function placeholder()
@@ -66,11 +66,11 @@ class Table extends Component
         return view('components.table.placeholder');
     }
 
-    #[On('refresh-category-table')] 
+    #[On('refresh-block-table')] 
     public function render()
     {
-        return view('livewire.category.index.table', [
-            'categories' => Category::search($this->search)->sort($this->sortCol, $this->sortAsc)->paginate(8),
+        return view('livewire.block.index.table', [
+            'blocks' => Block::search($this->search)->sort($this->sortCol, $this->sortAsc)->with('category')->paginate(10, ['*'], 'blocks'),
         ]);
     }
 }

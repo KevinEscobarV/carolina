@@ -1,32 +1,48 @@
 <div class="divide-y divide-gray-200 rounded-xl bg-white shadow-sm ring-1 ring-gray-950/5 dark:divide-white/10 dark:bg-gray-800 dark:ring-white/10">
     <div class="flex flex-col sm:grid grid-cols-8 gap-2 p-6">
         <x-table.search />
-        {{-- <x-category.index.bulk-actions /> --}}
+        {{-- <x-block.index.bulk-actions /> --}}
     </div>
-    {{-- categories table... --}}
+    {{-- blocks table... --}}
     <x-table.template>
             <x-slot name="head">
                 <tr>
                     <x-table.sortable column="id" :$sortCol :$sortAsc>
                         <div class="whitespace-nowrap">ID</div>
                     </x-table.sortable>
-                    <x-table.sortable column="name" :$sortCol :$sortAsc>
-                        <div>Nombre</div>
+                    <x-table.sortable column="code" :$sortCol :$sortAsc class="bg-pink-500/10">
+                        <div>Codigo</div>
+                    </x-table.sortable>
+                    <x-table.sortable column="area_m2" :$sortCol :$sortAsc>
+                        <div>Area</div>
+                    </x-table.sortable>
+                    <x-table.sortable column="category" :$sortCol :$sortAsc>
+                        <div>Campaña</div>
                     </x-table.sortable>
                 </tr>
             </x-slot>
             <x-slot name="body">
-                @forelse ($categories as $category)
-                    <tr wire:key="{{ $category->id }}">
+                @forelse ($blocks as $block)
+                    <tr wire:key="{{ $block->id }}">
                         <x-table.td>
                             <div class="flex gap-1">
-                                <span class="text-gray-300">#</span>
-                                {{ $category->id }}
+                                <span class="text-gray-300 dark:text-gray-600">#</span>
+                                {{ $block->id }}
                             </div>
+                        </x-table.td>
+                        <x-table.td class="bg-pink-500/10">
+                            <p class="font-medium text-lg">
+                                {{ $block->code }}
+                            </p>
                         </x-table.td>
                         <x-table.td>
                             <p class="font-medium text-lg">
-                                {{ $category->name }}
+                                {{ number_format($block->area_m2, 0) }}m²
+                            </p>
+                        </x-table.td>
+                        <x-table.td>
+                            <p class="font-medium text-lg">
+                                {{ $block->category->name }}
                             </p>
                         </x-table.td>
                     </tr>
@@ -41,9 +57,9 @@
                     </tr>
                 @endforelse
             </x-slot>
-            @if ($categories->hasPages())
+            @if ($blocks->hasPages())
                 <x-slot name="pagination">
-                    {{ $categories->links() }}
+                    {{ $blocks->links() }}
                 </x-slot>
             @endif
     </x-table.template>

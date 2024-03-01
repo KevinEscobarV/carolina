@@ -1,40 +1,24 @@
-<div class="flex flex-col gap-8">
-    <div class="flex flex-col sm:grid grid-cols-8 gap-2">
+<div class="animate-pulse divide-y divide-gray-200 rounded-xl bg-white shadow-sm ring-1 ring-gray-950/5 dark:divide-white/10 dark:bg-gray-800 dark:ring-white/10">
+    <div class="flex flex-col sm:grid grid-cols-8 gap-2 p-6">
         <div class="col-span-3">
-            <x-wireui-input type="text" icon="search" placeholder="Buscar ..." />
-        </div>
-
-        <div class="flex justify-end col-span-5">
-            <x-wireui-button label="Export" icon="arrow-down" lime />
+            <x-wireui-input type="text" icon="search" placeholder="Buscar ..." disabled />
         </div>
     </div>
-
-    <div class="overflow-x-auto w-full">
-        <div class="relative animate-pulse min-w-[49.5rem]">
-            <div class="p-3">
-                <div class="w-full bg-gray-100 dark:bg-gray-700 rounded-lg">&nbsp;</div>
-            </div>
-
-            <table class="min-w-full table-fixed divide-y divide-gray-300 dark:divide-gray-700 text-gray-800">
-                <tbody class="divide-y divide-gray-200 text-gray-700 dark:divide-gray-700 dark:text-gray-300">
-                    @foreach (range(0, 8) as $i)
-                        <tr>
-                            <td class="whitespace-nowrap p-3 text-sm">
-                                <div class="w-full bg-gray-200 dark:bg-gray-600 rounded-lg">&nbsp;</div>
-                            </td>
-                            <td class="whitespace-nowrap p-3 text-sm" colspan="2">
-                                <div class="w-full bg-gray-200 dark:bg-gray-600 rounded-lg">&nbsp;</div>
-                            </td>
-                            <td class="whitespace-nowrap p-3 text-sm" colspan="3">
-                                <div class="w-full bg-gray-200 dark:bg-gray-600 rounded-lg">&nbsp;</div>
-                            </td>
-                            <td class="whitespace-nowrap p-3 text-sm">
-                                <div class="w-full bg-gray-200 dark:bg-gray-600 rounded-lg">&nbsp;</div>
-                            </td>
-                        </tr>
-                    @endforeach
-                </tbody>
-            </table>
-        </div>
-    </div>
+    {{-- promises table... --}}
+    <x-table.template>
+            <x-slot name="head">
+                <tr>
+                    <x-table.th>
+                    </x-table.th>
+                </tr>
+            </x-slot>
+            <x-slot name="body">
+                <x-table.td colspan="1">
+                    <div class="flex justify-center items-center gap-2">
+                        <x-icon.spinner size="10" />
+                        <span class="font-medium py-8 text-xl">Cargando...</span>
+                    </div>
+                </x-table.td>
+            </x-slot>
+    </x-table.template>
 </div>

@@ -3,7 +3,7 @@
         <div class="overflow-x-auto soft-scrollbar">
             {{-- payments table... --}}
             <table class="min-w-full table-fixed divide-y divide-gray-300 dark:divide-gray-700 text-gray-800">
-                <thead class="bg-gray-50 dark:bg-white/5">
+                <thead class="bg-gray-50 dark:bg-white/5 text-left">
                     {{ $head }}
                 </thead>
                 <tbody class="divide-y divide-gray-200 text-gray-700 dark:divide-gray-700 dark:text-gray-300">
@@ -26,7 +26,7 @@
 
     {{-- Pagination... --}}
     @if (isset($pagination))
-        <div class="p-6 w-full">
+        <div class="p-6 w-full border-t border-gray-300 dark:border-gray-700">
             {{ $pagination }}
         </div>
     @endif

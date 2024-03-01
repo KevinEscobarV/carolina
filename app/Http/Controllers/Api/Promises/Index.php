@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Api\Promises;
 use App\Http\Controllers\Controller;
 use App\Models\Promise;
 use Illuminate\Http\Request;
-use Illuminate\Contracts\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 
 class Index extends Controller
@@ -17,11 +17,12 @@ class Index extends Controller
             ->with('buyers:id,names,surnames,document_number', 'parcels:id,number')
             ->when(
                 $request->search,
-                fn (Builder $query) => $query
-                    ->where('deed_number', 'like', "%{$request->search}%")
-                    ->orWhereHas('buyers', fn (Builder $query) => $query
-                        ->where('name', 'like', "%{$request->search}%")
-                        ->orWhere('document_number', 'like', "%{$request->search}%"))
+                fn (Builder $query) => $query->where('deed_number', 'like', "%{$request->search}%")
+                    ->orWhereHas(
+                        'buyers',
+                        fn (Builder $query) => $query->where('name', 'like', "%{$request->search}%")
+                            ->orWhere('document_number', 'like', "%{$request->search}%")
+                    )
             )
             ->when(
                 $request->exists('selected'),

@@ -1,15 +1,15 @@
 <?php
 
-namespace App\Livewire\Category\Index;
+namespace App\Livewire\Block\Index;
 
 use Livewire\Attributes\Title;
 use Livewire\Component;
 
-#[Title('Campañas')]
+#[Title('Manzanas')]
 class Page extends Component
 {
     public function render()
     {
-        return view('livewire.category.index.page');
+        return view('livewire.block.index.page');
     }
 }

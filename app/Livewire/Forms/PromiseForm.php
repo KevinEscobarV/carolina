@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Forms;
 
+use App\Enums\PaymentFrequency;
 use App\Enums\PaymentMethod;
 use App\Enums\PromiseStatus;
 use App\Models\Parcel;
@@ -33,6 +34,12 @@ class PromiseForm extends Form
 
     #[Validate('nullable|numeric', 'tasa de interés')]
     public $interest_rate;
+    
+    #[Validate('required', 'frecuencia de pago')]
+    public PaymentFrequency $payment_frequency;
+
+    #[Validate('nullable|date', 'fecha de corte')]
+    public $cut_off_date;
 
     #[Validate('nullable|numeric', 'valor de la escritura')]
     public $deed_value;

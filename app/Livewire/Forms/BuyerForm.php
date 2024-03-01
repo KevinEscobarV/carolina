@@ -75,6 +75,16 @@ class BuyerForm extends Form
             'civil_status' => 'required',
             'phone_one' => 'required|string|max:255',
             'phone_two' => 'nullable|string|max:255',
+        ],
+        $attributes = [
+            'names' => 'nombres',
+            'surnames' => 'apellidos',
+            'email' => 'correo electrónico',
+            'document_type' => 'tipo de documento',
+            'document_number' => 'número de documento',
+            'civil_status' => 'estado civil',
+            'phone_one' => 'teléfono principal',
+            'phone_two' => 'teléfono alternativo',
         ]);
 
         $this->buyer->update($this->all());

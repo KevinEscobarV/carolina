@@ -1,4 +1,4 @@
-<aside class="flex-shrink-0 hidden z-20 bg-gray-50 dark:bg-gray-800 border-r border-lime-800/50 dark:border-gray-700 md:block" x-data="{ open: '{{ Auth::user()->expanded_sidebar }}' }">
+<aside class="flex-shrink-0 hidden z-20 bg-gray-50 dark:bg-gray-900/90 border-r border-lime-800/50 dark:border-gray-700 md:block" x-data="{ open: '{{ Auth::user()->expanded_sidebar }}' }">
     <div class="flex flex-col h-full transition-all duration-500" :class="{ 'w-52': open, 'w-20': !open }">
 
         <div class="flex items-center justify-center px-4 my-10">
@@ -34,6 +34,10 @@
 
             <x-side-link href="{{ route('promises') }}" :active="request()->routeIs('promises')" icon="scale" wire:navigate>
                 <span x-show="open" x-transition.duration.500ms>Promesas</span>
+            </x-side-link>
+
+            <x-side-link href="{{ route('blocks') }}" :active="request()->routeIs('blocks')" icon="template" wire:navigate>
+                <span x-show="open" x-transition.duration.500ms>Manzanas</span>
             </x-side-link>
 
             <x-side-link href="{{ route('parcels') }}" :active="request()->routeIs('parcels')" icon="map" wire:navigate>
