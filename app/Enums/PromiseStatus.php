@@ -11,9 +11,27 @@ enum PromiseStatus: string
     public function label(): string
     {
         return match ($this) {
-            self::PENDING => 'Pendiente',
-            self::PAID => 'Pagado',
-            self::CANCELLED => 'Cancelado',
+            self::PENDING => '🟡 Pendiente',
+            self::PAID => '🟢 Pagado',
+            self::CANCELLED => '🔴 Cancelado',
+        };
+    }
+
+    public function badge(): string
+    {
+        return match ($this) {
+            self::PENDING => 'warning',
+            self::PAID => 'positive',
+            self::CANCELLED => 'negative',
+        };
+    }
+
+    public function icon(): string
+    {
+        return match ($this) {
+            self::PENDING => 'exclamation',
+            self::PAID => 'check',
+            self::CANCELLED => 'ban',
         };
     }
 

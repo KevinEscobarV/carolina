@@ -20,20 +20,28 @@
 
         <!-- Sidebar links -->
         <nav aria-label="Main" class="flex flex-col h-full py-3 mt-12 soft-scrollbar overflow-hidden hover:overflow-y-auto">
-            <x-side-link href="{{ route('dashboard') }}" :active="request()->routeIs('dashboard')" icon="home">
+            <x-side-link href="{{ route('dashboard') }}" :active="request()->routeIs('dashboard')" icon="home" wire:navigate>
                 <span x-show="open" x-transition.duration.500ms>Administración</span>
             </x-side-link>
 
-            <x-side-link href="{{ route('buyers') }}" :active="request()->routeIs('buyers')" icon="at-symbol" wire:navigate>
+            <x-side-link href="{{ route('buyers') }}" :active="request()->routeIs('buyers')" icon="sparkles" wire:navigate>
                 <span x-show="open" x-transition.duration.500ms>Clientes</span>
             </x-side-link>
 
-            <x-side-link href="{{ route('payments') }}" :active="request()->routeIs('payments')" icon="cash" wire:navigate>
+            <x-side-link href="{{ route('payments') }}" :active="request()->routeIs('payments')" icon="trending-up" wire:navigate>
                 <span x-show="open" x-transition.duration.500ms>Pagos</span>
+            </x-side-link>
+
+            <x-side-link href="{{ route('promises') }}" :active="request()->routeIs('promises')" icon="scale" wire:navigate>
+                <span x-show="open" x-transition.duration.500ms>Promesas</span>
             </x-side-link>
 
             <x-side-link href="{{ route('parcels') }}" :active="request()->routeIs('parcels')" icon="map" wire:navigate>
                 <span x-show="open" x-transition.duration.500ms>Lotes</span>
+            </x-side-link>
+
+            <x-side-link href="{{ route('categories') }}" :active="request()->routeIs('categories')" icon="speakerphone" wire:navigate>
+                <span x-show="open" x-transition.duration.500ms>Campañas</span>
             </x-side-link>
         </nav>
 

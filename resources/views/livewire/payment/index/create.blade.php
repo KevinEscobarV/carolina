@@ -14,7 +14,7 @@
         </div>
         <div class="col-span-6 sm:col-span-3">
             <x-wireui-select label="Promesa o escritura" wire:model="form.promise_id"
-                placeholder="Seleccione una promesa o escritura" :async-data="route('api.promises.index')" option-label="name"
+                placeholder="Seleccione una promesa o escritura" :async-data="route('api.promises.index')" option-label="deed_number"
                 option-value="id" />
         </div>
         <div class="col-span-6">
@@ -34,7 +34,7 @@
                 without-time />
         </div>
         <div class="col-span-6 sm:col-span-3">
-            <x-wireui-inputs.currency label="Valor" placeholder="Valor pactado" icon="currency-dollar" thousands=","
+            <x-wireui-inputs.currency label="Valor" placeholder="Valor pactado" right-icon="trending-up" prefix="$" thousands=","
                 precision="0" wire:model="form.amount" />
         </div>
         <div class="col-span-6">
@@ -58,7 +58,7 @@
                 without-time />
         </div>
         <div class="col-span-6 sm:col-span-3">
-            <x-wireui-inputs.currency label="Valor cancelado" placeholder="Valor cancelado" icon="currency-dollar"
+            <x-wireui-inputs.currency label="Valor cancelado" placeholder="Valor cancelado" right-icon="trending-up" prefix="$"
                 thousands="," precision="0" wire:model="form.paid_amount" />
         </div>
         <div class="col-span-6">

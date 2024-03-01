@@ -4,12 +4,13 @@ namespace App\Models;
 
 use App\Enums\PromisePaymentMethod;
 use App\Enums\PromiseStatus;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Number;
 
 class Promise extends Model
 {
@@ -21,7 +22,6 @@ class Promise extends Model
      * @var array<int, string>
      */
     protected $fillable = [
-        'promise',
         'signature_date',
         'value',
         'initial_fee',
@@ -66,5 +66,62 @@ class Promise extends Model
     public function parcels(): HasMany
     {
         return $this->hasMany(Parcel::class);
+    }
+
+    public function getValueFormattedAttribute(): string
+    {
+        return Number::currency($this->value, 'COP');
+    }
+
+    public function getInitialFeeFormattedAttribute(): string
+    {
+        return Number::currency($this->initial_fee, 'COP');
+    }
+
+    public function getDeedValueFormattedAttribute(): string
+    {
+        return Number::currency($this->deed_value, 'COP');
+    }
+
+    /**
+     * Scope a query to only include buyers that match the search.
+     * 
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @param  string  $search
+     * @return void
+     */
+    public function scopeSearch(Builder $query, string $search): void
+    {
+        if ($search)
+            $query->whereHas('buyers', function (Builder $query) use ($search) {
+                $query->where('names', 'like', "%$search%")
+                    ->orWhere('surnames', 'like', "%$search%")
+                    ->orWhere('email', 'like', "%$search%")
+                    ->orWhere('document_number', 'like', "%$search%");
+            });
+    }
+
+        /**
+     * Scope a query to sort buyers by the specified column.
+     * 
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @param  string  $column
+     * @param  bool  $asc
+     * @return void
+     */
+    public function scopeSort(Builder $query, string $column = null, bool $asc): void
+    {
+        if ($column) {
+            if ($column === 'buyer') {
+                $query->join('buyer_promise', 'buyer_promise.promise_id', '=', 'promises.id')
+                    ->join('buyers', 'buyers.id', '=', 'buyer_promise.buyer_id')
+                    ->orderBy('buyers.names', $asc ? 'asc' : 'desc');
+            } else if ($column === 'parcel') {
+                $query->join('parcels', 'parcels.promise_id', '=', 'promises.id')
+                    ->orderBy('parcels.number', $asc ? 'asc' : 'desc');
+            } else {
+                $query->orderBy($column, $asc ? 'asc' : 'desc');
+            }
+        }
     }
 }

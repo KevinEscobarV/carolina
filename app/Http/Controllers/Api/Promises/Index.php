@@ -13,12 +13,12 @@ class Index extends Controller
     public function __invoke(Request $request): Collection
     {
         return Promise::query()
-            ->select('id', 'parcel_id', 'promise', 'status')
-            ->with('buyers:id,names,surnames,document_number', 'parcel:id,number')
+            ->select('id', 'deed_number', 'status')
+            ->with('buyers:id,names,surnames,document_number', 'parcels:id,number')
             ->when(
                 $request->search,
                 fn (Builder $query) => $query
-                    ->where('promise', 'like', "%{$request->search}%")
+                    ->where('deed_number', 'like', "%{$request->search}%")
                     ->orWhereHas('buyers', fn (Builder $query) => $query
                         ->where('name', 'like', "%{$request->search}%")
                         ->orWhere('document_number', 'like', "%{$request->search}%"))

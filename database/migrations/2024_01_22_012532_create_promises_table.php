@@ -14,8 +14,7 @@ return new class extends Migration
         Schema::create('promises', function (Blueprint $table) {
             $table->id();
 
-            $table->string('promise')->nullable();
-            $table->date('signature_date')->nullable();
+            $table->date('signature_date');
 
             $table->decimal('value', 15, 2)->default(0);
             $table->decimal('initial_fee', 15, 2)->default(0);

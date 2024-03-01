@@ -28,6 +28,8 @@ class DatabaseSeeder extends Seeder
             'name' => 'Rivarca',
         ]);
 
-        // Buyer::factory(100)->create();
+        $this->call([
+            ImportDataSeeder::class,
+        ]);
     }
 }

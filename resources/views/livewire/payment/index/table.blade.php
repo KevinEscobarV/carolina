@@ -37,6 +37,12 @@
                 @forelse ($payments as $payment)
                     <tr wire:key="{{ $payment->id }}">
                         <x-table.td>
+                            <div class="flex gap-1">
+                                <span class="text-gray-300">#</span>
+                                {{ $payment->id }}
+                            </div>
+                        </x-table.td>
+                        <x-table.td>
                             {{ $payment->agreement_date->translatedFormat("F j/Y") }}
                         </x-table.td>
                         <x-table.td>

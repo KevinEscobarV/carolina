@@ -39,4 +39,8 @@ Route::middleware([
     Route::get('/parcels', App\Livewire\Parcel\Index\Page::class)->name('parcels');
 
     Route::get('/payments', App\Livewire\Payment\Index\Page::class)->name('payments');
+
+    Route::get('/promises', App\Livewire\Promise\Index\Page::class)->name('promises');
+
+    Route::get('/categories', App\Livewire\Category\Index\Page::class)->name('categories');
 });
