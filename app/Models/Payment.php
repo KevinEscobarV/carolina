@@ -20,10 +20,12 @@ class Payment extends Model
      * @var array<int, string>
      */
     protected $fillable = [
+        'bill_number',
         'agreement_date',
-        'amount',
+        'agreement_amount',
         'payment_date',
         'paid_amount',
+        'bank',
         'payment_method',
         'observations',
         'bill_path',
@@ -64,7 +66,7 @@ class Payment extends Model
     {
         if ($search)
             $query->where('agreement_date', 'like', '%' . $search . '%')
-                ->orWhere('amount', 'like', '%' . $search . '%')
+                ->orWhere('agreement_amount', 'like', '%' . $search . '%')
                 ->orWhere('payment_date', 'like', '%' . $search . '%')
                 ->orWhere('paid_amount', 'like', '%' . $search . '%')
                 ->orWhereHas('promise', function ($query) use ($search) {
@@ -90,8 +92,6 @@ class Payment extends Model
                 $query->join('promises', 'promises.id', '=', 'payments.promise_id')
                     ->join('parcels', 'parcels.id', '=', 'promises.parcel_id')
                     ->orderBy('parcels.number', $asc ? 'asc' : 'desc');
-            } else if ($column === 'payment_method') {
-                $query->orderByRaw("FIELD(payment_method, " . implode(', ', PaymentMethod::cases()) . ") " . ($asc ? 'asc' : 'desc'));
             } else {
                 $query->orderBy($column, $asc ? 'asc' : 'desc');
             }

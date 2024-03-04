@@ -43,7 +43,7 @@
                     </a>
                 @endif
 
-                <x-wireui-button class="w-full" emerald label="{{ __('Log in') }}" type="submit" />
+                <x-wireui-button class="w-full" amber label="{{ __('Log in') }}" type="submit" />
             </div>
         </form>
     </x-authentication-card>

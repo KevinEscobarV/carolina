@@ -1,4 +1,4 @@
-<nav x-data="{ open: false }" class="bg-gradient-to-r from-lime-600 dark:from-lime-600/20 to-green-500/80 dark:to-green-900/20 dark:bg-gray-800/90 shadow-md sticky top-0 z-20">
+<nav x-data="{ open: false }" class="bg-primary-500 dark:bg-primary-600 shadow-md sticky top-0 z-20">
     <!-- Primary Navigation Menu -->
     <div class="container mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between h-16">
@@ -111,6 +111,10 @@
 
                             <x-dropdown-link href="{{ route('profile.show') }}">
                                 {{ __('Profile') }}
+                            </x-dropdown-link>
+
+                            <x-dropdown-link href="{{ route('pulse') }}" class="bg-orange-500 hover:bg-orange-400 text-white">
+                                Server Monitor
                             </x-dropdown-link>
 
                             @if (Laravel\Jetstream\Jetstream::hasApiFeatures())

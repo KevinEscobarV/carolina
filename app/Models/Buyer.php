@@ -49,7 +49,7 @@ class Buyer extends Model
      */
     public function promises(): BelongsToMany
     {
-        return $this->belongsToMany(Promise::class);
+        return $this->belongsToMany(Promise::class, 'promise_buyer');
     }
 
     /**
@@ -101,13 +101,7 @@ class Buyer extends Model
     public function scopeSort(Builder $query, string $column = null, bool $asc): void
     {
         if ($column) {
-            if ($column === 'civil_status') {
-                $query->orderByRaw("FIELD(civil_status, " . CivilStatus::implode() . ") " . ($asc ? 'asc' : 'desc'));
-            } else if ($column === 'document_type') {
-                $query->orderByRaw("FIELD(document_type, " . DocumentType::implode() . ") " . ($asc ? 'asc' : 'desc'));
-            } else {
-                $query->orderBy($column, $asc ? 'asc' : 'desc');
-            }
+            $query->orderBy($column, $asc ? 'asc' : 'desc');
         }
     }
 }

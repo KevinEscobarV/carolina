@@ -3,7 +3,9 @@
     <button wire:click="sortBy('{{ $column }}')" class="flex items-center gap-2 group w-full {{ $right ? 'justify-end' : 'justify-start' }}">
         
         @if (!$right)
-            {{ $slot }}
+            <div class="text-left">
+                {{ $slot }}
+            </div>
         @endif
 
         @if ($sortCol === $column)
@@ -21,7 +23,9 @@
         @endif
 
         @if ($right)
-            {{ $slot }}
+            <div class="text-right">
+                {{ $slot }}
+            </div>
         @endif
 
     </button>

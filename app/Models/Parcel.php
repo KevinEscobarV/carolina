@@ -68,6 +68,14 @@ class Parcel extends Model
     }
 
     /**
+     * Get the deed for the parcel.
+     */
+    public function deed(): HasOne
+    {
+        return $this->hasOne(Deed::class);
+    }
+
+    /**
      * Get the buyer that owns the parcel.
      */
     public function owner(): HasOneThrough

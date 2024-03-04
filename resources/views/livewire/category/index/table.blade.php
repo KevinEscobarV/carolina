@@ -11,7 +11,7 @@
                         <div class="whitespace-nowrap">ID</div>
                     </x-table.sortable>
                     <x-table.sortable column="name" :$sortCol :$sortAsc>
-                        <div>Nombre</div>
+                        Nombre
                     </x-table.sortable>
                 </tr>
             </x-slot>

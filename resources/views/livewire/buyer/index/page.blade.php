@@ -5,10 +5,7 @@
 </x-slot>
 
 <div class="container mx-auto sm:px-6 lg:px-8 flex flex-col gap-8">
-    <x-card title="Crear Usuario" cardClasses="max-w-4xl">
-        <x-slot name="action">
-            <x-wireui-icon name="plus" class="w-6 h-6 text-gray-500" />
-        </x-slot>
+    <x-card cardClasses="max-w-4xl">
         <livewire:buyer.index.create />
     </x-card>
 

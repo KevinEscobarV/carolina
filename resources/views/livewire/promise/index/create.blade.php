@@ -24,7 +24,7 @@
         </div>
         <div class="col-span-6 sm:col-span-3">
             <x-wireui-select label="Lotes" wire:model.live.debounce.500ms="form.parcels" empty-message="Seleccione una manzana primero"
-                :async-data="route('api.blocks.parcels.index', $block_id)"
+                :async-data="route('api.parcels.promises', $block_id)"
                 placeholder="Marque los lotes"  option-label="number"
                 option-value="id" multiselect />
         </div>
@@ -67,41 +67,20 @@
                 option-label="label" option-value="value" wire:model="form.payment_frequency" autocomplete="off" />
         </div>
         <div class="col-span-6">
-            <div class="flex items-center gap-3 mt-6">
-                <div class="border-2 border-lime-500 rounded-full h-10 w-10 flex items-center justify-center">
-                    <span class="bg-clip-text font-bold text-2xl text-transparent bg-lime-500">
-                        3
-                    </span>
-                </div>
-                <h2 class="text-xl text-gray-800 dark:text-gray-200 leading-tight">
-                    Información de Escritura
-                </h2>
-            </div>
-        </div>
-        <div class="col-span-6 sm:col-span-3">
-            <x-wireui-input label="Numero de Folio de Matricula" right-icon="pencil" placeholder="Numero Escritura" wire:model="form.deed_number" />
-        </div>
-        <div class="col-span-6 sm:col-span-3">
-            <x-wireui-inputs.currency label="Valor de Escritura" placeholder="Gastos de escrituración" right-icon="trending-up" prefix="$" thousands="," precision="0" wire:model="form.value" />
-        </div>
-        <div class="col-span-6 sm:col-span-3">
-            <x-wireui-select label="Estado de Escritura" placeholder="Seleccione un estado" :options="App\Enums\PromiseStatus::select()"
-                option-label="label" option-value="value" wire:model="form.status" autocomplete="off" />
-        </div>
-        <div class="col-span-6 sm:col-span-3">
-            <x-wireui-datetime-picker label="Fecha de escritura" placeholder="Fecha de escritura" wire:model="form.deed_date" without-time />
-        </div>
-        <div class="col-span-6">
             <div class="flex items-center gap-3">
                 <div class="border-2 border-yellow-500 rounded-full h-10 w-10 flex items-center justify-center">
                     <span class="bg-clip-text font-bold text-2xl text-transparent bg-yellow-500">
-                        4
+                        3
                     </span>
                 </div>
                 <h2 class="text-xl text-gray-800 dark:text-gray-200 leading-tight">
                     Observaciones
                 </h2>
             </div>
+        </div>
+        <div class="col-span-6 sm:col-span-3">
+            <x-wireui-select label="Estado de Promesa" placeholder="Seleccione un estado" :options="App\Enums\PromiseStatus::select()"
+                option-label="label" option-value="value" wire:model="form.status" autocomplete="off" />
         </div>
         <div class="col-span-6">
             <x-wireui-textarea label="Observaciones" placeholder="Observaciones o concepto"

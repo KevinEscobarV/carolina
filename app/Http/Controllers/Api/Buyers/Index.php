@@ -14,7 +14,7 @@ class Index extends Controller
     public function __invoke(Request $request): Collection
     {
         return Buyer::query()
-            ->select('id', 'names', 'surnames', 'document_number', 'email')
+            ->select('id', 'names', 'surnames', 'document_type', 'document_number', 'email')
             ->orderBy('names')
             ->when(
                 $request->search,
@@ -28,6 +28,11 @@ class Index extends Controller
                 fn (Builder $query) => $query->whereIn('id', $request->input('selected', [])),
                 fn (Builder $query) => $query->limit(30)
             )
-            ->get();
+            ->get()->map(function (Buyer $buyer) {
+                $buyer->names = $buyer->names . ' ' . $buyer->surnames;
+                $buyer->description = 'Documento: ' . strtoupper($buyer->document_type->value) . '. ' . $buyer->document_number
+                    . '<br>Correo: ' . $buyer->email;
+                return $buyer;
+            });
     }
 }

@@ -23,6 +23,7 @@ class Promise extends Model
      * @var array<int, string>
      */
     protected $fillable = [
+        'number',
         'signature_date',
         'value',
         'initial_fee',
@@ -30,12 +31,9 @@ class Promise extends Model
         'interest_rate',
         'cut_off_date',
         'payment_frequency',
-        'deed_value',
-        'deed_number',
-        'deed_date',
         'payment_method',
-        'observations',
         'status',
+        'observations',
     ];
 
     /**
@@ -45,7 +43,6 @@ class Promise extends Model
      */
     protected $casts = [
         'signature_date' => 'date',
-        'deed_date' => 'date',
         'cut_off_date' => 'date',
         'payment_frequency' => PaymentFrequency::class,
         'payment_method' => PromisePaymentMethod::class,
@@ -62,7 +59,7 @@ class Promise extends Model
      */
     public function buyers(): BelongsToMany
     {
-        return $this->belongsToMany(Buyer::class);
+        return $this->belongsToMany(Buyer::class, 'promise_buyer');
     }
 
     /**
@@ -83,11 +80,6 @@ class Promise extends Model
         return Number::currency($this->initial_fee, 'COP');
     }
 
-    public function getDeedValueFormattedAttribute(): string
-    {
-        return Number::currency($this->deed_value, 'COP');
-    }
-
     /**
      * Scope a query to only include buyers that match the search.
      * 
@@ -98,15 +90,16 @@ class Promise extends Model
     public function scopeSearch(Builder $query, string $search): void
     {
         if ($search)
-            $query->whereHas('buyers', function (Builder $query) use ($search) {
-                $query->where('names', 'like', "%$search%")
-                    ->orWhere('surnames', 'like', "%$search%")
-                    ->orWhere('email', 'like', "%$search%")
-                    ->orWhere('document_number', 'like', "%$search%");
-            });
+            $query->where('number', 'like', "%$search%")
+                ->orWhereHas('buyers', function (Builder $query) use ($search) {
+                    $query->where('names', 'like', "%$search%")
+                        ->orWhere('surnames', 'like', "%$search%")
+                        ->orWhere('email', 'like', "%$search%")
+                        ->orWhere('document_number', 'like', "%$search%");
+                });
     }
 
-        /**
+    /**
      * Scope a query to sort buyers by the specified column.
      * 
      * @param  \Illuminate\Database\Eloquent\Builder  $query

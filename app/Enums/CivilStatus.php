@@ -8,6 +8,7 @@ enum CivilStatus: string
     case MARRIED = 'married';
     case DIVORCED = 'divorced';
     case WIDOWER = 'widower';
+    case FREE_UNION = 'free_union';
 
     public function label(): string
     {
@@ -16,6 +17,7 @@ enum CivilStatus: string
             self::MARRIED => 'Casado',
             self::DIVORCED => 'Divorciado',
             self::WIDOWER => 'Viudo',
+            self::FREE_UNION => 'Unión libre',
         };
     }
 

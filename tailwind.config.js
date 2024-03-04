@@ -25,7 +25,7 @@ export default {
                 sans: ['Figtree', ...defaultTheme.fontFamily.sans],
             },
             colors: {
-                primary: colors.lime,
+                primary: colors.amber,
                 secondary: colors.gray,
             },
         },

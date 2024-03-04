@@ -13,28 +13,28 @@
                         <div class="whitespace-nowrap">ID</div>
                     </x-table.sortable>
                     <x-table.sortable column="names" :$sortCol :$sortAsc>
-                        <div>Nombres</div>
+                        Nombres
                     </x-table.sortable>
                     <x-table.sortable column="surnames" :$sortCol :$sortAsc>
-                        <div>Apellidos</div>
+                        Apellidos
                     </x-table.sortable>
                     <x-table.sortable column="email" :$sortCol :$sortAsc>
-                        <div>Correo</div>
+                        Correo
                     </x-table.sortable>
                     <x-table.sortable column="document_type" :$sortCol :$sortAsc>
-                        <div>Tipo</div>
+                        Tipo
                     </x-table.sortable>
                     <x-table.sortable column="document_number" :$sortCol :$sortAsc>
-                        <div>Documento</div>
+                        Documento
                     </x-table.sortable>
                     <x-table.sortable column="civil_status" :$sortCol :$sortAsc>
                         <div class="whitespace-nowrap">Estado Civil</div>
                     </x-table.sortable>
                     <x-table.th>
-                        <div>Contacto</div>
+                        Contacto
                     </x-table.th>
                     <x-table.th>
-                        <div>Dirección</div>
+                        Dirección
                     </x-table.th>
                 </tr>
             </x-slot>

@@ -14,12 +14,14 @@ return new class extends Migration
         Schema::create('payments', function (Blueprint $table) {
             $table->id();
 
-            $table->date('agreement_date');
-            $table->decimal('amount', 15, 2);
-            $table->date('payment_date');
-            $table->string('paid_amount');
+            $table->string('bill_number');
+            $table->date('agreement_date')->nullable();
+            $table->decimal('agreement_amount', 15, 2)->nullable();
+            $table->date('payment_date')->nullable();
+            $table->decimal('paid_amount', 15, 2)->nullable();
+            $table->string('bank')->nullable();
             $table->string('payment_method');
-            $table->string('observations')->nullable();
+            $table->mediumText('observations')->nullable();
             $table->string('bill_path', 2048)->nullable();
 
             $table->foreignId('promise_id')->constrained('promises')->cascadeOnDelete()->cascadeOnUpdate();

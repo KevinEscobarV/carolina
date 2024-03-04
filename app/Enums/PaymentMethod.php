@@ -18,7 +18,7 @@ enum PaymentMethod: string
             self::CREDIT_CARD => 'Tarjeta de crédito o débito',
             self::CHECK => 'Cheque',
             self::BANK_TRANSFER => 'Transferencia bancaria',
-            self::DEPOSIT => 'Depósito',
+            self::DEPOSIT => 'Consignación',
             self::OTHER => 'Otro',
         };
     }

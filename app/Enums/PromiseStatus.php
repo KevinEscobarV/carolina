@@ -5,14 +5,14 @@ namespace App\Enums;
 enum PromiseStatus: string
 {
     case PENDING = 'pending';
-    case PAID = 'paid';
+    case CONFIRMED = 'confirmed';
     case CANCELLED = 'cancelled';
 
     public function label(): string
     {
         return match ($this) {
             self::PENDING => '🟡 Pendiente',
-            self::PAID => '🟢 Pagado',
+            self::CONFIRMED => '🟢 Confirmado',
             self::CANCELLED => '🔴 Cancelado',
         };
     }
@@ -21,7 +21,7 @@ enum PromiseStatus: string
     {
         return match ($this) {
             self::PENDING => 'warning',
-            self::PAID => 'positive',
+            self::CONFIRMED => 'positive',
             self::CANCELLED => 'negative',
         };
     }
@@ -30,7 +30,7 @@ enum PromiseStatus: string
     {
         return match ($this) {
             self::PENDING => 'exclamation',
-            self::PAID => 'check',
+            self::CONFIRMED => 'lock-closed',
             self::CANCELLED => 'ban',
         };
     }
@@ -40,7 +40,7 @@ enum PromiseStatus: string
         return collect(self::cases())->map(function ($case) {
             return [
                 'value' => $case,
-                'label'=> $case->label(),
+                'label' => $case->label(),
             ];
         })->toArray();
     }

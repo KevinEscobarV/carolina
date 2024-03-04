@@ -10,38 +10,32 @@
                     <x-table.sortable column="id" :$sortCol :$sortAsc>
                         <div class="whitespace-nowrap">ID</div>
                     </x-table.sortable>
+                    <x-table.sortable column="number" :$sortCol :$sortAsc>
+                        Promesa
+                    </x-table.sortable>
                     <x-table.sortable column="status" :$sortCol :$sortAsc>
-                        <div>Estado</div>
+                        Estado
                     </x-table.sortable>
                     <x-table.sortable column="signature_date" :$sortCol :$sortAsc>
-                        <div>Fecha Firma</div>
+                        Fecha Firma
                     </x-table.sortable>
                     <x-table.sortable column="value" :$sortCol :$sortAsc>
-                        <div>Valor</div>
+                        Valor
                     </x-table.sortable>
                     <x-table.sortable column="initial_fee" :$sortCol :$sortAsc>
-                        <div>Cuota Inicial</div>
+                        Cuota Inicial
                     </x-table.sortable>
                     <x-table.sortable column="number_of_fees" :$sortCol :$sortAsc>
-                        <div>Número de Cuotas</div>
+                        Número de Cuotas
                     </x-table.sortable>
                     <x-table.sortable column="interest_rate" :$sortCol :$sortAsc>
-                        <div>Interes</div>
-                    </x-table.sortable>
-                    <x-table.sortable column="deed_number" :$sortCol :$sortAsc>
-                        <div>Número Escritura</div>
-                    </x-table.sortable>
-                    <x-table.sortable column="deed_value" :$sortCol :$sortAsc>
-                        <div>Valor Escritura</div>
-                    </x-table.sortable>
-                    <x-table.sortable column="deed_date" :$sortCol :$sortAsc>
-                        <div>Fecha Escritura</div>
+                        Interes
                     </x-table.sortable>
                     <x-table.sortable column="payment_method" :$sortCol :$sortAsc>
-                        <div>Metodo de Pago</div>
+                        Metodo de Pago
                     </x-table.sortable>
                     <x-table.sortable column="observations" :$sortCol :$sortAsc>
-                        <div>Obsservaciones</div>
+                        Obsservaciones
                     </x-table.sortable>
                 </tr>
             </x-slot>
@@ -55,7 +49,10 @@
                             </div>
                         </x-table.td>
                         <x-table.td>
-                            <x-wireui-badge lg icon="{{ $promise->status->icon() }}" rounded color="{{ $promise->status->badge() }}" label="lg size" />
+                            {{ $promise->number }}
+                        </x-table.td>
+                        <x-table.td>
+                            <x-wireui-badge lg right-icon="{{ $promise->status->icon() }}" flat rounded color="{{ $promise->status->badge() }}" label="{{ $promise->status->label() }}" />
                         </x-table.td>
                         <x-table.td>
                             {{ $promise->signature_date->translatedFormat("F j/Y") }}
@@ -71,12 +68,6 @@
                         </x-table.td>
                         <x-table.td>
                             {{ $promise->interest_rate }}%
-                        </x-table.td>
-                        <x-table.td>
-                            {{ $promise->deed_number }}
-                        </x-table.td>
-                        <x-table.td>
-                            {{ $promise->deed_value_formatted }}
                         </x-table.td>
                         <x-table.td>
                             {{ $promise->payment_method->label() }}

@@ -14,6 +14,8 @@ return new class extends Migration
         Schema::create('promises', function (Blueprint $table) {
             $table->id();
 
+            $table->string('number')->unique()->index();
+            
             $table->date('signature_date');
 
             $table->decimal('value', 15, 2)->default(0);
@@ -24,15 +26,10 @@ return new class extends Migration
             $table->date('cut_off_date')->nullable();
             $table->string('payment_frequency')->nullable();
 
-            $table->decimal('deed_value', 15, 2)->default(0);
-            $table->string('deed_number')->nullable();
-            $table->date('deed_date')->nullable();
-
             $table->string('payment_method')->nullable();
 
-            $table->string('observations')->nullable();
-
             $table->string('status')->nullable();
+            $table->mediumText('observations')->nullable();
 
             $table->timestamps();
             $table->softDeletes();

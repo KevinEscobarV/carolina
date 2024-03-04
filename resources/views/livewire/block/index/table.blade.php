@@ -11,13 +11,13 @@
                         <div class="whitespace-nowrap">ID</div>
                     </x-table.sortable>
                     <x-table.sortable column="code" :$sortCol :$sortAsc class="bg-pink-500/10">
-                        <div>Codigo</div>
+                        Codigo
                     </x-table.sortable>
                     <x-table.sortable column="area_m2" :$sortCol :$sortAsc>
-                        <div>Area</div>
+                        Area
                     </x-table.sortable>
                     <x-table.sortable column="category" :$sortCol :$sortAsc>
-                        <div>Campaña</div>
+                        Campaña
                     </x-table.sortable>
                 </tr>
             </x-slot>

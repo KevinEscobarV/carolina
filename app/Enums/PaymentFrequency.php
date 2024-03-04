@@ -10,6 +10,7 @@ enum PaymentFrequency: string
     case QUARTERLY = 'quarterly';
     case SEMI_ANNUAL = 'semi_annual';
     case ANNUAL = 'annual';
+    case IRREGULAR = 'irregular';
 
     public function label(): string
     {
@@ -20,6 +21,7 @@ enum PaymentFrequency: string
             self::QUARTERLY => 'Trimestral',
             self::SEMI_ANNUAL => 'Semestral',
             self::ANNUAL => 'Anual',
+            self::IRREGULAR => 'Irregular',
         };
     }
 

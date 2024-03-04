@@ -2,9 +2,6 @@
 
 namespace Database\Seeders;
 
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-
-use App\Models\Buyer;
 use App\Models\Category;
 use App\Models\User;
 use Illuminate\Database\Seeder;
@@ -30,6 +27,9 @@ class DatabaseSeeder extends Seeder
 
         $this->call([
             ImportDataSeeder::class,
+            ImportPromises::class,
+            ImportPayments::class,
+            ImportTransactions::class,
         ]);
     }
 }

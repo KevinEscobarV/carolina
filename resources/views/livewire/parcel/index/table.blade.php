@@ -11,22 +11,22 @@
                         <div class="whitespace-nowrap">ID</div>
                     </x-table.sortable>
                     <x-table.sortable column="number" :$sortCol :$sortAsc class="bg-lime-500/10">
-                        <div>Codigo</div>
+                        Codigo
                     </x-table.sortable>
                     <x-table.sortable class="bg-pink-500/10" column="block" :$sortCol :$sortAsc>
-                        <div>Manzana</div>
+                        Manzana
                     </x-table.sortable>
                     <x-table.sortable column="area_m2" :$sortCol :$sortAsc right>
-                        <div>Area</div>
+                        Area
                     </x-table.sortable>
                     <x-table.sortable column="value" :$sortCol :$sortAsc right>
-                        <div>Valor</div>
+                        Valor
                     </x-table.sortable>
                     <x-table.sortable column="promise_id" :$sortCol :$sortAsc>
-                        <div>Estado</div>
+                        Estado
                     </x-table.sortable>
                     <x-table.th>
-                        <div>Campaña</div>
+                        Campaña
                     </x-table.th>
                 </tr>
             </x-slot>
@@ -61,9 +61,9 @@
                         </x-table.td>
                         <x-table.td>
                             @if ($parcel->promise_id)
-                                <x-wireui-badge lg icon="{{ $parcel->promise->status->icon() }}" rounded color="{{ $parcel->promise->status->badge() }}" label="{{ $parcel->promise->status->label() }}" />
+                                <x-wireui-badge lg icon="{{ $parcel->promise->status->icon() }}" flat rounded color="{{ $parcel->promise->status->badge() }}" label="{{ $parcel->promise->status->label() }}" />
                             @else
-                                <x-wireui-badge lg icon="light-bulb" rounded positive flat label="Disponible" />
+                                <x-wireui-badge lg icon="lock-open" rounded indigo flat label="Disponible" />
                             @endif
                         </x-table.td>
                         <x-table.td>

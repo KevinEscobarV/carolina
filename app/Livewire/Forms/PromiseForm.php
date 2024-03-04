@@ -20,6 +20,9 @@ class PromiseForm extends Form
     #[Validate('required|array|min:1|exists:parcels,id', 'lotes')]
     public $parcels = [];
 
+    #[Validate('required', 'número o codigo de promesa')]
+    public $number;
+
     #[Validate('required', 'fecha de firma')]
     public $signature_date;
 
@@ -41,36 +44,25 @@ class PromiseForm extends Form
     #[Validate('nullable|date', 'fecha de corte')]
     public $cut_off_date;
 
-    #[Validate('nullable|numeric', 'valor de la escritura')]
-    public $deed_value;
-
-    #[Validate('nullable', 'número de escritura')]
-    public $deed_number;
-
-    #[Validate('nullable', 'fecha de escritura')]
-    public $deed_date;
-
     #[Validate('nullable', 'método de pago')]
     public PaymentMethod $payment_method;
 
-    #[Validate('nullable', 'observaciones')]
-    public $observations;
-
     #[Validate('nullable', 'estado')]
     public PromiseStatus $status;
+
+    #[Validate('nullable', 'observaciones')]
+    public $observations;
 
     public function setModel(Promise $model): void
     {
         $this->model = $model;
         $this->fill($model->only([
+            'number',
             'signature_date',
             'value',
             'initial_fee',
             'number_of_fees',
             'interest_rate',
-            'deed_value',
-            'deed_number',
-            'deed_date',
             'payment_method',
             'observations',
             'status',

@@ -10,26 +10,32 @@
                     <x-table.sortable column="id" :$sortCol :$sortAsc>
                         <div class="whitespace-nowrap">ID</div>
                     </x-table.sortable>
-                    <x-table.sortable column="agreement_date" :$sortCol :$sortAsc>
-                        <div>Fecha Pactada</div>
+                    <x-table.sortable column="bill_number" :$sortCol :$sortAsc>
+                        Numero Recibo
                     </x-table.sortable>
-                    <x-table.sortable column="amount" :$sortCol :$sortAsc>
-                        <div>Valor</div>
+                    <x-table.sortable column="agreement_date" :$sortCol :$sortAsc>
+                        Fecha Pactada
+                    </x-table.sortable>
+                    <x-table.sortable column="agreement_amount" :$sortCol :$sortAsc>
+                        Valor Acordado
                     </x-table.sortable>
                     <x-table.sortable column="payment_date" :$sortCol :$sortAsc>
-                        <div>Fecha Pago</div>
+                        Fecha Pago
                     </x-table.sortable>
                     <x-table.sortable column="paid_amount" :$sortCol :$sortAsc>
-                        <div>Pagado</div>
+                        Valor Pagado
+                    </x-table.sortable>
+                    <x-table.sortable column="bank" :$sortCol :$sortAsc>
+                        Banco
                     </x-table.sortable>
                     <x-table.sortable column="payment_method" :$sortCol :$sortAsc>
-                        <div>Valor Cancelado</div>
+                        Metodo de Pago
                     </x-table.sortable>
                     <x-table.sortable column="observations" :$sortCol :$sortAsc>
-                        <div>Obsservaciones</div>
+                        Obsservaciones
                     </x-table.sortable>
                     <x-table.th>
-                        <div>Promesa</div>
+                        Promesa
                     </x-table.th>
                 </tr>
             </x-slot>
@@ -43,16 +49,22 @@
                             </div>
                         </x-table.td>
                         <x-table.td>
-                            {{ $payment->agreement_date->translatedFormat("F j/Y") }}
+                            {{ $payment->bill_number }}
                         </x-table.td>
                         <x-table.td>
-                            {{ $payment->amount }}
+                            {{ $payment->agreement_date ? $payment->agreement_date->translatedFormat("F j/Y") : 'Sin definir' }}
                         </x-table.td>
                         <x-table.td>
-                            {{ $payment->payment_date->translatedFormat("F j/Y") }}
+                            {{ $payment->agreement_amount }}
+                        </x-table.td>
+                        <x-table.td>
+                            {{ $payment->payment_date ? $payment->payment_date->translatedFormat("F j/Y") : 'Sin definir' }}
                         </x-table.td>
                         <x-table.td>
                             {{ $payment->paid_amount }}
+                        </x-table.td>
+                        <x-table.td>
+                            {{ $payment->bank ? $payment->bank : '💰' }}
                         </x-table.td>
                         <x-table.td>
                             {{ $payment->payment_method->label() }}
@@ -61,7 +73,7 @@
                             {{ str($payment->observations)->words(20) }}
                         </x-table.td>
                         <x-table.td>
-                            {{ $payment->promise->promise }}
+                            {{ $payment->promise->number }}
                         </x-table.td>
                     </tr>
                 @empty

@@ -8,13 +8,13 @@
                     </span>
                 </div>
                 <h2 class="text-xl text-gray-800 dark:text-gray-200 leading-tight">
-                    Seleccione la promesa o escritura
+                    Seleccione la promesa
                 </h2>
             </div>
         </div>
         <div class="col-span-6 sm:col-span-3">
-            <x-wireui-select label="Promesa o escritura" wire:model="form.promise_id"
-                placeholder="Seleccione una promesa o escritura" :async-data="route('api.promises.index')" option-label="deed_number"
+            <x-wireui-select label="Promesa " wire:model="form.promise_id"
+                placeholder="Buscar por Promesa o Usuario" :async-data="route('api.promises.index')" option-label="number"
                 option-value="id" />
         </div>
         <div class="col-span-6">

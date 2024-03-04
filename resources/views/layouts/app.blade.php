@@ -23,7 +23,7 @@
         <x-wireui-notifications position="bottom-right" />
         <x-wireui-dialog blur="md" align="center" />
     
-        <div class="flex h-screen bg-cover bg-center" style="background-image: url('{{ asset('img/background.jpg')}}')">
+        <div class="flex h-screen bg-cover bg-center" style="background-image: url('{{ asset('img/background2.jpg')}}')">
     
             @livewire('components.sidebar-menu')
     
@@ -52,5 +52,36 @@
         @livewireScripts
         @wireUiScripts
         @stack('scripts')
+        <script>
+            document.addEventListener('livewire:init', () => {
+                Livewire.hook('request', ({ fail }) => {
+                    fail(({ status, content, preventDefault }) => {
+                        if (status === 419) {
+                            window.$wireui.notify({
+                                title: 'Error!',
+                                description: 'La página ha expirado debido a la inactividad, esta se recargará automáticamente.',
+                                icon: 'error'
+                            })
+
+                            // Esperar 3 segundos antes de recargar la página
+                            setTimeout(() => {
+                                window.location.reload()
+                            }, 3000)
+
+                            preventDefault()
+                        }
+                        if (status >= 500) {
+                            window.$wireui.notify({
+                                title: 'Error!',
+                                description: 'Algo salió mal. Por favor, inténtelo de nuevo.',
+                                icon: 'error'
+                            })
+
+                            preventDefault()
+                        }
+                    })
+                })
+            })
+        </script>
     </body>
 </html>

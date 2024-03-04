@@ -13,14 +13,14 @@ class Index extends Controller
     public function __invoke(Request $request): Collection
     {
         return Promise::query()
-            ->select('id', 'deed_number', 'status')
-            ->with('buyers:id,names,surnames,document_number', 'parcels:id,number')
+            ->select('id', 'number', 'status')
+            ->with('buyers:id,names,surnames,document_number', 'parcels:id,number,promise_id')
             ->when(
                 $request->search,
-                fn (Builder $query) => $query->where('deed_number', 'like', "%{$request->search}%")
+                fn (Builder $query) => $query->where('number', 'like', "%{$request->search}%")
                     ->orWhereHas(
                         'buyers',
-                        fn (Builder $query) => $query->where('name', 'like', "%{$request->search}%")
+                        fn (Builder $query) => $query->where('names', 'like', "%{$request->search}%")
                             ->orWhere('document_number', 'like', "%{$request->search}%")
                     )
             )
@@ -32,7 +32,7 @@ class Index extends Controller
             ->get()
             ->map(function (Promise $promise) {
                 $promise->description = 'Compradores: ' . $promise->buyers->pluck('names')->join(', ')
-                    . '<br>Lotes: ' . $promise->parcels->pluck('number')->join(', ');
+                    . '<br>Numero Lotes: ' . $promise->parcels->pluck('number')->join(', ');
                 return $promise;
             });
     }
