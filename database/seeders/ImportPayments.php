@@ -4,7 +4,6 @@ namespace Database\Seeders;
 
 use App\Enums\PaymentMethod;
 use App\Imports\DataImport;
-use App\Models\Block;
 use App\Models\Parcel;
 use App\Models\Payment;
 use Illuminate\Database\Seeder;
@@ -27,13 +26,12 @@ class ImportPayments extends Seeder
             DB::beginTransaction();
 
             foreach ($collection->first() as $row) {
-
                 if ($row['recibo_no']) {
+                    
                     if ($row['mz'] && $row['lote']) {
-
-                        $block = Block::where('code', 'like', '%' . strval($row['mz']) . '%')->first();
-
-                        $parcel = Parcel::where('number', 'like', '%' . strval($row['lote']) . '%')->where('block_id', $block->id)->with('promise')->first();
+                        $parcel = Parcel::where('number', strval($row['lote']))->whereHas('block', function ($query) use ($row) {
+                            $query->where('code', strval($row['mz']));
+                        })->with('promise')->first();
 
                         if ($parcel) {
 
