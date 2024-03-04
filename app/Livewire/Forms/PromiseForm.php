@@ -32,8 +32,8 @@ class PromiseForm extends Form
     #[Validate('nullable|numeric', 'cuota inicial')]
     public $initial_fee;
 
-    #[Validate('nullable|numeric', 'número de cuotas')]
-    public $number_of_fees;
+    #[Validate('nullable|numeric', 'monto de cuota')]
+    public $quota_amount;
 
     #[Validate('nullable|numeric', 'tasa de interés')]
     public $interest_rate;
@@ -61,7 +61,7 @@ class PromiseForm extends Form
             'signature_date',
             'value',
             'initial_fee',
-            'number_of_fees',
+            'quota_amount',
             'interest_rate',
             'payment_method',
             'observations',

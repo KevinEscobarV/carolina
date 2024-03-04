@@ -35,6 +35,19 @@ enum PaymentFrequency: string
         })->toArray();
     }
 
+    public function multiplier(): int
+    {
+        return match ($this) {
+            self::WEEKLY => 52,
+            self::BIWEEKLY => 26,
+            self::MONTHLY => 12,
+            self::QUARTERLY => 4,
+            self::SEMI_ANNUAL => 2,
+            self::ANNUAL => 1,
+            self::IRREGULAR => 1,
+        };
+    }
+
     public static function implode(): string
     {
         return collect(self::cases())->map(function ($case) {

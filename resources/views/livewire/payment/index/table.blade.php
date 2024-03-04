@@ -16,20 +16,20 @@
                     <x-table.sortable column="agreement_date" :$sortCol :$sortAsc>
                         Fecha Pactada
                     </x-table.sortable>
-                    <x-table.sortable column="agreement_amount" :$sortCol :$sortAsc>
+                    <x-table.sortable column="agreement_amount" :$sortCol :$sortAsc right>
                         Valor Acordado
                     </x-table.sortable>
                     <x-table.sortable column="payment_date" :$sortCol :$sortAsc>
                         Fecha Pago
                     </x-table.sortable>
-                    <x-table.sortable column="paid_amount" :$sortCol :$sortAsc>
+                    <x-table.sortable column="paid_amount" :$sortCol :$sortAsc right>
                         Valor Pagado
                     </x-table.sortable>
                     <x-table.sortable column="bank" :$sortCol :$sortAsc>
                         Banco
                     </x-table.sortable>
                     <x-table.sortable column="payment_method" :$sortCol :$sortAsc>
-                        Metodo de Pago
+                        Metodo Pago
                     </x-table.sortable>
                     <x-table.sortable column="observations" :$sortCol :$sortAsc>
                         Obsservaciones
@@ -51,17 +51,21 @@
                         <x-table.td>
                             {{ $payment->bill_number }}
                         </x-table.td>
-                        <x-table.td>
+                        <x-table.td class="first-letter:uppercase">
                             {{ $payment->agreement_date ? $payment->agreement_date->translatedFormat("F j/Y") : 'Sin definir' }}
                         </x-table.td>
-                        <x-table.td>
-                            {{ $payment->agreement_amount }}
+                        <x-table.td class="text-right">
+                            <p class="font-light text-lg">
+                                <span class="text-gray-400">$</span> {{ $payment->agreement_amount_formatted }} <span class="text-gray-400 text-sm">COP</span>
+                            </p>
                         </x-table.td>
-                        <x-table.td>
+                        <x-table.td class="first-letter:uppercase">
                             {{ $payment->payment_date ? $payment->payment_date->translatedFormat("F j/Y") : 'Sin definir' }}
                         </x-table.td>
-                        <x-table.td>
-                            {{ $payment->paid_amount }}
+                        <x-table.td class="text-right">
+                            <p class="font-light text-lg">
+                                <span class="text-gray-400">$</span> {{ $payment->paid_amount_formatted }} <span class="text-gray-400 text-sm">COP</span>
+                            </p>
                         </x-table.td>
                         <x-table.td>
                             {{ $payment->bank ? $payment->bank : '💰' }}

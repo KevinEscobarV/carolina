@@ -64,10 +64,10 @@
                                     icon: 'error'
                                 })
 
-                                // Esperar 3 segundos antes de recargar la página
+                                // Esperar 2 segundos antes de recargar la página
                                 setTimeout(() => {
                                     window.location.reload()
-                                }, 3000)
+                                }, 2000)
 
                                 preventDefault()
                             }

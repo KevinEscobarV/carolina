@@ -19,20 +19,26 @@
                     <x-table.sortable column="signature_date" :$sortCol :$sortAsc>
                         Fecha Firma
                     </x-table.sortable>
-                    <x-table.sortable column="value" :$sortCol :$sortAsc>
+                    <x-table.sortable column="value" :$sortCol :$sortAsc right>
                         Valor
                     </x-table.sortable>
-                    <x-table.sortable column="initial_fee" :$sortCol :$sortAsc>
+                    <x-table.sortable column="initial_fee" :$sortCol :$sortAsc right>
                         Cuota Inicial
                     </x-table.sortable>
-                    <x-table.sortable column="number_of_fees" :$sortCol :$sortAsc>
-                        Número de Cuotas
+                    <x-table.sortable column="quota_amount" :$sortCol :$sortAsc>
+                        Valor Cuota
+                    </x-table.sortable>
+                    <x-table.th >
+                        Numero de Cuotas
+                    </x-table.th>
+                    <x-table.sortable column="payment_frequency" :$sortCol :$sortAsc>
+                        Periodicidad
                     </x-table.sortable>
                     <x-table.sortable column="interest_rate" :$sortCol :$sortAsc>
                         Interes
                     </x-table.sortable>
                     <x-table.sortable column="payment_method" :$sortCol :$sortAsc>
-                        Metodo de Pago
+                        Metodo Pago
                     </x-table.sortable>
                     <x-table.sortable column="observations" :$sortCol :$sortAsc>
                         Obsservaciones
@@ -57,14 +63,26 @@
                         <x-table.td>
                             {{ $promise->signature_date->translatedFormat("F j/Y") }}
                         </x-table.td>
-                        <x-table.td>
-                            {{ $promise->value_formatted }}
+                        <x-table.td class="text-right">
+                            <p class="font-light text-lg">
+                                <span class="text-gray-400">$</span> {{ $promise->value_formatted }} <span class="text-gray-400 text-sm">COP</span>
+                            </p>
                         </x-table.td>
-                        <x-table.td>
-                            {{ $promise->initial_fee_formatted }}
+                        <x-table.td class="text-right">
+                            <p class="font-light text-lg">
+                                <span class="text-gray-400">$</span> {{ $promise->initial_fee_formatted }} <span class="text-gray-400 text-sm">COP</span>
+                            </p>
+                        </x-table.td>
+                        <x-table.td class="text-right">
+                            <p class="font-light text-lg">
+                                <span class="text-gray-400">$</span> {{ $promise->quota_amount_formatted }} <span class="text-gray-400 text-sm">COP</span>
+                            </p>
                         </x-table.td>
                         <x-table.td>
                             {{ $promise->number_of_fees }}
+                        </x-table.td>
+                        <x-table.td>
+                            {{ $promise->payment_frequency->label() }}
                         </x-table.td>
                         <x-table.td>
                             {{ $promise->interest_rate }}%

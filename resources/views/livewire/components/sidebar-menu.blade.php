@@ -24,9 +24,9 @@
                 <span x-show="open" x-transition.duration.500ms>Administración</span>
             </x-side-link>
             
-            <x-side-link href="#" icon="chart-pie" wire:navigate>
+            {{-- <x-side-link href="#" icon="chart-pie" wire:navigate>
                 <span x-show="open" x-transition.duration.500ms>Reportes</span>
-            </x-side-link>
+            </x-side-link> --}}
 
             <x-side-link href="{{ route('buyers') }}" :active="request()->routeIs('buyers')" icon="sparkles" wire:navigate>
                 <span x-show="open" x-transition.duration.500ms>Clientes</span>

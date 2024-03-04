@@ -38,6 +38,15 @@ class Payment extends Model
         'payment_method' => PaymentMethod::class,
     ];
 
+    public function getPaidAmountFormattedAttribute(): string
+    {
+        return number_format($this->paid_amount, 0, ',', '.');
+    }
+
+    public function getAgreementAmountFormattedAttribute(): string
+    {
+        return number_format($this->agreement_amount, 0, ',', '.');
+    }
 
     /**
      * Get the promise that owns the payment.

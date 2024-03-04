@@ -11,7 +11,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Support\Number;
 
 class Promise extends Model
 {
@@ -27,7 +26,7 @@ class Promise extends Model
         'signature_date',
         'value',
         'initial_fee',
-        'number_of_fees',
+        'quota_amount',
         'interest_rate',
         'cut_off_date',
         'payment_frequency',
@@ -72,12 +71,24 @@ class Promise extends Model
 
     public function getValueFormattedAttribute(): string
     {
-        return Number::currency($this->value, 'COP');
+        return number_format($this->value, 0, ',', '.');
     }
 
     public function getInitialFeeFormattedAttribute(): string
     {
-        return Number::currency($this->initial_fee, 'COP');
+        return number_format($this->initial_fee, 0, ',', '.');
+    }
+
+    public function getQuotaAmountFormattedAttribute(): string
+    {
+        return number_format($this->quota_amount, 0, ',', '.');
+    }
+
+    public function getNumberOfFeesAttribute(): int
+    {
+        // $numeroCuotas = $this->value / $this->quota_amount;
+        $numeroCuotas = $this->quota_amount > 0 ? $this->value / $this->quota_amount : 0;
+        return round($numeroCuotas);
     }
 
     /**

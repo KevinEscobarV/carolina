@@ -88,6 +88,7 @@ class ImportPromises extends Seeder
                             'signature_date' => $item['fecha_de_firma_de_promesa'] ? Date::excelToDateTimeObject($item['fecha_de_firma_de_promesa'])->format('Y-m-d') : now()->format('Y-m-d'),
                             'value' => $item['valor_lote'] ? $item['valor_lote'] : 0,
                             'initial_fee' => $item['cuota_inicial'] ? $item['cuota_inicial'] : 0,
+                            'quota_amount' => $item['v_cuota'] ? $item['v_cuota'] : 0,
                             'cut_off_date' => $periodicity['cut_off_date'],
                             'payment_frequency' => $periodicity['payment_frequency'],
                             'payment_method' => $item['forma_de_pago'] == 'FINANCIADO' ? PromisePaymentMethod::CREDIT : PromisePaymentMethod::CASH,

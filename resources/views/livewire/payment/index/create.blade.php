@@ -29,13 +29,16 @@
                 </h2>
             </div>
         </div>
+        <div class="col-span-6 sm:col-span-4">
+            <x-wireui-input label="Numero de Recibo o Pago" placeholder="N° Recibo" wire:model="form.bill_number" />
+        </div>
         <div class="col-span-6 sm:col-span-3">
             <x-wireui-datetime-picker label="Fecha pactada" placeholder="Fecha pactada" wire:model="form.agreement_date"
                 without-time />
         </div>
         <div class="col-span-6 sm:col-span-3">
             <x-wireui-inputs.currency label="Valor" placeholder="Valor pactado" right-icon="trending-up" prefix="$" thousands=","
-                precision="0" wire:model="form.amount" />
+                precision="0" wire:model="form.agreement_amount" />
         </div>
         <div class="col-span-6">
             <div class="flex items-center gap-3">
@@ -52,6 +55,10 @@
         <div class="col-span-6 sm:col-span-3">
             <x-wireui-select label="Medio de Pago" placeholder="Seleccione un medio de documento" :options="App\Enums\PaymentMethod::select()"
                 option-label="label" option-value="value" wire:model="form.payment_method" autocomplete="off" />
+        </div>
+        <div class="col-span-6 sm:col-span-3">
+            <x-wireui-select label="Banco (Opcional)" placeholder="Seleccione un banco" :options="App\Enums\PaymentBanks::select()"
+                option-label="label" option-value="value" wire:model="form.bank" autocomplete="off" />
         </div>
         <div class="col-span-6 sm:col-span-3">
             <x-wireui-datetime-picker label="Fecha de pago" placeholder="Fecha de pago" wire:model="form.payment_date"

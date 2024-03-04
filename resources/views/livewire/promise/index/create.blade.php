@@ -54,7 +54,7 @@
             <x-wireui-inputs.currency label="Couta Inicial" placeholder="Primer pago" right-icon="trending-up" prefix="$" thousands="," precision="0" wire:model="form.initial_fee" />
         </div>
         <div class="col-span-6 sm:col-span-3">
-            <x-wireui-inputs.number label="Numero de Cuotas" min="0" placeholder="Cantidad de Cuotas" wire:model="form.number_of_fees"/>
+            <x-wireui-inputs.currency label="Valor Cuota" placeholder="Valor Cuota" right-icon="trending-up" prefix="$" thousands="," precision="0" wire:model="form.quota_amount" />
         </div>
         <div class="col-span-6 sm:col-span-3">
             <x-wireui-inputs.number label="Tasa de Interés (Opcional)" placeholder="Tasa de Interes %" wire:model="form.interest_rate"/>

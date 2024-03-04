@@ -21,13 +21,16 @@ class PaymentForm extends Form
     public $agreement_date;
 
     #[Validate('required|numeric', 'monto')]
-    public $amount;
+    public $agreement_amount;
 
     #[Validate('required|date', 'fecha de pago')]
     public $payment_date;
 
     #[Validate('required|numeric', 'valor pagado')]
     public $paid_amount;
+
+    #[Validate('nullable', 'banco')]
+    public $bank;
 
     #[Validate('required', 'método de pago')]
     public PaymentMethod $payment_method = PaymentMethod::CASH;
@@ -39,10 +42,13 @@ class PaymentForm extends Form
     {
         $this->payment = $payment;
         $this->fill($payment->only([
+            'promise_id',
+            'bill_number',
             'agreement_date',
             'amount',
             'payment_date',
             'paid_amount',
+            'bank',
             'payment_method',
             'observations',
         ]));
@@ -53,6 +59,8 @@ class PaymentForm extends Form
         $this->validate();
 
         Payment::create($this->all());
+
+        $this->reset();
     }
 
     public function update(): void

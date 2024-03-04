@@ -20,7 +20,7 @@ return new class extends Migration
 
             $table->decimal('value', 15, 2)->default(0);
             $table->decimal('initial_fee', 15, 2)->default(0);
-            $table->integer('number_of_fees')->default(0);
+            $table->decimal('quota_amount', 15, 2)->default(0);
             $table->float('interest_rate')->default(0);
 
             $table->date('cut_off_date')->nullable();
