@@ -79,7 +79,13 @@ class Payment extends Model
                 ->orWhere('payment_date', 'like', '%' . $search . '%')
                 ->orWhere('paid_amount', 'like', '%' . $search . '%')
                 ->orWhereHas('promise', function ($query) use ($search) {
-                    $query->where('promise', 'like', '%' . $search . '%');
+                    $query->where('number', 'like', '%' . $search . '%')
+                        ->orWhereHas('buyers', function ($query) use ($search) {
+                            $query->where('names', 'like', "%$search%")
+                            ->orWhere('surnames', 'like', "%$search%")
+                            ->orWhere('email', 'like', "%$search%")
+                            ->orWhere('document_number', 'like', "%$search%");
+                        });
                 });
     }
 

@@ -77,7 +77,7 @@
                             {{ str($payment->observations)->words(20) }}
                         </x-table.td>
                         <x-table.td>
-                            {{ $payment->promise->number }}
+                            {{ $payment->promise ? $payment->promise->number : 'Sin promesa' }}
                         </x-table.td>
                     </tr>
                 @empty
