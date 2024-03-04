@@ -128,6 +128,8 @@ class Promise extends Model
             } else if ($column === 'parcel') {
                 $query->join('parcels', 'parcels.promise_id', '=', 'promises.id')
                     ->orderBy('parcels.number', $asc ? 'asc' : 'desc');
+            } else if ($column === 'promise') {
+                $query->orderBy('promises.number', $asc ? 'asc' : 'desc');
             } else {
                 $query->orderBy($column, $asc ? 'asc' : 'desc');
             }

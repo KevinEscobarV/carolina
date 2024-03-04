@@ -37,6 +37,9 @@
                     <x-table.th>
                         Promesa
                     </x-table.th>
+                    <x-table.th>
+                        Comprador
+                    </x-table.th>
                 </tr>
             </x-slot>
             <x-slot name="body">
@@ -78,6 +81,15 @@
                         </x-table.td>
                         <x-table.td>
                             {{ $payment->promise ? $payment->promise->number : 'Sin promesa' }}
+                        </x-table.td>
+                        <x-table.td>
+                            <div class="flex flex-col gap-1 max-h-20 soft-scrollbar overflow-auto">
+                                @forelse ($payment->promise->buyers as $uers)
+                                    <span class="text-xs text-gray-400">{{ $uers->names }} {{ $uers->surnames }}</span>
+                                @empty
+                                    <span class="text-xs text-gray-400">Sin compradores</span>
+                                @endforelse
+                            </div>
                         </x-table.td>
                     </tr>
                 @empty

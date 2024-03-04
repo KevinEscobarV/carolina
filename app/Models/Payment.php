@@ -102,7 +102,7 @@ class Payment extends Model
         if ($column) {
             if ($column === 'promise') {
                 $query->join('promises', 'promises.id', '=', 'payments.promise_id')
-                    ->orderBy('promises.promise', $asc ? 'asc' : 'desc');
+                    ->orderBy('promises.number', $asc ? 'asc' : 'desc');
             } else if ($column === 'parcel') {
                 $query->join('promises', 'promises.id', '=', 'payments.promise_id')
                     ->join('parcels', 'parcels.id', '=', 'promises.parcel_id')
