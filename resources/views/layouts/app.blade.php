@@ -52,7 +52,7 @@
         @livewireScripts
         @wireUiScripts
         @stack('scripts')
-        <script>
+        {{-- <script>
             document.addEventListener('livewire:init', () => {
                 Livewire.hook('request', ({ fail }) => {
                     fail(({ status, content, preventDefault }) => {
@@ -82,6 +82,6 @@
                     })
                 })
             })
-        </script>
+        </script> --}}
     </body>
 </html>

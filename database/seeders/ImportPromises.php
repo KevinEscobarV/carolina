@@ -34,8 +34,8 @@ class ImportPromises extends Seeder
 
             foreach ($collection->first() as $item) {
 
-                $parcel = Parcel::where('number', $item['lote'])->whereHas('block', function ($query) use ($item) {
-                    $query->where('code', $item['manzana']);
+                $parcel = Parcel::where('number', strval($item['lote']))->whereHas('block', function ($query) use ($item) {
+                    $query->where('code', strval($item['manzana']));
                 })->first();
 
                 if (is_numeric($item['no_de_folio_de_matricula'])) {
@@ -60,7 +60,7 @@ class ImportPromises extends Seeder
 
                 if ($item['cedula']) {
                     $buyer = Buyer::firstOrCreate([
-                        'document_number' => $item['cedula'],
+                        'document_number' => strval($item['cedula']),
                     ], [
                         'names' => $item['nombres'],
                         'surnames' => $item['apellidos'] . ' ' . $item['segundo_apellido'],
@@ -77,7 +77,7 @@ class ImportPromises extends Seeder
 
                 if ($buyer) {
 
-                    $promise = Promise::where('number', $item['consecutivo_promesa'])->first();
+                    $promise = Promise::where('number', strval($item['consecutivo_promesa']))->first();
 
                     if (!$promise) {
 
