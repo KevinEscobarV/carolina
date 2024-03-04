@@ -1,10 +1,6 @@
 <?php
 
-use App\Imports\DataImport;
-use App\Models\Buyer;
-use App\Models\Parcel;
 use Illuminate\Support\Facades\Route;
-use Maatwebsite\Excel\Facades\Excel;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,48 +15,6 @@ use Maatwebsite\Excel\Facades\Excel;
 
 Route::get('/', function () {
     return redirect()->route('login');
-});
-
-Route::get('/test', function () {
-    $collection = Excel::toCollection(new DataImport, public_path('imports/transacciones.xlsx'));
-
-    $users = $collection->first()->map(function ($row) {
-
-        if ($row['mz'] && $row['lote']) {
-            $parcel = Parcel::where('number', $row['lote'])->with('promise')->whereHas('block', function ($query) use ($row) {
-                $query->where('code', $row['mz']);
-            })->first();
-
-            if ($parcel) {
-                return [
-                    'parcel' => $parcel->id,
-                    'promesa' => $parcel->promise ? $parcel->promise->id : '🟡 No tiene promesa',
-                    'numero' => $row['recibo_no'],
-                    'mz' => $row['mz'],
-                    'lote' => $row['lote'],
-                    'banco' => $row['banco'],
-                ];
-            } else {
-                return [
-                    'parcel' => '🔵 No se encontró el lote',
-                    'promesa' => 'No se encontró el lote',
-                    'numero' => $row['recibo_no'],
-                    'mz' => $row['mz'],
-                    'lote' => $row['lote'],
-                ];
-            }
-
-        } else {
-
-            return [
-                'parcel' => '🔴 No tiene lote',
-                'promesa' => '🔴 No tiene promesa',
-            ];
-
-        }
-    });
-
-    return $users;
 });
 
 Route::middleware([

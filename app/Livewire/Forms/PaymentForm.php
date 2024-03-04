@@ -11,6 +11,12 @@ class PaymentForm extends Form
 {
     public ?Payment $payment;
 
+    #[Validate('required', 'promesa')]
+    public $promise_id;
+
+    #[Validate('required', 'número de factura')]
+    public $bill_number;
+
     #[Validate('required|date', 'fecha de acuerdo')]
     public $agreement_date;
 

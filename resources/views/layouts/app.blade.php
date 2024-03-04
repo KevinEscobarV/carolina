@@ -52,36 +52,38 @@
         @livewireScripts
         @wireUiScripts
         @stack('scripts')
-        {{-- <script>
-            document.addEventListener('livewire:init', () => {
-                Livewire.hook('request', ({ fail }) => {
-                    fail(({ status, content, preventDefault }) => {
-                        if (status === 419) {
-                            window.$wireui.notify({
-                                title: 'Error!',
-                                description: 'La página ha expirado debido a la inactividad, esta se recargará automáticamente.',
-                                icon: 'error'
-                            })
+        @if (app()->isProduction())
+            <script>
+                document.addEventListener('livewire:init', () => {
+                    Livewire.hook('request', ({ fail }) => {
+                        fail(({ status, content, preventDefault }) => {
+                            if (status === 419) {
+                                window.$wireui.notify({
+                                    title: 'Error!',
+                                    description: 'La página ha expirado debido a la inactividad, esta se recargará automáticamente.',
+                                    icon: 'error'
+                                })
 
-                            // Esperar 3 segundos antes de recargar la página
-                            setTimeout(() => {
-                                window.location.reload()
-                            }, 3000)
+                                // Esperar 3 segundos antes de recargar la página
+                                setTimeout(() => {
+                                    window.location.reload()
+                                }, 3000)
 
-                            preventDefault()
-                        }
-                        if (status >= 500) {
-                            window.$wireui.notify({
-                                title: 'Error!',
-                                description: 'Algo salió mal. Por favor, inténtelo de nuevo.',
-                                icon: 'error'
-                            })
+                                preventDefault()
+                            }
+                            if (status >= 500) {
+                                window.$wireui.notify({
+                                    title: 'Error!',
+                                    description: 'Algo salió mal. Por favor, inténtelo de nuevo.',
+                                    icon: 'error'
+                                })
 
-                            preventDefault()
-                        }
+                                preventDefault()
+                            }
+                        })
                     })
                 })
-            })
-        </script> --}}
+            </script>
+        @endif
     </body>
 </html>
