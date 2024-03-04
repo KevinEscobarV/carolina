@@ -26,6 +26,9 @@ class ImportTransactions extends Seeder
         $collection->first()->map(function ($row) {
             if ($row['recibo_no']) {
                 if ($row['mz'] && $row['lote']) {
+
+                    sleep(1);
+
                     $parcel = Parcel::where('number', $row['lote'])->with('promise')->whereHas('block', function ($query) use ($row) {
                         $query->where('code', $row['mz']);
                     })->first();
