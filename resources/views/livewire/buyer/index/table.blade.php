@@ -41,11 +41,8 @@
             <x-slot name="body">
                 @forelse ($buyers as $buyer)
                     <tr wire:key="{{ $buyer->id }}">
-                        <x-table.td>
-                            <div class="flex gap-1">
-                                <span class="text-gray-300">#</span>
-                                {{ $buyer->id }}
-                            </div>
+                        <x-table.td class="bg-black/5">
+                            {{ $buyer->id }}
                         </x-table.td>
                         <x-table.td>
                             <div class="flex items-center gap-2">

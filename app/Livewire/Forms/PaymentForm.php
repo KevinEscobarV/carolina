@@ -38,14 +38,14 @@ class PaymentForm extends Form
     #[Validate('nullable', 'observaciones')]
     public $observations;
 
-    public function setBuyer(Payment $payment): void
+    public function setPayment(Payment $payment): void
     {
         $this->payment = $payment;
         $this->fill($payment->only([
             'promise_id',
             'bill_number',
             'agreement_date',
-            'amount',
+            'agreement_amount',
             'payment_date',
             'paid_amount',
             'bank',

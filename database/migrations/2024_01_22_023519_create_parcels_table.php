@@ -23,7 +23,7 @@ return new class extends Migration
             $table->decimal('value', 15, 2)->default(0);
 
             $table->foreignId('block_id')->constrained('blocks')->cascadeOnDelete()->cascadeOnUpdate();
-            $table->foreignId('promise_id')->nullable()->constrained('promises')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreignId('promise_id')->nullable()->constrained('promises')->nullOnDelete()->cascadeOnUpdate();
 
             $table->timestamps();
             $table->softDeletes();

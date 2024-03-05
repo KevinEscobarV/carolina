@@ -33,11 +33,8 @@
             <x-slot name="body">
                 @forelse ($parcels as $parcel)
                     <tr wire:key="{{ $parcel->id }}">
-                        <x-table.td>
-                            <div class="flex gap-1">
-                                <span class="text-gray-300 dark:text-gray-600">#</span>
-                                {{ $parcel->id }}
-                            </div>
+                        <x-table.td class="bg-black/5">
+                            {{ $parcel->id }}
                         </x-table.td>
                         <x-table.td class="bg-lime-500/10">
                             <p class="font-medium text-lg">

@@ -24,11 +24,8 @@
             <x-slot name="body">
                 @forelse ($blocks as $block)
                     <tr wire:key="{{ $block->id }}">
-                        <x-table.td>
-                            <div class="flex gap-1">
-                                <span class="text-gray-300 dark:text-gray-600">#</span>
-                                {{ $block->id }}
-                            </div>
+                        <x-table.td class="bg-black/5">
+                            {{ $block->id }}
                         </x-table.td>
                         <x-table.td class="bg-pink-500/10">
                             <p class="font-medium text-lg">

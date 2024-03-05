@@ -61,6 +61,11 @@ class Table extends Component
         $payment->delete();
     }
 
+    public function edit(Payment $payment)
+    {
+        $this->dispatch('edit-payment', $payment);
+    }
+
     public function placeholder()
     {
         return view('components.table.placeholder');

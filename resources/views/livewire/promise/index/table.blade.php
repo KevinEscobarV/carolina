@@ -28,8 +28,8 @@
                     <x-table.sortable column="quota_amount" :$sortCol :$sortAsc>
                         Valor Cuota
                     </x-table.sortable>
-                    <x-table.th >
-                        Numero de Cuotas
+                    <x-table.th>
+                        Numero Cuotas
                     </x-table.th>
                     <x-table.sortable column="payment_frequency" :$sortCol :$sortAsc>
                         Periodicidad
@@ -48,11 +48,8 @@
             <x-slot name="body">
                 @forelse ($promises as $promise)
                     <tr wire:key="{{ $promise->id }}">
-                        <x-table.td>
-                            <div class="flex gap-1">
-                                <span class="text-gray-300">#</span>
-                                {{ $promise->id }}
-                            </div>
+                        <x-table.td class="bg-black/5">
+                            {{ $promise->id }}
                         </x-table.td>
                         <x-table.td>
                             {{ $promise->number }}
@@ -91,7 +88,7 @@
                             {{ $promise->payment_method->label() }}
                         </x-table.td>
                         <x-table.td>
-                            {{ str($promise->observations)->words(20) }}
+                            {{ str($promise->observations)->words(10) }}
                         </x-table.td>
                     </tr>
                 @empty

@@ -12,16 +12,45 @@
         <link href="https://fonts.bunny.net/css?family=Figtree:300,400,500,600,700,800&display=swap" rel="stylesheet" />
 
         <!-- Scripts -->
-        @vite('resources/css/app.css')
+        @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+        <!-- WireUi Scripts -->
+        @wireUiScripts
 
         <!-- Styles -->
         @livewireStyles
+
+        <style>
+            .soft-scrollbar::-webkit-scrollbar {
+                width: 6px;
+                height: 6px;
+                cursor: pointer;
+            }
+            .soft-scrollbar::-webkit-scrollbar-track {
+                background-color: #e2e8f0;
+                cursor: pointer;
+            }
+            .soft-scrollbar::-webkit-scrollbar-thumb {
+                cursor: pointer;
+                background-color: #ffae35;
+                border-radius: 2px;
+            }
+            .dark .soft-scrollbar::-webkit-scrollbar-track {
+                background-color: #475569;
+                cursor: pointer;
+            }
+            .dark .soft-scrollbar::-webkit-scrollbar-thumb {
+                cursor: pointer;
+                background-color: #df8d13;
+                border-radius: 2px;
+            }
+        </style>
     </head>
 
     <body class="font-sans antialiased">
 
         <x-wireui-notifications position="bottom-right" />
-        <x-wireui-dialog blur="md" align="center" />
+        <x-wireui-dialog />
     
         <div class="flex h-screen bg-cover bg-center" style="background-image: url('{{ asset('img/background2.jpg')}}')">
     
@@ -35,22 +64,21 @@
     
                 <!-- Page Heading -->
                 @if (isset($header))
-                    <header class="container mx-auto py-6 px-4 sm:px-6 lg:px-8">
+                    <header class="mx-auto py-6 px-4 sm:px-6 lg:px-8">
                         {{ $header }}
                     </header>
                 @endif
     
                 <!-- Page Content -->
-                <main class="soft-scrollbar mb-8">
+                <main class="soft-scrollbar pb-8">
                     {{ $slot }}
                 </main>
             </div>
         </div>
 
         @vite('resources/js/app.js')
-        @stack('modals')
         @livewireScripts
-        @wireUiScripts
+        @stack('modals')
         @stack('scripts')
         @if (app()->isProduction())
             <script>

@@ -4,11 +4,7 @@
     </h2>
 </x-slot>
 
-<div class="container mx-auto sm:px-6 lg:px-8 flex flex-col gap-8">
-    <x-card cardClasses="max-w-4xl p-2">
-        <livewire:deed.index.create />
-    </x-card>
-
+<div class="mx-auto sm:px-6 lg:px-8 flex flex-col gap-8">
+    <livewire:deed.index.create />
     <livewire:deed.index.table lazy />
-
 </div>

@@ -70,7 +70,7 @@ class Table extends Component
     public function render()
     {
         return view('livewire.promise.index.table', [
-            'promises' => Promise::search($this->search)->sort($this->sortCol, $this->sortAsc)->paginate(8),
+            'promises' => Promise::search($this->search)->sort($this->sortCol, $this->sortAsc)->paginate(10),
         ]);
     }
 }

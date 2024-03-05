@@ -40,16 +40,15 @@
                     <x-table.th>
                         Comprador
                     </x-table.th>
+                    <x-table.th>
+                    </x-table.th>
                 </tr>
             </x-slot>
             <x-slot name="body">
                 @forelse ($payments as $payment)
                     <tr wire:key="{{ $payment->id }}">
-                        <x-table.td>
-                            <div class="flex gap-1">
-                                <span class="text-gray-300">#</span>
-                                {{ $payment->id }}
-                            </div>
+                        <x-table.td class="bg-black/5">
+                            {{ $payment->id }}
                         </x-table.td>
                         <x-table.td>
                             {{ $payment->bill_number }}
@@ -91,6 +90,7 @@
                                 @endforelse
                             </div>
                         </x-table.td>
+                        <x-table.actions :item="$payment" />
                     </tr>
                 @empty
                     <tr>

@@ -18,11 +18,8 @@
             <x-slot name="body">
                 @forelse ($categories as $category)
                     <tr wire:key="{{ $category->id }}">
-                        <x-table.td>
-                            <div class="flex gap-1">
-                                <span class="text-gray-300">#</span>
-                                {{ $category->id }}
-                            </div>
+                        <x-table.td class="bg-black/5">
+                            {{ $category->id }}
                         </x-table.td>
                         <x-table.td>
                             <p class="font-medium text-lg">
