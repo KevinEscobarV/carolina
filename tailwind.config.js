@@ -5,7 +5,7 @@ import colors from 'tailwindcss/colors.js';
 
 /** @type {import('tailwindcss').Config} */
 export default {
-    darkMode: 'selector',
+    darkMode: 'class',
     presets: [
         require('./vendor/wireui/wireui/tailwind.config.js')
     ],
@@ -32,7 +32,9 @@ export default {
     },
 
     plugins: [
-        forms,
-        typography
+        forms({
+            strategy: 'class',
+        }),
+        typography,
     ],
 };

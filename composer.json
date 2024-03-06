@@ -16,6 +16,7 @@
         "maatwebsite/excel": "^3.1",
         "matanyadaev/laravel-eloquent-spatial": "^4.1",
         "spatie/laravel-permission": "^6.3",
+        "wireui/heroicons": "^2.5",
         "wireui/wireui": "^1.18"
     },
     "require-dev": {

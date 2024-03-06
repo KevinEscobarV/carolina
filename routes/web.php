@@ -33,6 +33,7 @@ Route::middleware([
     Route::get('/blocks', App\Livewire\Block\Index\Page::class)->name('blocks');
 
     Route::get('/payments', App\Livewire\Payment\Index\Page::class)->name('payments');
+    Route::get('/payments/{payment}/edit', App\Livewire\Payment\Edit\Page::class)->name('payments.edit');
 
     Route::get('/promises', App\Livewire\Promise\Index\Page::class)->name('promises');
 

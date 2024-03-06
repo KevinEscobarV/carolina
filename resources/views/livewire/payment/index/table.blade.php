@@ -1,6 +1,25 @@
 <div class="divide-y divide-gray-200 rounded-xl bg-white shadow-sm ring-1 ring-gray-950/5 dark:divide-white/10 dark:bg-gray-800 dark:ring-white/10">
-    <div class="flex flex-col sm:grid grid-cols-8 gap-2 p-6">
+    <div class="flex flex-col sm:grid grid-cols-8 gap-3 p-6">
         <x-table.search />
+        <x-wireui-select
+            :options="[
+                ['name' => '5 por página', 'id' => '5'],
+                ['name' => '10 por página', 'id' => '10'],
+                ['name' => '15 por página', 'id' => '15'],
+                ['name' => '20 por página', 'id' => '20'],
+                ['name' => '25 por página', 'id' => '25'],
+                ['name' => '50 por página', 'id' => '50'],
+                ['name' => '100 por página', 'id' => '100'],
+            ]"
+            option-label="name"
+            option-value="id"
+            wire:model.live="perPage"
+            autocomplete="off"
+        />
+        <x-wireui-button x-on:click="open = ! open" lime>
+            <x-wireui-icon name="plus" class="w-5 h-5" />
+            <span class="ml-2" x-text="open ? 'Cerrar' : 'Crear Pago'"></span>
+        </x-wireui-button>
         {{-- <x-payment.index.bulk-actions /> --}}
     </div>
     {{-- payments table... --}}
@@ -47,7 +66,7 @@
             <x-slot name="body">
                 @forelse ($payments as $payment)
                     <tr wire:key="{{ $payment->id }}">
-                        <x-table.td class="bg-black/5">
+                        <x-table.td class="bg-gray-400/10">
                             {{ $payment->id }}
                         </x-table.td>
                         <x-table.td>
@@ -90,7 +109,12 @@
                                 @endforelse
                             </div>
                         </x-table.td>
-                        <x-table.actions :item="$payment" />
+                        <td class="whitespace-nowrap py-3 px-3 text-sm sticky right-0 bg-black/10">
+                            <div class="flex gap-2">
+                                <x-wireui-button.circle sm primary icon="pencil" href="{{ route('payments.edit', $payment->id) }}" wire:navigate />
+                                <x-wireui-button.circle sm negative icon="trash" wire:click="archive({{ $payment->id }})" />
+                            </div>
+                        </td>                        
                     </tr>
                 @empty
                     <tr>
