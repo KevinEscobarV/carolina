@@ -54,19 +54,23 @@ class PaymentForm extends Form
         ]));
     }
 
-    public function save(): void
+    public function save()
     {
         $this->validate();
 
         Payment::create($this->all());
 
         $this->reset();
+
+        return true;
     }
 
-    public function update(): void
+    public function update()
     {
         $this->validate();
 
         $this->payment->update($this->all());
+
+        return true;
     }
 }

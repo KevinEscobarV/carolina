@@ -82,9 +82,9 @@ class Payment extends Model
                     $query->where('number', 'like', '%' . $search . '%')
                         ->orWhereHas('buyers', function ($query) use ($search) {
                             $query->where('names', 'like', "%$search%")
-                            ->orWhere('surnames', 'like', "%$search%")
-                            ->orWhere('email', 'like', "%$search%")
-                            ->orWhere('document_number', 'like', "%$search%");
+                                ->orWhere('surnames', 'like', "%$search%")
+                                ->orWhere('email', 'like', "%$search%")
+                                ->orWhere('document_number', 'like', "%$search%");
                         });
                 });
     }
@@ -111,5 +111,17 @@ class Payment extends Model
                 $query->orderBy($column, $asc ? 'asc' : 'desc');
             }
         }
+    }
+
+    /**
+     * Scope a query to only include buyers that are trashed.
+     * 
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @param  bool  $onlyTrash
+     * @return void
+     */
+    public function scopeTrash(Builder $query, bool $onlyTrash): void
+    {
+        if ($onlyTrash) $query->onlyTrashed();
     }
 }

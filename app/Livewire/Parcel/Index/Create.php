@@ -4,15 +4,25 @@ namespace App\Livewire\Parcel\Index;
 
 use App\Livewire\Forms\ParcelForm;
 use Livewire\Component;
+use WireUi\Traits\Actions;
 
 class Create extends Component
 {
+    use Actions;
     public ParcelForm $form;
 
     public function save(): void
     {
-        $this->form->save();
-        $this->dispatch('refresh-parcel-table');
+        $save = $this->form->save();
+
+        if ($save) {
+            $this->notification()->success(
+                'Lote creado exitosamente',
+                'El lote se ha creado correctamente'
+            );
+
+            $this->dispatch('refresh-parcel-table');
+        }
     }
 
     public function render()

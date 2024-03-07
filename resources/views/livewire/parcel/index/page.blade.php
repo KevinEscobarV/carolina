@@ -4,9 +4,7 @@
     </h2>
 </x-slot>
 
-<div class="mx-auto sm:px-6 lg:px-8">
-    <div class="flex flex-col gap-8">
-        <livewire:parcel.index.create />
-        <livewire:parcel.index.table lazy />
-    </div>
+<div class="mx-auto sm:px-6 lg:px-8" x-data="{ open: false }">
+    <livewire:parcel.index.create />
+    <livewire:parcel.index.table />
 </div>

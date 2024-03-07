@@ -5,12 +5,14 @@ namespace App\Livewire\Promise\Index;
 use App\Livewire\Forms\PromiseForm;
 use App\Models\Parcel;
 use Livewire\Component;
+use WireUi\Traits\Actions;
 
 class Create extends Component
 {
+    use Actions;
     public PromiseForm $form;
 
-    public $block_id;
+    public $block;
 
     public function updatedFormParcels($parcels): void
     {
@@ -24,8 +26,16 @@ class Create extends Component
 
     public function save(): void
     {
-        $this->form->save();
-        $this->dispatch('refresh-promise-table');
+        $save = $this->form->save();
+
+        if ($save) {
+            $this->notification()->success(
+                'Promesa creada exitosamente',
+                'La promesa se ha creado correctamente'
+            );
+
+            $this->dispatch('refresh-promise-table');
+        }
     }
 
     public function render()

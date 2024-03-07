@@ -4,12 +4,15 @@ namespace App\Livewire\Deed\Index;
 
 use App\Livewire\Forms\DeedForm;
 use Livewire\Component;
+use WireUi\Traits\Actions;
 
 class Create extends Component
 {
+    use Actions;
+    
     public DeedForm $form;
 
-    public $block_id;
+    public $block;
 
     public function mount()
     {
@@ -18,8 +21,16 @@ class Create extends Component
 
     public function save(): void
     {
-        $this->form->save();
-        $this->dispatch('refresh-deed-table');
+        $save = $this->form->save();
+
+        if ($save) {
+            $this->notification()->success(
+                'Escritura creada exitosamente',
+                'La escritura se ha creado correctamente'
+            );
+
+            $this->dispatch('refresh-deed-table');
+        }
     }
 
     public function render()

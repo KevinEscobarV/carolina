@@ -58,8 +58,7 @@
 
         @livewire('components.sidebar-menu')
 
-        <div
-            class="flex-1 h-full overflow-x-hidden overflow-y-auto soft-scrollbar bg-gray-50/80 dark:bg-gray-800/90 transition">
+        <div class="flex-1 h-full overflow-x-hidden overflow-y-auto soft-scrollbar bg-gray-50/80 dark:bg-gray-900/95 transition">
 
             @livewire('navigation-menu')
 

@@ -13,12 +13,12 @@
         </div>
 
         {{-- Table loading spinners... --}}
-        <div wire:loading wire:target="sortBy, search, nextPage, gotoPage, previousPage, delete, deleteSelected, perPage"
+        <div wire:loading wire:target="sortBy, search, nextPage, gotoPage, previousPage, delete, deleteSelected, perPage, onlyTrash, restore"
             class="absolute inset-0 bg-white dark:bg-black opacity-50">
             {{--  --}}
         </div>
 
-        <div wire:loading.flex wire:target="sortBy, search, nextPage, gotoPage, previousPage, delete, deleteeSelected, perPage"
+        <div wire:loading.flex wire:target="sortBy, search, nextPage, gotoPage, previousPage, delete, deleteeSelected, perPage, onlyTrash, restore"
             class="flex justify-center items-center absolute inset-0">
             <x-icon.spinner size="10" class="text-gray-500" />
         </div>

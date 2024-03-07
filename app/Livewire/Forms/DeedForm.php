@@ -23,8 +23,8 @@ class DeedForm extends Form
     #[Validate('nullable', 'libro')]
     public $book;
 
-    #[Validate('nullable', 'estado')]
-    public DeedStatus $status;
+    #[Validate('required', 'estado')]
+    public DeedStatus $status = DeedStatus::PAID;
 
     #[Validate('nullable', 'observaciones')]
     public $observations;
@@ -46,7 +46,7 @@ class DeedForm extends Form
         ]));
     }
 
-    public function save(): void
+    public function save()
     {
         $this->validate();
 
@@ -58,9 +58,11 @@ class DeedForm extends Form
         Deed::create($this->all());
 
         $this->reset();
+
+        return true;
     }
 
-    public function update(): void
+    public function update()
     {
         $this->validate();
 
@@ -71,6 +73,6 @@ class DeedForm extends Form
 
         $this->model->update($this->all());
 
-        $this->reset();
+        return true;
     }
 }

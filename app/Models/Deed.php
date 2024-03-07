@@ -71,4 +71,16 @@ class Deed extends Model
             }
         }
     }
+
+    /**
+     * Scope a query to only include buyers that are trashed.
+     * 
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @param  bool  $onlyTrash
+     * @return void
+     */
+    public function scopeTrash(Builder $query, bool $onlyTrash): void
+    {
+        if ($onlyTrash) $query->onlyTrashed();
+    }
 }

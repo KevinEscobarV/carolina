@@ -1,6 +1,6 @@
 <div class="divide-y divide-gray-200 rounded-xl bg-white shadow-sm ring-1 ring-gray-950/5 dark:divide-white/10 dark:bg-gray-800 dark:ring-white/10">
     <div class="flex flex-col sm:grid grid-cols-8 gap-2 p-6">
-        <x-table.search />
+        <x-table.header :$trash />
         {{-- <x-deed.index.bulk-actions /> --}}
     </div>
     {{-- deeds table... --}}
@@ -31,6 +31,8 @@
                     <x-table.sortable column="observations" :$sortCol :$sortAsc>
                         Obsservaciones
                     </x-table.sortable>
+                    <x-table.th>
+                    </x-table.th>
                 </tr>
             </x-slot>
             <x-slot name="body">
@@ -62,6 +64,7 @@
                         <x-table.td>
                             {{ str($deed->observations)->words(20) }}
                         </x-table.td>
+                        <x-table.actions :item="$deed" :route="route('deeds.edit', $deed->id)" />
                     </tr>
                 @empty
                     <tr>

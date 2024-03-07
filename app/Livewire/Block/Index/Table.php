@@ -2,42 +2,51 @@
 
 namespace App\Livewire\Block\Index;
 
+use App\Livewire\Forms\BlockForm;
+use App\Livewire\Traits\SoftDeletes;
+use App\Livewire\Traits\Sortable;
 use App\Models\Block;
+use Livewire\Attributes\Lazy;
 use Livewire\Attributes\On;
 use Livewire\Attributes\Renderless;
-use Livewire\Attributes\Url;
 use Livewire\Component;
 use Livewire\WithPagination;
+use WireUi\Traits\Actions;
 
+#[Lazy]
 class Table extends Component
 {
+    use Actions;
     use WithPagination;
+    use SoftDeletes;
+    use Sortable;
 
-    #[Url('seachBlock')]
-    public $search = '';
+    public $model = null;
+    public $modal = false;
+    public BlockForm $form;
 
-    #[Url('sortColBlock')]
-    public $sortCol;
-
-    #[Url('sortAscBlock')]
-    public $sortAsc = false;
-
-    public $selectedBlockIds = [];
-
-    public $BlockIdsOnPage = [];
-
-    public function updatedSearch()
+    public function mount()
     {
-        $this->resetPage();
+        $this->model = new Block(); // This is used for the SoftDeletes trait
     }
 
-    public function sortBy($column)
+    public function edit(Block $block)
     {
-        if ($this->sortCol === $column) {
-            $this->sortAsc = ! $this->sortAsc;
-        } else {
-            $this->sortCol = $column;
-            $this->sortAsc = false;
+        $this->form->setBlock($block);
+        $this->modal = true;
+    }
+
+    public function update()
+    {
+        $update = $this->form->update();
+
+        if ($update) {
+            $this->notification()->success(
+                'Bloque actualizado',
+                'El bloque se ha actualizado correctamente'
+            );
+
+            $this->modal = false;
         }
     }
 
@@ -45,20 +54,6 @@ class Table extends Component
     public function export()
     {
         return Block::toCsv();
-    }
-
-    public function deleteSelected()
-    {
-        $Blocks = Block::whereIn('id', $this->selectedBlockIds)->get();
-
-        foreach ($Blocks as $Block) {
-            $this->archive($Block);
-        }
-    }
-
-    public function archive(Block $Block)
-    {
-        $Block->delete();
     }
 
     public function placeholder()
@@ -70,7 +65,7 @@ class Table extends Component
     public function render()
     {
         return view('livewire.block.index.table', [
-            'blocks' => Block::search($this->search)->sort($this->sortCol, $this->sortAsc)->with('category')->paginate(10, ['*'], 'blocks'),
+            'blocks' => Block::search($this->search)->sort($this->sortCol, $this->sortAsc)->with('category')->trash($this->trash)->paginate($this->perPage),
         ]);
     }
 }

@@ -27,6 +27,7 @@ Route::middleware([
     })->name('dashboard');
 
     Route::get('/buyers', App\Livewire\Buyer\Index\Page::class)->name('buyers');
+    Route::get('/buyers/{buyer}/edit', App\Livewire\Buyer\Edit\Page::class)->name('buyers.edit');
 
     Route::get('/parcels', App\Livewire\Parcel\Index\Page::class)->name('parcels');
 
@@ -36,8 +37,10 @@ Route::middleware([
     Route::get('/payments/{payment}/edit', App\Livewire\Payment\Edit\Page::class)->name('payments.edit');
 
     Route::get('/promises', App\Livewire\Promise\Index\Page::class)->name('promises');
+    Route::get('/promises/{promise}/edit', App\Livewire\Promise\Edit\Page::class)->name('promises.edit');
 
     Route::get('/categories', App\Livewire\Category\Index\Page::class)->name('categories');
 
     Route::get('/deeds', App\Livewire\Deed\Index\Page::class)->name('deeds');
+    Route::get('/deeds/{deed}/edit', App\Livewire\Deed\Edit\Page::class)->name('deeds.edit');
 });

@@ -4,7 +4,7 @@
     </h2>
 </x-slot>
 
-<div class="mx-auto sm:px-6 lg:px-8 flex flex-col gap-8">
+<div class="mx-auto sm:px-6 lg:px-8" x-data="{ open: false }">
     <livewire:promise.index.create />
-    <livewire:promise.index.table lazy />
+    <livewire:promise.index.table />
 </div>

@@ -4,6 +4,7 @@ namespace App\Livewire\Forms;
 
 use App\Enums\PaymentFrequency;
 use App\Enums\PaymentMethod;
+use App\Enums\PromisePaymentMethod;
 use App\Enums\PromiseStatus;
 use App\Models\Parcel;
 use App\Models\Promise;
@@ -39,13 +40,13 @@ class PromiseForm extends Form
     public $interest_rate;
     
     #[Validate('required', 'frecuencia de pago')]
-    public PaymentFrequency $payment_frequency;
+    public PaymentFrequency $payment_frequency = PaymentFrequency::MONTHLY;
 
     #[Validate('nullable|date', 'fecha de corte')]
     public $cut_off_date;
 
     #[Validate('nullable', 'método de pago')]
-    public PaymentMethod $payment_method;
+    public PromisePaymentMethod $payment_method = PromisePaymentMethod::CASH;
 
     #[Validate('nullable', 'estado')]
     public PromiseStatus $status;
@@ -63,16 +64,18 @@ class PromiseForm extends Form
             'initial_fee',
             'quota_amount',
             'interest_rate',
+            'payment_frequency',
+            'cut_off_date',
             'payment_method',
-            'observations',
             'status',
+            'observations',
         ]));
 
         $this->buyers = $model->buyers->pluck('id')->toArray();
         $this->parcels = $model->parcels->pluck('id')->toArray();
     }
 
-    public function save(): void
+    public function save()
     {
         $this->validate();
 
@@ -83,14 +86,16 @@ class PromiseForm extends Form
         Parcel::whereIn('id', $this->parcels)->whereNull('promise_id')->update(['promise_id' => $promise->id]);
 
         $this->reset();
+
+        return true;
     }
 
-    public function update(): void
+    public function update()
     {
         $this->validate();
 
         $this->model->update($this->all());
 
-        $this->reset();
+        return true;
     }
 }

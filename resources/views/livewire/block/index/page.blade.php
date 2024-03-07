@@ -4,12 +4,7 @@
     </h2>
 </x-slot>
 
-<div class="mx-auto sm:px-6 lg:px-8">
-    <div class="flex flex-col gap-8">
-
-        <livewire:block.index.create />
-
-        <livewire:block.index.table lazy />
-
-    </div>
+<div class="mx-auto sm:px-6 lg:px-8" x-data="{ open: false }">
+    <livewire:block.index.create />
+    <livewire:block.index.table />
 </div>

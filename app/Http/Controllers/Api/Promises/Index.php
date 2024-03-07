@@ -14,7 +14,7 @@ class Index extends Controller
     {
         return Promise::query()
             ->select('id', 'number', 'status')
-            ->with('buyers:id,names,surnames,document_number', 'parcels:id,number,promise_id')
+            ->with('buyers:id,names,surnames,document_number', 'parcels.block')
             ->when(
                 $request->search,
                 fn (Builder $query) => $query->where('number', 'like', "%{$request->search}%")
@@ -32,7 +32,9 @@ class Index extends Controller
             ->get()
             ->map(function (Promise $promise) {
                 $promise->description = 'Compradores: ' . $promise->buyers->pluck('names')->join(', ')
-                    . '<br>Numero Lotes: ' . $promise->parcels->pluck('number')->join(', ');
+                    . '<br>Codigo Lotes: ' . $promise->parcels->groupBy('block_id')->map(function ($parcels) {
+                        return $parcels->first()->block->code . ': (' . $parcels->pluck('number')->join(', ') . ')';
+                    })->join(', ');
                 return $promise;
             });
     }

@@ -22,18 +22,20 @@ class Page extends Component
 
     public function save()
     {
-        $this->form->update();
+        $save = $this->form->update();
 
-        $this->notification()->confirm([
-            'icon'        => 'success',
-            'title'       => 'Pago actualizado exitosamente',
-            'description' => 'El pago ha sido actualizado correctamente',
-            'accept'      => [
-                'label' => 'Volver a pagos',
-                'url' => route('payments'),
-            ],
-            'rejectLabel' => 'Permanecer aquí',
-        ]);
+        if ($save) {
+            $this->notification()->confirm([
+                'icon'        => 'success',
+                'title'       => 'Pago actualizado exitosamente',
+                'description' => 'El pago ha sido actualizado correctamente',
+                'accept'      => [
+                    'label' => 'Volver a pagos',
+                    'url' => route('payments'),
+                ],
+                'rejectLabel' => 'Permanecer aquí',
+            ]);
+        }
     }
 
     public function render()

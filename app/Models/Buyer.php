@@ -71,7 +71,7 @@ class Buyer extends Model
             return mb_substr($segment, 0, 1);
         })->join(' '));
 
-        return 'https://ui-avatars.com/api/?name=' . urlencode($names) . '&color=FFFFFF&background=629900';
+        return 'https://ui-avatars.com/api/?name=' . urlencode($names) . '&color=FFFFFF&background=F59E0B';
     }
 
     /**
@@ -100,8 +100,18 @@ class Buyer extends Model
      */
     public function scopeSort(Builder $query, string $column = null, bool $asc): void
     {
-        if ($column) {
-            $query->orderBy($column, $asc ? 'asc' : 'desc');
-        }
+        if ($column) $query->orderBy($column, $asc ? 'asc' : 'desc');
+    }
+
+    /**
+     * Scope a query to only include buyers that are trashed.
+     * 
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @param  bool  $onlyTrash
+     * @return void
+     */
+    public function scopeTrash(Builder $query, bool $onlyTrash): void
+    {
+        if ($onlyTrash) $query->onlyTrashed();
     }
 }

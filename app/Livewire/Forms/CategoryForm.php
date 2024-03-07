@@ -33,6 +33,8 @@ class CategoryForm extends Form
         ]);
 
         $this->reset();
+
+        return true;
     }
 
     public function update()
@@ -49,5 +51,7 @@ class CategoryForm extends Form
         ]);
 
         $this->reset();
+
+        return true;
     }
 }

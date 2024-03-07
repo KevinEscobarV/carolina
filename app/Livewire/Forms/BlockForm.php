@@ -13,10 +13,10 @@ class BlockForm extends Form
     #[Validate('required|string|max:255')]
     public $code;
 
-    #[Validate('required|numeric')]
+    #[Validate('nullable|numeric')]
     public $area;
 
-    #[Validate('required|numeric')]
+    #[Validate('nullable|numeric')]
     public $area_m2;
 
     #[Validate('required|exists:categories,id')]
@@ -33,7 +33,7 @@ class BlockForm extends Form
         ]));
     }
 
-    public function save(): void
+    public function save()
     {
         $this->validate();
 
@@ -50,9 +50,11 @@ class BlockForm extends Form
         ]);
 
         $this->reset();
+
+        return true;
     }
 
-    public function update(): void
+    public function update()
     {
         $this->validate();
 
@@ -69,5 +71,7 @@ class BlockForm extends Form
         ]);
 
         $this->reset();
+
+        return true;
     }
 }

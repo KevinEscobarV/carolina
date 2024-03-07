@@ -1,6 +1,6 @@
 <div class="divide-y divide-gray-200 rounded-xl bg-white shadow-sm ring-1 ring-gray-950/5 dark:divide-white/10 dark:bg-gray-800 dark:ring-white/10">
     <div class="flex flex-col sm:grid grid-cols-8 gap-2 p-6">
-        <x-table.search />
+        <x-table.header :$trash />
         {{-- <x-parcel.index.bulk-actions /> --}}
     </div>
     {{-- parcels table... --}}
@@ -27,6 +27,8 @@
                     </x-table.sortable>
                     <x-table.th>
                         Campaña
+                    </x-table.th>
+                    <x-table.th>
                     </x-table.th>
                 </tr>
             </x-slot>
@@ -68,6 +70,7 @@
                                 {{ $parcel->block->category->name }}
                             </p>
                         </x-table.td>
+                        <x-table.actions :item="$parcel" />
                     </tr>
                 @empty
                     <tr>
@@ -86,4 +89,18 @@
                 </x-slot>
             @endif
     </x-table.template>
+
+    <x-modal wire:model="modal">
+        <div class="max-w-4xl">
+            <x-card>
+                <form wire:submit.prevent="update">
+                    <x-parcel.form />
+                    <div class="flex items-center justify-end gap-2 mt-6">
+                        <x-wireui-button gray label="Volver" x-on:click="show = false" />
+                        <x-wireui-button type="submit" spinner="update" primary label="Actualizar Lote" />
+                    </div>
+                </form>
+            </x-card>
+        </div>
+    </x-modal>
 </div>

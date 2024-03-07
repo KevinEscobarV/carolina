@@ -4,7 +4,7 @@
     </h2>
 </x-slot>
 
-<div class="mx-auto sm:px-6 lg:px-8 flex flex-col gap-8">
+<div class="mx-auto sm:px-6 lg:px-8" x-data="{ open: false }">
     <livewire:deed.index.create />
-    <livewire:deed.index.table lazy />
+    <livewire:deed.index.table />
 </div>

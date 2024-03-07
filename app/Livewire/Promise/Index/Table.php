@@ -2,63 +2,35 @@
 
 namespace App\Livewire\Promise\Index;
 
+use App\Livewire\Traits\SoftDeletes;
+use App\Livewire\Traits\Sortable;
 use App\Models\Promise;
+use Livewire\Attributes\Lazy;
 use Livewire\Attributes\On;
 use Livewire\Attributes\Renderless;
-use Livewire\Attributes\Url;
 use Livewire\Component;
 use Livewire\WithPagination;
+use WireUi\Traits\Actions;
 
+#[Lazy]
 class Table extends Component
 {
+    use Actions;
     use WithPagination;
+    use SoftDeletes;
+    use Sortable;
 
-    #[Url]
-    public $search = '';
+    public $model = null;
 
-    #[Url]
-    public $sortCol;
-
-    #[Url]
-    public $sortAsc = false;
-
-    public $selectedPromiseIds = [];
-
-    public $promiseIdsOnPage = [];
-
-    public function updatedSearch()
+    public function mount()
     {
-        $this->resetPage();
-    }
-
-    public function sortBy($column)
-    {
-        if ($this->sortCol === $column) {
-            $this->sortAsc = ! $this->sortAsc;
-        } else {
-            $this->sortCol = $column;
-            $this->sortAsc = false;
-        }
+        $this->model = new Promise(); // This is used for the SoftDeletes trait
     }
 
     #[Renderless]
     public function export()
     {
         return Promise::toCsv();
-    }
-
-    public function deleteSelected()
-    {
-        $promises = Promise::whereIn('id', $this->selectedPromiseIds)->get();
-
-        foreach ($promises as $promise) {
-            $this->archive($promise);
-        }
-    }
-
-    public function archive(Promise $promise)
-    {
-        $promise->delete();
     }
 
     public function placeholder()

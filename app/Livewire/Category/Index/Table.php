@@ -2,42 +2,51 @@
 
 namespace App\Livewire\Category\Index;
 
+use App\Livewire\Forms\CategoryForm;
+use App\Livewire\Traits\SoftDeletes;
+use App\Livewire\Traits\Sortable;
 use App\Models\Category;
+use Livewire\Attributes\Lazy;
 use Livewire\Attributes\On;
 use Livewire\Attributes\Renderless;
-use Livewire\Attributes\Url;
 use Livewire\Component;
 use Livewire\WithPagination;
+use WireUi\Traits\Actions;
 
+#[Lazy]
 class Table extends Component
 {
+    use Actions;
     use WithPagination;
+    use SoftDeletes;
+    use Sortable;
 
-    #[Url]
-    public $search = '';
+    public $model = null;
+    public $modal = false;
+    public CategoryForm $form;
 
-    #[Url]
-    public $sortCol;
-
-    #[Url]
-    public $sortAsc = false;
-
-    public $selectedCategoryIds = [];
-
-    public $categoryIdsOnPage = [];
-
-    public function updatedSearch()
+    public function mount()
     {
-        $this->resetPage();
+        $this->model = new Category(); // This is used for the SoftDeletes trait
     }
 
-    public function sortBy($column)
+    public function edit(Category $category)
     {
-        if ($this->sortCol === $column) {
-            $this->sortAsc = ! $this->sortAsc;
-        } else {
-            $this->sortCol = $column;
-            $this->sortAsc = false;
+        $this->form->setCategory($category);
+        $this->modal = true;
+    }
+
+    public function update()
+    {
+        $update = $this->form->update();
+
+        if ($update) {
+            $this->notification()->success(
+                'Campaña actualizada',
+                'La campaña se ha actualizado correctamente'
+            );
+
+            $this->modal = false;
         }
     }
 
@@ -45,20 +54,6 @@ class Table extends Component
     public function export()
     {
         return Category::toCsv();
-    }
-
-    public function deleteSelected()
-    {
-        $categories = Category::whereIn('id', $this->selectedCategoryIds)->get();
-
-        foreach ($categories as $category) {
-            $this->archive($category);
-        }
-    }
-
-    public function archive(Category $category)
-    {
-        $category->delete();
     }
 
     public function placeholder()
@@ -70,7 +65,7 @@ class Table extends Component
     public function render()
     {
         return view('livewire.category.index.table', [
-            'categories' => Category::search($this->search)->sort($this->sortCol, $this->sortAsc)->paginate(8),
+            'categories' => Category::search($this->search)->sort($this->sortCol, $this->sortAsc)->trash($this->trash)->paginate($this->perPage),
         ]);
     }
 }

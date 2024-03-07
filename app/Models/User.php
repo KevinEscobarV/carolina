@@ -3,6 +3,8 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -70,12 +72,12 @@ class User extends Authenticatable
      */
     public function toggleSidebar()
     {
-        $this->expanded_sidebar = ! $this->expanded_sidebar;
+        $this->expanded_sidebar = !$this->expanded_sidebar;
 
         $this->save();
     }
 
-        /**
+    /**
      * Get the default profile photo URL if no profile photo has been uploaded.
      *
      * @return string
@@ -86,6 +88,18 @@ class User extends Authenticatable
             return mb_substr($segment, 0, 1);
         })->join(' '));
 
-        return 'https://ui-avatars.com/api/?name='.urlencode($name). '&color=FFFFFF&background=629900';
+        return 'https://ui-avatars.com/api/?name=' . urlencode($name) . '&color=FFFFFF&background=629900';
+    }
+
+    /**
+     * Scope a query to only include buyers that are trashed.
+     * 
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @param  bool  $onlyTrash
+     * @return void
+     */
+    public function scopeTrash(Builder $query, bool $onlyTrash): void
+    {
+        if ($onlyTrash) $query->onlyTrashed();
     }
 }

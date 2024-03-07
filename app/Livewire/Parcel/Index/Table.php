@@ -2,42 +2,49 @@
 
 namespace App\Livewire\Parcel\Index;
 
+use App\Livewire\Forms\ParcelForm;
+use App\Livewire\Traits\SoftDeletes;
+use App\Livewire\Traits\Sortable;
 use App\Models\Parcel;
+use Livewire\Attributes\Lazy;
 use Livewire\Attributes\On;
 use Livewire\Attributes\Renderless;
-use Livewire\Attributes\Url;
 use Livewire\Component;
 use Livewire\WithPagination;
+use WireUi\Traits\Actions;
 
+#[Lazy]
 class Table extends Component
 {
+    use Actions;
     use WithPagination;
+    use SoftDeletes;
+    use Sortable;
 
-    #[Url]
-    public $search = '';
+    public $model = null;
+    public $modal = false;
+    public ParcelForm $form;
 
-    #[Url]
-    public $sortCol;
-
-    #[Url]
-    public $sortAsc = false;
-
-    public $selectedParcelIds = [];
-
-    public $parcelIdsOnPage = [];
-
-    public function updatedSearch()
+    public function mount()
     {
-        $this->resetPage();
+        $this->model = new Parcel(); // This is used for the SoftDeletes trait
     }
 
-    public function sortBy($column)
+    public function edit(Parcel $parcel)
     {
-        if ($this->sortCol === $column) {
-            $this->sortAsc = ! $this->sortAsc;
-        } else {
-            $this->sortCol = $column;
-            $this->sortAsc = false;
+        $this->form->setParcel($parcel);
+        $this->modal = true;
+    }
+
+    public function update()
+    {
+        $update = $this->form->update();
+        if ($update) {
+            $this->modal = false;
+            $this->notification()->success(
+                'Lote actualizado',
+                'El lote se ha actualizado correctamente'
+            );
         }
     }
 
@@ -45,20 +52,6 @@ class Table extends Component
     public function export()
     {
         return Parcel::toCsv();
-    }
-
-    public function deleteSelected()
-    {
-        $parcels = Parcel::whereIn('id', $this->selectedParcelIds)->get();
-
-        foreach ($parcels as $parcel) {
-            $this->archive($parcel);
-        }
-    }
-
-    public function archive(Parcel $parcel)
-    {
-        $parcel->delete();
     }
 
     public function placeholder()
@@ -70,7 +63,7 @@ class Table extends Component
     public function render()
     {
         return view('livewire.parcel.index.table', [
-            'parcels' => Parcel::search($this->search)->sort($this->sortCol, $this->sortAsc)->with('block.category', 'promise')->paginate(10),
+            'parcels' => Parcel::search($this->search)->sort($this->sortCol, $this->sortAsc)->with('block.category', 'promise')->trash($this->trash)->paginate($this->perPage),
         ]);
     }
 }

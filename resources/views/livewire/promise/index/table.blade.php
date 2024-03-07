@@ -1,6 +1,6 @@
 <div class="divide-y divide-gray-200 rounded-xl bg-white shadow-sm ring-1 ring-gray-950/5 dark:divide-white/10 dark:bg-gray-800 dark:ring-white/10">
     <div class="flex flex-col sm:grid grid-cols-8 gap-2 p-6">
-        <x-table.search />
+        <x-table.header :$trash />
         {{-- <x-promise.index.bulk-actions /> --}}
     </div>
     {{-- promises table... --}}
@@ -43,12 +43,14 @@
                     <x-table.sortable column="observations" :$sortCol :$sortAsc>
                         Obsservaciones
                     </x-table.sortable>
+                    <x-table.th>
+                    </x-table.th>
                 </tr>
             </x-slot>
             <x-slot name="body">
                 @forelse ($promises as $promise)
                     <tr wire:key="{{ $promise->id }}">
-                        <x-table.td class="bg-black/5">
+                        <x-table.td class="bg-gray-400/10">
                             {{ $promise->id }}
                         </x-table.td>
                         <x-table.td>
@@ -90,6 +92,7 @@
                         <x-table.td>
                             {{ str($promise->observations)->words(10) }}
                         </x-table.td>
+                        <x-table.actions :item="$promise" :route="route('promises.edit', $promise->id)" />
                     </tr>
                 @empty
                     <tr>

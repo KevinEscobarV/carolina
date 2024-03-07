@@ -20,14 +20,16 @@ class Create extends Component
 
     public function save(): void
     {
-        $this->form->save();
+        $save = $this->form->save();
 
-        $this->notification()->success(
-            'Pago creado exitosamente',
-            'El pago ha sido registrado correctamente'
-        );
-        
-        $this->dispatch('refresh-payment-table');
+        if ($save) {
+            $this->notification()->success(
+                'Pago creado exitosamente',
+                'El pago ha sido registrado correctamente'
+            );
+
+            $this->dispatch('refresh-payment-table');
+        }
     }
 
     public function render()

@@ -1,6 +1,6 @@
 <x-slot:header>
-    <h2 class="text-3xl text-gray-800 dark:text-gray-200 leading-tight">
-        Editar Pago
+    <h2 class="text-3xl text-gray-700 dark:text-gray-200 leading-tight">
+        Editar Pago #{{ $payment->id }}
     </h2>
 </x-slot>
 
@@ -9,7 +9,7 @@
         <form wire:submit.prevent="save">
             <x-payment.form />
             <div class="flex items-center justify-end gap-2 mt-6">
-                <x-wireui-button gray outline label="Volver" href="{{ route('payments') }}" wire:navigate />
+                <x-wireui-button rose outline label="Volver" href="{{ route('payments') }}" wire:navigate />
                 <x-wireui-button type="submit" spinner="save" primary label="Actualizar Pago" />
             </div>
         </form>

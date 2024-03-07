@@ -11,11 +11,11 @@ class ParcelForm extends Form
 {
     public ?Parcel $parcel;
 
-    #[Validate('required|string|max:255', 'numero')]
+    #[Validate('required', 'numero')]
     public $number;
 
     #[Validate('required', 'ubicacion')]
-    public ParcelPosition $position;
+    public ParcelPosition $position = ParcelPosition::POSITION_MIDDLE;
 
     #[Validate('nullable|string', 'localizacion')]
     public $location;
@@ -54,8 +54,8 @@ class ParcelForm extends Form
     {
         $this->validate();
 
-        if (Parcel::where('number', $this->number)->exists()) {
-            $this->addError('number', 'Ya existe un lote con este número');
+        if (Parcel::where('number', $this->number)->where('block_id', $this->block_id)->exists()) {
+            $this->addError('number', 'Ya existe un lote con este número en esta manzana');
             return;
         }
 
@@ -71,14 +71,16 @@ class ParcelForm extends Form
         ]);
 
         $this->reset();
+
+        return true;
     }
 
     public function update()
     {
         $this->validate();
 
-        if (Parcel::where('number', $this->number)->where('id', '!=', $this->parcel->id)->exists()) {
-            $this->addError('number', 'Ya existe un lote con este número');
+        if (Parcel::where('number', $this->number)->where('block_id', $this->block_id)->where('id', '!=', $this->parcel->id)->exists()) {
+            $this->addError('number', 'Ya existe un lote con este número en esta manzana');
             return;
         }
 
@@ -94,5 +96,7 @@ class ParcelForm extends Form
         ]);
 
         $this->reset();
+
+        return true;
     }
 }

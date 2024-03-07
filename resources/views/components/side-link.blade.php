@@ -11,7 +11,7 @@ $iconClasses = ($active ?? false)
 @endphp
 
 <a {{ $attributes->merge(['class' => $classes]) }}>
-    <x-wireui-icon {{ $attributes->merge(['class' => $iconClasses]) }} name="{{ $icon }}" />
+    <x-icon {{ $attributes->merge(['class' => $iconClasses]) }} name="{{ $icon }}" />
     <p class="whitespace-nowrap">
         {{ $slot }}
     </p>

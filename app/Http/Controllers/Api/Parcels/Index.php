@@ -13,8 +13,14 @@ class Index extends Controller
 {
     public function promises(Block $block, Request $request): Collection
     {
-        return $block->parcels()->select('id', 'number', 'value', 'area_m2', 'promise_id')
+        return Parcel::query()
+            ->select('id', 'number', 'value', 'area_m2', 'promise_id', 'block_id')
             ->orderBy('number')
+            ->with('block')
+            ->when(
+                $block->exists,
+                fn (Builder $query) => $query->where('block_id', $block->id),
+            )
             ->when(
                 $request->search,
                 fn (Builder $query) => $query->where('number', 'like', "%{$request->search}%"),
@@ -23,14 +29,14 @@ class Index extends Controller
                 $request->exists('selected'),
                 fn (Builder $query) => $query->whereIn('id', $request->input('selected', [])),
             )
-            ->get()->map(function (Parcel $parcel) use ($block) {
+            ->get()->map(function (Parcel $parcel) {
 
                 $status = $parcel->promise_id ? 'En Promesa' : 'Disponible';
                 $led = $parcel->promise_id ? '🟡' : '🟢';
 
-                $parcel->number = $parcel->number . ' - ' . $block->code . ' ' . $led;
+                $parcel->number = $parcel->number . ' - ' . $parcel->block->code . ' ' . $led;
 
-                $parcel->description = 'Manzana: ' . $block->code
+                $parcel->description = 'Manzana: ' . $parcel->block->code
                     . '<br>Area: ' . number_format($parcel->area_m2) . ' m²'
                     . '<br>Valor: $' . number_format($parcel->value, 0, ',', '.')
                     . '<br>Estado: ' . $status;

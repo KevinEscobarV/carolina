@@ -55,16 +55,18 @@ class BuyerForm extends Form
         ]));
     }
 
-    public function save(): void
+    public function save()
     {
         $this->validate();
 
         Buyer::create($this->all());
 
         $this->reset();
+
+        return true;
     }
 
-    public function update(): void
+    public function update()
     {
         $this->validate([
             'names' => 'required|string|max:255',
@@ -89,6 +91,6 @@ class BuyerForm extends Form
 
         $this->buyer->update($this->all());
 
-        $this->reset();
+        return true;
     }
 }
