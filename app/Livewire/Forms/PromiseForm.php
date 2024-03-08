@@ -49,7 +49,7 @@ class PromiseForm extends Form
     public PromisePaymentMethod $payment_method = PromisePaymentMethod::CASH;
 
     #[Validate('nullable', 'estado')]
-    public PromiseStatus $status;
+    public PromiseStatus $status = PromiseStatus::CONFIRMED;
 
     #[Validate('nullable', 'observaciones')]
     public $observations;

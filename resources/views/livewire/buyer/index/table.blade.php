@@ -80,6 +80,16 @@
                         <x-table.td>
                             {{ $buyer->address }}
                         </x-table.td>
+                        <td>
+                            <div class="flex flex-col items center gap-2">
+                                @foreach ($buyer->promises as $promise)
+                                    <div>
+                                        {{$promise->number}}
+                                    </div>
+                                    
+                                @endforeach
+                            </div>
+                        </td>
                         <x-table.actions :item="$buyer" :route="route('buyers.edit', $buyer->id)" />
                     </tr>
                 @empty
