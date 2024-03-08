@@ -46,6 +46,9 @@
             </h2>
         </div>
     </div>
+    <div class="col-span-6 sm:col-span-4">
+        <x-wireui-input label="Numero o Codigo de Promesa" placeholder="Identificativo Promesa" wire:model="form.number" />
+    </div>
     <div class="col-span-6 sm:col-span-3">
         <x-wireui-select label="Medio de Pago" placeholder="Seleccione un medio de pago" :options="App\Enums\PromisePaymentMethod::select()"
             option-label="label" option-value="value" wire:model="form.payment_method" autocomplete="off" />
