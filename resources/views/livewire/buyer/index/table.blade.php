@@ -36,6 +36,9 @@
                         Dirección
                     </x-table.th>
                     <x-table.th>
+                        Promesas
+                    </x-table.th>
+                    <x-table.th>
                     </x-table.th>
                 </tr>
             </x-slot>
