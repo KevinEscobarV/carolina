@@ -27,17 +27,17 @@ class PromiseForm extends Form
     #[Validate('required', 'fecha de firma')]
     public $signature_date;
 
-    #[Validate('nullable|numeric', 'valor de la promesa')]
-    public $value;
+    #[Validate('required|numeric', 'valor de la promesa')]
+    public $value = 0;
 
     #[Validate('nullable|numeric', 'cuota inicial')]
-    public $initial_fee;
+    public $initial_fee = 0;
 
-    #[Validate('nullable|numeric', 'monto de cuota')]
-    public $quota_amount;
+    #[Validate('required|numeric', 'monto de cuota')]
+    public $quota_amount = 0;
 
-    #[Validate('nullable|numeric', 'tasa de interés')]
-    public $interest_rate;
+    #[Validate('required|numeric', 'tasa de interés')]
+    public $interest_rate = 0;
     
     #[Validate('required', 'frecuencia de pago')]
     public PaymentFrequency $payment_frequency = PaymentFrequency::MONTHLY;
