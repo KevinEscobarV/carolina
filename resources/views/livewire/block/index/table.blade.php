@@ -36,7 +36,7 @@
                         </x-table.td>
                         <x-table.td>
                             <p class="font-medium text-lg">
-                                {{ number_format($block->area_m2, 0) }}m²
+                                {{ number_format($block->area_m2, 2) }}m²
                             </p>
                         </x-table.td>
                         <x-table.td>

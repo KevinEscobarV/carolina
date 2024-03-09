@@ -50,7 +50,7 @@
                         </x-table.td>
                         <x-table.td class="text-right">
                             <p class="text-orange-600 font-light text-lg">
-                                {{ number_format($parcel->area_m2, 0) }}m²
+                                {{ number_format($parcel->area_m2, 2) }}m²
                             </p>
                         </x-table.td>
                         <x-table.td class="text-right">

@@ -23,7 +23,7 @@
             option-label="label" option-value="value" wire:model="form.position" autocomplete="off" />
     </div>
     <div class="col-span-6 sm:col-span-3">
-        <x-wireui-inputs.number label="Area m²" min="0" placeholder="Metros Cuadrados" wire:model="form.area_m2"/>
+        <x-wireui-inputs.number label="Area m²" min="0" step="0.01" placeholder="Metros Cuadrados" wire:model="form.area_m2"/>
     </div>
     <div class="col-span-6 sm:col-span-4">
         <x-wireui-inputs.currency label="Valor Lote (Opcional)" placeholder="Valor Lote" right-icon="trending-up" prefix="$" thousands="," precision="0" wire:model="form.value" />
