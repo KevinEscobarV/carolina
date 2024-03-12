@@ -36,7 +36,7 @@
                         Dirección
                     </x-table.th>
                     <x-table.th>
-                        Promesas
+                        Promesas y Lotes
                     </x-table.th>
                     <x-table.th>
                     </x-table.th>
@@ -80,14 +80,25 @@
                         <x-table.td>
                             {{ $buyer->address }}
                         </x-table.td>
-                        <td>
-                            <div class="flex flex-col items center gap-2">
-                                @foreach ($buyer->promises as $promise)
-                                    <div>
-                                        {{$promise->number}}
+                        <td class="border-l border-gray-200 dark:border-gray-700">
+                            <div class="divide-y divide-gray-200 dark:divide-gray-700">
+                                @forelse ($buyer->promises as $promise)
+                                    <div class="flex items-center px-6 py-3">
+                                        <div class="flex gap-2 items-center whitespace-nowrap font-medium pr-3">
+                                            <p>{{ $promise->number }}</p> <x-icon name="hand-raised" class="w-4 h-4 text-gray-400" />
+                                        </div>
+                                        <div class="whitespace-nowrap px-3">
+                                            {!! $promise->parcels->groupBy('block_id')->map(function ($parcels) {
+                                                return '<span class="text-amber-500 font-bold">' . $parcels->first()->block->code . ' : </span>' . $parcels->pluck('number')->join(', ');
+                                            })->join('<br>'); !!}
+                                        </div>
                                     </div>
-                                    
-                                @endforeach
+                                @empty
+                                    <div class="flex justify-center items-center gap-2">
+                                        <x-wireui-icon name="document-search" class="w-8 h-8 text-gray-400" />
+                                        <span class="font-medium py-8">No se encontraron promesas...</span>
+                                    </div>
+                                @endforelse
                             </div>
                         </td>
                         <x-table.actions :item="$buyer" :route="route('buyers.edit', $buyer->id)" />
