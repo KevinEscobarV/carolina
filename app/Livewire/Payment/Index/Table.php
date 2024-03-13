@@ -43,7 +43,7 @@ class Table extends Component
     public function render()
     {
         return view('livewire.payment.index.table', [
-            'payments' => Payment::search($this->search)->sort($this->sortCol, $this->sortAsc)->trash($this->trash)->with('promise.buyers')->paginate($this->perPage),
+            'payments' => Payment::search($this->search)->sort($this->sortCol, $this->sortAsc)->trash($this->trash)->with('promise.buyers', 'promise.parcels.block')->paginate($this->perPage),
         ]);
     }
 }

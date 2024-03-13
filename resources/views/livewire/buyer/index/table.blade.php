@@ -103,7 +103,7 @@
                                         </div>
                                         <div class="whitespace-nowrap px-3">
                                             {!! $promise->parcels->groupBy('block_id')->map(function ($parcels) {
-                                                return '<span class="text-amber-500 font-bold">' . $parcels->first()->block->code . ' : </span>' . $parcels->pluck('number')->join(', ');
+                                                return '<span class="dark:text-amber-500 text-amber-600 font-bold">' . $parcels->first()->block->code . ' : </span>' . $parcels->pluck('number')->join(', ');
                                             })->join('<br>'); !!}
                                         </div>
                                     </div>

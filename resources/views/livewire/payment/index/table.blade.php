@@ -41,6 +41,9 @@
                         Comprador
                     </x-table.th>
                     <x-table.th>
+                        Lotes
+                    </x-table.th>
+                    <x-table.th>
                     </x-table.th>
                 </tr>
             </x-slot>
@@ -82,13 +85,26 @@
                             {{ $payment->promise ? $payment->promise->number : 'Sin promesa' }}
                         </x-table.td>
                         <x-table.td>
-                            <div class="flex flex-col gap-1 max-h-20 soft-scrollbar overflow-auto">
-                                @forelse ($payment->promise->buyers as $user)
-                                    <span class="text-xs text-gray-400">{{ $user->names }} {{ $user->surnames }}</span>
-                                @empty
-                                    <span class="text-xs text-gray-400">Sin compradores</span>
-                                @endforelse
-                            </div>
+                            @if ($payment->promise)
+                                <div class="flex flex-col gap-1 max-h-20 soft-scrollbar overflow-auto">
+                                    @forelse ($payment->promise->buyers as $user)
+                                        <span class="text-xs text-gray-600 dark:text-gray-400">{{ $user->names }} {{ $user->surnames }}</span>
+                                    @empty
+                                        <span class="text-xs text-gray-600 dark:text-gray-400">Sin compradores</span>
+                                    @endforelse
+                                </div>
+                            @else
+                                <span class="text-xs text-gray-400">Sin promesa</span>
+                            @endif
+                        </x-table.td>
+                        <x-table.td>
+                            @if ($payment->promise)
+                                {!! $payment->promise->parcels->groupBy('block_id')->map(function ($parcels) {
+                                    return '<span class="dark:text-amber-500 text-amber-600 font-bold">' . $parcels->first()->block->code . ' : </span>' . $parcels->pluck('number')->join(', ');
+                                })->join('<br>'); !!}
+                            @else
+                                <span class="text-xs text-gray-400">Sin promesa</span>
+                            @endif
                         </x-table.td>
                         <x-table.actions :item="$payment" :route="route('payments.edit', $payment->id)" />
                     </tr>
