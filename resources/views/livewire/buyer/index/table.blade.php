@@ -36,7 +36,13 @@
                         Dirección
                     </x-table.th>
                     <x-table.th>
-                        Promesas y Lotes
+                        Promesas
+                    </x-table.th>
+                    <x-table.th>
+                        Cuotas
+                    </x-table.th>
+                    <x-table.th>
+                        Lotes
                     </x-table.th>
                     <x-table.th>
                     </x-table.th>
@@ -80,12 +86,20 @@
                         <x-table.td>
                             {{ $buyer->address }}
                         </x-table.td>
-                        <td class="border-l border-gray-200 dark:border-gray-700">
+                        <td colspan="3" class="border-l border-gray-200 dark:border-gray-700">
                             <div class="divide-y divide-gray-200 dark:divide-gray-700">
                                 @forelse ($buyer->promises as $promise)
                                     <div class="flex items-center px-6 py-3">
-                                        <div class="flex gap-2 items-center whitespace-nowrap font-medium pr-3">
+                                        <div class="flex gap-2 items-center whitespace-nowrap font-medium pr-3 w-40">
                                             <p>{{ $promise->number }}</p> <x-icon name="hand-raised" class="w-4 h-4 text-gray-400" />
+                                        </div>
+                                        <div class="whitespace-nowrap px-3 w-48">
+                                            <p class="font-light text-lg">
+                                                <span class="text-gray-400">$</span> {{ $promise->quota_amount_formatted }} <span class="text-gray-400 text-sm">COP</span>
+                                            </p>
+                                            <p class="font-light text-gray-400 text-sm">
+                                                {{ $promise->payment_frequency->label() }}
+                                            </p>
                                         </div>
                                         <div class="whitespace-nowrap px-3">
                                             {!! $promise->parcels->groupBy('block_id')->map(function ($parcels) {
