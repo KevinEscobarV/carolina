@@ -69,6 +69,41 @@ class Promise extends Model
         return $this->hasMany(Parcel::class);
     }
 
+    public function getNumberOfPaidFeesAttribute(): int
+    {
+        return $this->payments->count();
+    }
+
+    public function getTotalPaidAttribute(): float
+    {
+        return $this->payments->sum('paid_amount');
+    }
+
+    public function getBalanceAttribute(): float
+    {
+        return $this->value - $this->total_paid;
+    }
+
+    public function getInterestAmountAttribute(): float
+    {
+        return $this->value - $this->initial_fee;
+    }
+
+    public function getInterestAmountFormattedAttribute(): string
+    {
+        return number_format($this->interest_amount, 0, ',', '.');
+    }
+
+    public function getTotalPaidFormattedAttribute(): string
+    {
+        return number_format($this->total_paid, 0, ',', '.');
+    }
+
+    public function getBalanceFormattedAttribute(): string
+    {
+        return number_format($this->balance, 0, ',', '.');
+    }
+
     public function getValueFormattedAttribute(): string
     {
         return number_format($this->value, 0, ',', '.');

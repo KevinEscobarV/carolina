@@ -32,7 +32,13 @@
                         Valor Cuota
                     </x-table.sortable>
                     <x-table.th>
+                        Total Pagado
+                    </x-table.th>
+                    <x-table.th>
                         Numero Cuotas
+                    </x-table.th>
+                    <x-table.th>
+                        Cuotas Pagadas
                     </x-table.th>
                     <x-table.sortable column="payment_frequency" :$sortCol :$sortAsc>
                         Periodicidad
@@ -89,8 +95,16 @@
                                 <span class="text-gray-400">$</span> {{ $promise->quota_amount_formatted }} <span class="text-gray-400 text-sm">COP</span>
                             </p>
                         </x-table.td>
+                        <x-table.td class="text-right bg-lime-500/10">
+                            <p class="font-light text-lg">
+                                <span class="text-gray-400">$</span> {{ $promise->total_paid_formatted }} <span class="text-gray-400 text-sm">COP</span>
+                            </p>
+                        </x-table.td>
                         <x-table.td>
                             {{ $promise->number_of_fees }}
+                        </x-table.td>
+                        <x-table.td class="bg-lime-500/10">
+                            {{ $promise->number_of_paid_fees }}
                         </x-table.td>
                         <x-table.td>
                             {{ $promise->payment_frequency->label() }}
