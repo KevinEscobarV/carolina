@@ -66,6 +66,11 @@ class Deed extends Model
                 $query->join('parcels', 'parcels.id', '=', 'deeds.parcel_id')
                     ->orderBy('parcels.number', $asc ? 'asc' : 'desc')
                     ->select('deeds.*');
+            } else if ($column == 'block') {
+                $query->join('parcels', 'parcels.id', '=', 'deeds.parcel_id')
+                    ->join('blocks', 'blocks.id', '=', 'parcels.block_id')
+                    ->orderBy('blocks.code', $asc ? 'asc' : 'desc')
+                    ->select('deeds.*');
             } else {
                 $query->orderBy($column, $asc ? 'asc' : 'desc');
             }

@@ -13,6 +13,9 @@
                     <x-table.sortable column="number" :$sortCol :$sortAsc>
                         Promesa
                     </x-table.sortable>
+                    <x-table.sortable column="buyer" :$sortCol :$sortAsc>
+                        Comprador
+                    </x-table.sortable>
                     <x-table.sortable column="status" :$sortCol :$sortAsc>
                         Estado
                     </x-table.sortable>
@@ -57,10 +60,19 @@
                             {{ $promise->number }}
                         </x-table.td>
                         <x-table.td>
-                            <x-wireui-badge lg right-icon="{{ $promise->status->icon() }}" flat rounded color="{{ $promise->status->badge() }}" label="{{ $promise->status->label() }}" />
+                            <div class="flex flex-col gap-1 max-h-20 soft-scrollbar overflow-auto">
+                                @forelse ($promise->buyers as $user)
+                                    <span class="text-xs text-gray-600 dark:text-gray-300">{{ $user->names }} {{ $user->surnames }}</span>
+                                @empty
+                                    <span class="text-xs text-gray-600 dark:text-gray-300">Sin compradores</span>
+                                @endforelse
+                            </div>
                         </x-table.td>
                         <x-table.td>
-                            {{ $promise->signature_date->translatedFormat("F j/Y") }}
+                            <x-wireui-badge lg right-icon="{{ $promise->status->icon() }}" flat rounded color="{{ $promise->status->badge() }}" label="{{ $promise->status->label() }}" />
+                        </x-table.td>
+                        <x-table.td class="first-letter:uppercase">
+                            {{ $promise->signature_date ? $promise->signature_date->translatedFormat("F j/Y") : 'Sin definir' }}
                         </x-table.td>
                         <x-table.td class="text-right">
                             <p class="font-light text-lg">

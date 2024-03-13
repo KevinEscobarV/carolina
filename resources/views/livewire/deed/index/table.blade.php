@@ -25,6 +25,15 @@
                     <x-table.sortable column="parcel" :$sortCol :$sortAsc>
                         Lote
                     </x-table.sortable>
+                    <x-table.sortable column="block" :$sortCol :$sortAsc>
+                        Manzana
+                    </x-table.sortable>
+                    <x-table.th>
+                        Promesa
+                    </x-table.th>
+                    <x-table.th>
+                        Compradores
+                    </x-table.th>
                     <x-table.sortable column="book" :$sortCol :$sortAsc>
                         Libro
                     </x-table.sortable>
@@ -47,19 +56,54 @@
                         <x-table.td>
                             <x-wireui-badge lg right-icon="{{ $deed->status->icon() }}" flat rounded color="{{ $deed->status->badge() }}" label="{{ $deed->status->label() }}" />
                         </x-table.td>
-                        <x-table.td>
-                            {{ $deed->signature_date->translatedFormat("F j/Y") }}
+                        <x-table.td class="first-letter:uppercase">
+                            {{ $deed->signature_date ? $deed->signature_date->translatedFormat("F j/Y") : 'Sin definir' }}
                         </x-table.td>
                         <x-table.td class="text-right">
                             <p class="font-light text-lg">
                                 <span class="text-gray-400">$</span> {{ $deed->value_formatted }} <span class="text-gray-400 text-sm">COP</span>
                             </p>
                         </x-table.td>
-                        <x-table.td>
-                            {{ $deed->parcel->number }}
+                        <x-table.td class="bg-green-400/10 font-medium">
+                            @if ($deed->parcel)
+                                {{ $deed->parcel->number }}
+                            @else
+                                Lote no asignado
+                            @endif
+                        </x-table.td>
+                        <x-table.td class="bg-pink-400/10 font-medium">
+                            @if ($deed->parcel)
+                                {{ $deed->parcel->block->code }}
+                            @else
+                                Lote no asignado
+                            @endif
                         </x-table.td>
                         <x-table.td>
-                            {{ $deed->book }}
+                            @if ($deed->parcel)
+                                {{ $deed->parcel->promise ? $deed->parcel->promise->number : 'Sin definir' }}
+                            @else
+                                Lote no asignado
+                            @endif
+                        </x-table.td>
+                        <x-table.td>
+                            @if ($deed->parcel)
+                                @if ($deed->parcel->promise)
+                                    <div class="flex flex-col gap-1 max-h-20 soft-scrollbar overflow-auto">
+                                        @forelse ($deed->parcel->promise->buyers as $user)
+                                            <span class="text-xs text-gray-500 dark:text-gray-300">{{ $user->names }} {{ $user->surnames }}</span>
+                                        @empty
+                                            <span class="text-xs text-gray-500 dark:text-gray-300">Sin compradores</span>
+                                        @endforelse
+                                    </div>
+                                @else
+                                    <span class="text-xs text-gray-500 dark:text-gray-300">Sin promesa</span>
+                                @endif
+                            @else
+                                <span class="text-xs text-gray-500 dark:text-gray-300">Lote no asignado</span>
+                            @endif
+                        </x-table.td>
+                        <x-table.td>
+                            {{ $deed->book ?? 'Sin definir' }}
                         </x-table.td>
                         <x-table.td>
                             {{ str($deed->observations)->words(20) }}

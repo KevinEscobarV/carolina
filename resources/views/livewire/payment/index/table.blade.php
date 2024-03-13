@@ -83,8 +83,8 @@
                         </x-table.td>
                         <x-table.td>
                             <div class="flex flex-col gap-1 max-h-20 soft-scrollbar overflow-auto">
-                                @forelse ($payment->promise->buyers as $uers)
-                                    <span class="text-xs text-gray-400">{{ $uers->names }} {{ $uers->surnames }}</span>
+                                @forelse ($payment->promise->buyers as $user)
+                                    <span class="text-xs text-gray-400">{{ $user->names }} {{ $user->surnames }}</span>
                                 @empty
                                     <span class="text-xs text-gray-400">Sin compradores</span>
                                 @endforelse

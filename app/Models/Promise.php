@@ -101,12 +101,12 @@ class Promise extends Model
     public function scopeSearch(Builder $query, string $search): void
     {
         if ($search)
-            $query->where('number', 'like', "%$search%")
+            $query->where('number', 'LIKE', "%$search%")
                 ->orWhereHas('buyers', function (Builder $query) use ($search) {
-                    $query->where('names', 'like', "%$search%")
-                        ->orWhere('surnames', 'like', "%$search%")
-                        ->orWhere('email', 'like', "%$search%")
-                        ->orWhere('document_number', 'like', "%$search%");
+                    $query->where('names', 'LIKE', "%$search%")
+                        ->orWhere('surnames', 'LIKE', "%$search%")
+                        ->orWhere('email', 'LIKE', "%$search%")
+                        ->orWhere('document_number', 'LIKE', "%$search%");
                 });
     }
 
@@ -122,8 +122,8 @@ class Promise extends Model
     {
         if ($column) {
             if ($column === 'buyer') {
-                $query->join('buyer_promise', 'buyer_promise.promise_id', '=', 'promises.id')
-                    ->join('buyers', 'buyers.id', '=', 'buyer_promise.buyer_id')
+                $query->join('promise_buyer', 'promise_buyer.promise_id', '=', 'promises.id')
+                    ->join('buyers', 'buyers.id', '=', 'promise_buyer.buyer_id')
                     ->orderBy('buyers.names', $asc ? 'asc' : 'desc');
             } else if ($column === 'parcel') {
                 $query->join('parcels', 'parcels.promise_id', '=', 'promises.id')
