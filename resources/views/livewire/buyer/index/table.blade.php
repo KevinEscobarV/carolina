@@ -36,6 +36,9 @@
                         Dirección
                     </x-table.th>
                     <x-table.th>
+                        Ultimo Pago
+                    </x-table.th>
+                    <x-table.th>
                         Promesas
                     </x-table.th>
                     <x-table.th>
@@ -86,12 +89,20 @@
                         <x-table.td>
                             {{ $buyer->address }}
                         </x-table.td>
+                        <x-table.td class="first-letter:uppercase">
+                            @if ($buyer->last_payment)
+                                <p class="font-medium text-indigo-700 dark:text-indigo-400">{{ $buyer->last_payment->payment_date->translatedFormat('F j/Y') }}</p>
+                                <p class="text-gray-500">$</span> {{ $buyer->last_payment->agreement_amount_formatted }} <span class="text-gray-500 text-sm">COP</p>
+                            @else
+                                <p class="text-gray-400">Sin pagos</p>
+                            @endif
+                        </x-table.td>
                         <td colspan="3" class="border-l border-gray-200 dark:border-gray-700">
                             <div class="divide-y divide-gray-200 dark:divide-gray-700">
                                 @forelse ($buyer->promises as $promise)
                                     <div class="flex items-center px-6 py-3">
-                                        <div class="flex gap-2 items-center whitespace-nowrap font-medium pr-3 w-40">
-                                            <p>{{ $promise->number }}</p> <x-icon name="hand-raised" class="w-4 h-4 text-gray-400" />
+                                        <div class="flex gap-2 items-center whitespace-nowrap pr-3 w-40">
+                                            <p>{{ $promise->number }}</p> <x-icon name="hand-raised" class="w-4 h-4 text-gray-500" />
                                         </div>
                                         <div class="whitespace-nowrap px-3 w-48">
                                             <p class="font-light text-lg">
@@ -119,7 +130,7 @@
                     </tr>
                 @empty
                     <tr>
-                        <x-table.td colspan="8">
+                        <x-table.td colspan="14">
                             <div class="flex justify-center items-center gap-2">
                                 <x-wireui-icon name="document-search" class="w-8 h-8 text-gray-400" />
                                 <span class="font-medium py-8">No se encontraron compradores...</span>

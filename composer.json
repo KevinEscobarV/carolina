@@ -14,10 +14,10 @@
         "laravel/tinker": "^2.8",
         "livewire/livewire": "^3.4",
         "maatwebsite/excel": "^3.1",
-        "matanyadaev/laravel-eloquent-spatial": "^4.1",
+        "matanyadaev/laravel-eloquent-spatial": "^4.2",
         "spatie/laravel-permission": "^6.3",
         "wireui/heroicons": "^2.5",
-        "wireui/wireui": "^1.18"
+        "wireui/wireui": "^1.19"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.10",

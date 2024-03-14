@@ -98,6 +98,8 @@ class PromiseForm extends Form
 
         $this->model->buyers()->sync($this->buyers);
 
+        Parcel::where('promise_id', $this->model->id)->update(['promise_id' => null]);
+
         Parcel::whereIn('id', $this->parcels)->whereNull('promise_id')->update(['promise_id' => $this->model->id]);
 
         return true;

@@ -53,6 +53,9 @@
                         Obsservaciones
                     </x-table.sortable>
                     <x-table.th>
+                        Lotes
+                    </x-table.th>
+                    <x-table.th>
                     </x-table.th>
                 </tr>
             </x-slot>
@@ -117,6 +120,15 @@
                         </x-table.td>
                         <x-table.td>
                             {{ str($promise->observations)->words(10) }}
+                        </x-table.td>
+                        <x-table.td>
+                            @if ($promise->parcels->isNotEmpty())
+                                {!! $promise->parcels->groupBy('block_id')->map(function ($parcels) {
+                                    return '<span class="dark:text-amber-500 text-amber-600 font-bold">' . $parcels->first()->block->code . ' : </span>' . $parcels->pluck('number')->join(', ');
+                                })->join('<br>'); !!}
+                            @else
+                                <span class="text-xs text-gray-400">Sin lotes</span>
+                            @endif
                         </x-table.td>
                         <x-table.actions :item="$promise" :route="route('promises.edit', $promise->id)" />
                     </tr>

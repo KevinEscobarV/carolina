@@ -53,11 +53,13 @@ class Buyer extends Model
     }
 
     /**
-     * Get the parcels for the buyer.
+     * Get the last payment for the buyer.
      */
-    public function parcels(): HasManyThrough
+    public function getLastPaymentAttribute()
     {
-        return $this->hasManyThrough(Parcel::class, Promise::class);
+        return $this->promises->map(function ($promise) {
+            return $promise->payments->last();
+        })->last();  
     }
 
     /**

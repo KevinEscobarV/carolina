@@ -110,7 +110,7 @@
                     </tr>
                 @empty
                     <tr>
-                        <x-table.td colspan="8">
+                        <x-table.td colspan="12">
                             <div class="flex justify-center items-center gap-2">
                                 <x-wireui-icon name="document-search" class="w-8 h-8 text-gray-400" />
                                 <span class="font-medium py-8">No se encontraron pagos</span>
