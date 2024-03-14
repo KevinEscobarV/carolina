@@ -12,7 +12,7 @@ enum DeedStatus: string
     {
         return match ($this) {
             self::PENDING => '🟡 Pendiente',
-            self::PAID => '🟢 Pagado',
+            self::PAID => '🟢 Realizada',
             self::CANCELLED => '🔴 Cancelado',
         };
     }
