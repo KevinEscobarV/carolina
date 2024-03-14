@@ -48,10 +48,17 @@ class Deed extends Model
     {
         if ($search) {
             $query->where('number', 'like', '%' . $search . '%')
-                ->orWhere('book', 'like', '%' . $search . '%');
+                ->orWhere('book', 'like', '%' . $search . '%')
+                ->orWhereHas('parcel', function ($query) use ($search) {
+                    $query->whereHas('promise', function ($query) use ($search) {
+                        $query->whereHas('buyers', function ($query) use ($search) {
+                            $query->where('names', 'like', '%' . $search . '%');
+                        });
+                    });
+                });
         }
     }
-
+    
     /**
      * Scope a query to only include buyers that match the search.
      * 
