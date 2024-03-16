@@ -4,9 +4,11 @@ namespace App\Livewire\Buyer\Edit;
 
 use App\Livewire\Forms\BuyerForm;
 use App\Models\Buyer;
+use Livewire\Attributes\Title;
 use Livewire\Component;
 use WireUi\Traits\Actions;
 
+#[Title('Editar cliente')]
 class Page extends Component
 {
     use Actions;

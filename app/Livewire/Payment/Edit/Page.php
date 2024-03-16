@@ -4,9 +4,11 @@ namespace App\Livewire\Payment\Edit;
 
 use App\Livewire\Forms\PaymentForm;
 use App\Models\Payment;
+use Livewire\Attributes\Title;
 use Livewire\Component;
 use WireUi\Traits\Actions;
 
+#[Title('Editar pago')]
 class Page extends Component
 {
     use Actions;

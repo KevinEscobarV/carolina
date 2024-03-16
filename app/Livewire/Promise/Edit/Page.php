@@ -4,9 +4,11 @@ namespace App\Livewire\Promise\Edit;
 
 use App\Livewire\Forms\PromiseForm;
 use App\Models\Promise;
+use Livewire\Attributes\Title;
 use Livewire\Component;
 use WireUi\Traits\Actions;
 
+#[Title('Editar promesa')]
 class Page extends Component
 {    
     use Actions;

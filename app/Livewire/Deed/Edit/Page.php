@@ -4,9 +4,11 @@ namespace App\Livewire\Deed\Edit;
 
 use App\Livewire\Forms\DeedForm;
 use App\Models\Deed;
+use Livewire\Attributes\Title;
 use Livewire\Component;
 use WireUi\Traits\Actions;
 
+#[Title('Editar escritura')]
 class Page extends Component
 {
     use Actions;
