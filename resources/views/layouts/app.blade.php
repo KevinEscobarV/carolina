@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ $title ?? config('app.name', 'Rivarca') }}</title>
+    <title>{{ $title ? config('app.name', 'Rivarca') . ' | ' . $title : config('app.name', 'Rivarca') }}</title>
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
@@ -78,6 +78,7 @@
         </div>
     </div>
 
+    <script defer src="https://unpkg.com/@alpinejs/ui@3.13.3-beta.4/dist/cdn.min.js"></script>
     @vite('resources/js/app.js')
     @livewireScripts
     @wireUiScripts

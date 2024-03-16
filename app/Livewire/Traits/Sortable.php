@@ -22,6 +22,11 @@ trait Sortable
         $this->resetPage();
     }
 
+    public function updatedPerPage($value)
+    {
+        $this->perPage = $value ?? '10';
+    }
+
     public function sortBy($column)
     {
         if ($this->sortCol === $column) {

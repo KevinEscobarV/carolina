@@ -16,7 +16,7 @@
                     @if ($range === \App\Livewire\Order\Index\Range::Custom)
                         <div x-data="{ showCustomRangePanel: $wire.filters.range === '{{ \App\Livewire\Order\Index\Range::Custom }}' ? true : false }">
                             <button x-on:click="showCustomRangePanel = ! showCustomRangePanel" class="w-full flex items-center justify-between text-gray-800 px-3 py-2 gap-2 cursor-pointer hover:bg-gray-100">
-                                <div class="text-sm">Custom Range</div>
+                                <div class="text-sm">Personalizado</div>
 
                                 <x-icon.chevron-down x-show="! showCustomRangePanel" />
                                 <x-icon.chevron-up x-show="showCustomRangePanel" />

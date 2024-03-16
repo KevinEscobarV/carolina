@@ -22,9 +22,7 @@ Route::middleware([
     config('jetstream.auth_session'),
     'verified',
 ])->group(function () {
-    Route::get('/dashboard', function () {
-        return view('dashboard');
-    })->name('dashboard');
+    Route::get('/dashboard', App\Livewire\Dashboard\Index\Page::class)->name('dashboard');
 
     Route::get('/buyers', App\Livewire\Buyer\Index\Page::class)->name('buyers');
     Route::get('/buyers/{buyer}/edit', App\Livewire\Buyer\Edit\Page::class)->name('buyers.edit');

@@ -4,7 +4,6 @@
             <x-wireui-input type="text" icon="search" placeholder="Buscar ..." disabled />
         </div>
     </div>
-    {{-- promises table... --}}
     <x-table.template>
             <x-slot name="head">
                 <tr>
