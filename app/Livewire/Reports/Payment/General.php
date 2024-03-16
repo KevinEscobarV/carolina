@@ -7,11 +7,19 @@ use Livewire\Component;
 
 class General extends Component
 {
+    public $fromDate;
+    public $toDate;
+
+    public function mount()
+    {
+        $this->fromDate = now()->subMonth();
+        $this->toDate = now();
+    }
+
     public function exportGeneral()
     {
-        $fromDate = now()->subYear()->format('Y-m-d');
-        $toDate = now()->format('Y-m-d');
-        return (new PaymentGeneral($fromDate, $toDate))->download('general.xlsx');
+        $name = 'Reporte-Pagos-' . now()->format('Y-m-d-h') . '.xlsx';
+        return (new PaymentGeneral($this->fromDate, $this->toDate))->download($name);
     }
 
     public function render()

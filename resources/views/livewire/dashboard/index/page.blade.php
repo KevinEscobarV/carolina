@@ -20,7 +20,7 @@
         <livewire:dashboard.index.chart :$filters lazy />
     </div>
 
-    <div class="rounded-xl bg-white shadow-sm ring-1 ring-gray-950/5 dark:divide-white/10 dark:bg-gray-800 dark:ring-white/10 overflow-hidden">
+    <div class="rounded-xl bg-white shadow-sm ring-1 ring-gray-950/5 dark:divide-white/10 dark:bg-gray-800 dark:ring-white/10">
         <div class="px-6 pt-6">
             <h1 class="text-3xl text-gray-800 dark:text-gray-200">Reportes</h1>
         </div>

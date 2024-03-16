@@ -5,6 +5,10 @@
         </div>
         <x-icon name="document-chart-bar" class="w-6 h-6 text-lime-500" />
     </div>
+    <div class="flex flex-col gap-4">
+        <x-wireui-datetime-picker label="Fecha Inicial" placeholder="Fecha de pago" wire:model="fromDate" without-time />
+        <x-wireui-datetime-picker label="Fecha Final" placeholder="Fecha de pago" wire:model="toDate" without-time />
+    </div>
     <div>
         <x-wireui-button class="w-full" icon="download" color="lime" label="Exportar" wire:click="exportGeneral" spinner="exportGeneral" />
     </div>
