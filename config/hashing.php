@@ -35,6 +35,19 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Rehashing Option
+    |--------------------------------------------------------------------------
+    |
+    | When rehashing is enabled, passwords that were hashed using the Bcrypt
+    | algorithm will be rehashed the next time they are used to log in. This
+    | allows the application to use a better algorithm for users' passwords.
+    |
+    */
+
+    'rehash_on_login' => true,
+
+    /*
+    |--------------------------------------------------------------------------
     | Argon Options
     |--------------------------------------------------------------------------
     |

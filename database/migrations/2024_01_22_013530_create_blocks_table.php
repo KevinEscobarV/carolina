@@ -15,9 +15,9 @@ return new class extends Migration
             $table->id();
 
             $table->string('code');
-            $table->polygon('area')->nullable();
+            $table->geometry('area', subtype: 'polygon', srid: 0)->nullable();
             $table->decimal('area_m2', 15, 2)->nullable();
-
+            
             $table->foreignId('category_id')->constrained('categories')->cascadeOnDelete()->cascadeOnUpdate();
 
             $table->timestamps();

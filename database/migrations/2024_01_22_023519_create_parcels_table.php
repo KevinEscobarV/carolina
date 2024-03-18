@@ -17,8 +17,8 @@ return new class extends Migration
             $table->integer('number');
 
             $table->string('position')->nullable();
-            $table->point('location')->nullable();
-            $table->polygon('area')->nullable();
+            $table->geography('location', subtype: 'point', srid: 4326)->nullable();
+            $table->geometry('area', subtype: 'polygon', srid: 0)->nullable();
             $table->decimal('area_m2', 15, 2)->nullable();
             $table->decimal('value', 15, 2)->default(0);
 
