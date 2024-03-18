@@ -18,9 +18,18 @@ class Chart extends Component
     public function fillDataset()
     {
         $increment = match ($this->filters->range) {
-            Range::Today => DB::raw("DATE_FORMAT(payment_date, '%H') as increment"),
-            Range::All_Time => DB::raw("DATE_FORMAT(payment_date, '%Y-%m') as increment"),
-            // Range::Year => DB::raw("DATE_FORMAT(payment_date, '%Y-%m') as increment"),
+            Range::Today => config('database.default') === 'pgsql'
+                ? DB::raw("DATE_TRUNC('hour', payment_date) as increment")
+                : DB::raw("DATE_FORMAT(payment_date, '%H') as increment"),
+
+            Range::All_Time => config('database.default') === 'pgsql'
+                ? DB::raw("to_char(payment_date, 'YYYY-MM') as increment")
+                : DB::raw("DATE_FORMAT(payment_date, '%Y-%m') as increment"),
+
+            // Range::Year => config('database.default') === 'pgsql'
+            //     ? DB::raw("to_char(payment_date, 'YYYY-MM') as increment")
+            //     : DB::raw("DATE_FORMAT(payment_date, '%Y-%m') as increment"),
+
             default => DB::raw("DATE(payment_date) as increment"),
         };
 
