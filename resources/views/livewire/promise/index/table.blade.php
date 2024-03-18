@@ -23,7 +23,7 @@
                         Fecha Firma
                     </x-table.sortable>
                     <x-table.sortable column="value" :$sortCol :$sortAsc right>
-                        Valor
+                        Valor Promesa
                     </x-table.sortable>
                     <x-table.sortable column="initial_fee" :$sortCol :$sortAsc right>
                         Cuota Inicial
@@ -142,6 +142,80 @@
                         </x-table.td>
                     </tr>
                 @endforelse
+            </x-slot>
+            <x-slot name="foot">
+                <tr class="bg-gray-50 dark:bg-white/5">
+                    <x-table.th colspan="5">
+                        Resumen
+                    </x-table.th>
+                    <x-table.th class="text-right">
+                        Valor Promesa
+                    </x-table.th>
+                    <x-table.th></x-table.th>
+                    <x-table.th></x-table.th>
+                    <x-table.th class="text-right">
+                        Total Pagado
+                    </x-table.th>
+                    <x-table.th colspan="8"></x-table.th>
+                </tr>
+                <tr>
+                    <x-table.td colspan="5">
+                        <div class="flex items center gap-2 py-8">
+                            <span class="font-medium">Esta página</span>
+                        </div>
+                    </x-table.td>
+                    <x-table.td>
+                        <div class="flex flex-col items-end gap-1">
+                            <p class="font-light text-md">
+                                Suma
+                            </p>
+                            <p class="font-light text-lg">
+                                <span class="text-gray-400">$</span> {{ number_format($promises->sum('value'), 0, ',', '.') }} <span class="text-gray-400 text-sm">COP</span>
+                            </p>
+                        </div>
+                    </x-table.td>
+                    <x-table.td></x-table.td>
+                    <x-table.td></x-table.td>
+                    <x-table.td class="bg-lime-500/10">
+                        <div class="flex flex-col items-end gap-1">
+                            <p class="font-light text-md">
+                                Suma
+                            </p>
+                            <p class="font-light text-lg">
+                                <span class="text-gray-400">$</span> {{ number_format($promises->sum('total_paid'), 0, ',', '.') }} <span class="text-gray-400 text-sm">COP</span>
+                            </p>
+                        </div>
+                    </x-table.td>
+                </tr>
+                <tr>
+                    <x-table.td colspan="5">
+                        <div class="flex items center gap-2 py-8">
+                            <span class="font-medium">Todos los pagos</span>
+                        </div>
+                    </x-table.td>
+                    <x-table.td>
+                        <div class="flex flex-col items-end gap-1">
+                            <p class="font-light text-md">
+                                Suma
+                            </p>
+                            <p class="font-light text-lg">
+                                <span class="text-gray-400">$</span> {{ $total_value }} <span class="text-gray-400 text-sm">COP</span>
+                            </p>
+                        </div>
+                    </x-table.td>
+                    <x-table.td></x-table.td>
+                    <x-table.td></x-table.td>
+                    <x-table.td class="bg-lime-500/10">
+                        <div class="flex flex-col items-end gap-1">
+                            <p class="font-light text-md">
+                                Suma
+                            </p>
+                            <p class="font-light text-lg">
+                                <span class="text-gray-400">$</span> {{ $total_paid_amount }} <span class="text-gray-400 text-sm">COP</span>
+                            </p>
+                        </div>
+                    </x-table.td>
+                </tr>
             </x-slot>
             @if ($promises->hasPages())
                 <x-slot name="pagination">

@@ -2,13 +2,18 @@
     <div class="relative">
         <div class="overflow-x-auto soft-scrollbar">
             {{-- payments table... --}}
-            <table class="min-w-full table-fixed divide-y divide-gray-300 dark:divide-gray-700 text-gray-800">
-                <thead class="bg-gray-50 dark:bg-white/5 text-left">
+            <table class="min-w-full table-fixed text-gray-800">
+                <thead class="bg-gray-50 dark:bg-white/5 text-left border-b border-gray-200 dark:border-gray-700">
                     {{ $head }}
                 </thead>
-                <tbody class="divide-y divide-gray-200 text-gray-700 dark:divide-gray-700 dark:text-gray-300">
+                <tbody class="divide-y divide-gray-200 text-gray-700 dark:divide-gray-700 dark:text-gray-300 border-b border-gray-200 dark:border-gray-700">
                     {{ $body }}
                 </tbody>
+                @if (isset($foot))
+                    <tfoot class="divide-y divide-gray-200 text-gray-700 dark:divide-gray-700 dark:text-gray-300 text-left">
+                        {{ $foot }}
+                    </tfoot>
+                @endif
             </table>
         </div>
 

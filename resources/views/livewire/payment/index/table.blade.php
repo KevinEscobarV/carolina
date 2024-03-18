@@ -119,6 +119,77 @@
                     </tr>
                 @endforelse
             </x-slot>
+            <x-slot name="foot">
+                <tr class="bg-gray-50 dark:bg-white/5">
+                    <x-table.th colspan="3">
+                        Resumen
+                    </x-table.th>
+                    <x-table.th class="text-right">
+                        Valor Acordado
+                    </x-table.th>
+                    <x-table.th></x-table.th>
+                    <x-table.th class="text-right">
+                        Valor Pagado
+                    </x-table.th>
+                    <x-table.th colspan="8"></x-table.th>
+                </tr>
+                <tr>
+                    <x-table.td colspan="3">
+                        <div class="flex items center gap-2 py-8">
+                            <span class="font-medium">Esta página</span>
+                        </div>
+                    </x-table.td>
+                    <x-table.td>
+                        <div class="flex flex-col items-end gap-1">
+                            <p class="font-light text-md">
+                                Suma
+                            </p>
+                            <p class="font-light text-lg">
+                                <span class="text-gray-400">$</span> {{ number_format($payments->sum('agreement_amount'), 0, ',', '.') }} <span class="text-gray-400 text-sm">COP</span>
+                            </p>
+                        </div>
+                    </x-table.td>
+                    <x-table.td></x-table.td>
+                    <x-table.td>
+                        <div class="flex flex-col items-end gap-1">
+                            <p class="font-light text-md">
+                                Suma
+                            </p>
+                            <p class="font-light text-lg">
+                                <span class="text-gray-400">$</span> {{ number_format($payments->sum('paid_amount'), 0, ',', '.') }} <span class="text-gray-400 text-sm">COP</span>
+                            </p>
+                        </div>
+                    </x-table.td>
+                </tr>
+                <tr>
+                    <x-table.td colspan="3">
+                        <div class="flex items center gap-2 py-8">
+                            <span class="font-medium">Todos los pagos</span>
+                        </div>
+                    </x-table.td>
+                    <x-table.td>
+                        <div class="flex flex-col items-end gap-1">
+                            <p class="font-light text-md">
+                                Suma
+                            </p>
+                            <p class="font-light text-lg">
+                                <span class="text-gray-400">$</span> {{ $total_agreement_amount }} <span class="text-gray-400 text-sm">COP</span>
+                            </p>
+                        </div>
+                    </x-table.td>
+                    <x-table.td></x-table.td>
+                    <x-table.td>
+                        <div class="flex flex-col items-end gap-1">
+                            <p class="font-light text-md">
+                                Suma
+                            </p>
+                            <p class="font-light text-lg">
+                                <span class="text-gray-400">$</span> {{ $total_paid_amount }} <span class="text-gray-400 text-sm">COP</span>
+                            </p>
+                        </div>
+                    </x-table.td>
+                </tr>
+            </x-slot>
             @if ($payments->hasPages())
                 <x-slot name="pagination">
                     {{ $payments->links() }}
