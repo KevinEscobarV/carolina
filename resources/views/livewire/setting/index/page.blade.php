@@ -6,7 +6,7 @@
 
 <div class="mx-auto sm:px-6 lg:px-8" x-data>
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-        <x-card>
+        <x-card cardClasses="p-3">
             <form wire:submit.prevent="save">
                 <div class="grid grid-cols-6 gap-6">
                     <div class="col-span-6">
@@ -15,7 +15,7 @@
                                 <x-icon name="envelope" class="h-6 text-primary-500" />
                             </div>
                             <h2 class="text-xl text-gray-800 dark:text-gray-200 leading-tight">
-                                SMS de Pago en Morosidad
+                                SMS de Pago en Morosidad Automatico
                             </h2>
                         </div>
                     </div>
@@ -36,8 +36,8 @@
         </x-card>
         <div class="md:col-span-1 flex justify-between">
             <div class="px-4 sm:px-0">
-                <div class="bg-white dark:bg-gray-800 rounded-2xl shadow p-3 text-gray-600 dark:text-gray-300 max-w-2xl">
-                    <div class="bg-gray-100 dark:bg-black/20 border-2 border-primary-500 rounded-2xl p-4">
+                <div class="bg-white dark:bg-gray-800 border-2 border-primary-500 rounded-lg shadow p-3 text-gray-600 dark:text-gray-300 max-w-2xl">
+                    <div class="bg-gray-100 dark:bg-black/20 border-2 border-primary-500 rounded-lg p-4">
                         <p>
                             <p x-text="$wire.message_header"></p>
                             Lotes: A27:4, A27:5, A27:6 <br>
