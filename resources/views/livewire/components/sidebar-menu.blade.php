@@ -60,7 +60,7 @@
                 <span x-show="open" x-transition.duration.500ms>Notificaciones</span>
             </x-side-link>
 
-            <x-side-link href="{{ route('settings') }}" :active="request()->routeIs(['settings', 'settings.*'])" icon="cog" wire:navigate>
+            <x-side-link href="{{ route('settings') }}" :active="request()->routeIs(['settings', 'settings.*'])" icon="cog-6-tooth" wire:navigate>
                 <span x-show="open" x-transition.duration.500ms>Configuración</span>
             </x-side-link>
         </nav>
