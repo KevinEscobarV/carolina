@@ -108,7 +108,7 @@
                                 @endphp
 
                                 <!-- Category Switcher -->
-                                @if ($categories->count() > 1)
+                                @if ($categories->count() > 0)
                                     <div class="border-t border-gray-200 dark:border-gray-600"></div>
 
                                     <div class="block px-4 py-2 text-xs text-gray-400">

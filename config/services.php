@@ -32,8 +32,8 @@ return [
     ],
 
     'labsmobile' => [
-        'username' => env('LABSMOBILE_USERNAME', 'contabilidad@edsloscanarios.com.co'),
-        'password' => env('LABSMOBILE_PASSWORD', 'qdlMAKL1BMAKe8jehHAl9WfesZP29mDo'),
+        'username' => env('LABSMOBILE_USERNAME'),
+        'password' => env('LABSMOBILE_PASSWORD'),
     ],
 
 ];
