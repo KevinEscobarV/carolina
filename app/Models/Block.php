@@ -2,17 +2,17 @@
 
 namespace App\Models;
 
+use App\Models\Traits\HasCategory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use MatanYadaev\EloquentSpatial\Objects\Polygon;
 
 class Block extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, SoftDeletes, HasCategory;
 
     /**
      * The attributes that are mass assignable.
@@ -34,14 +34,6 @@ class Block extends Model
     protected $casts = [
         'area' => Polygon::class,
     ];
-
-    /**
-     * Get the category that owns the block.
-     */
-    public function category(): BelongsTo
-    {
-        return $this->belongsTo(Category::class);
-    }
 
     /**
      * Get the parcels for the block.

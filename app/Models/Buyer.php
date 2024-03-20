@@ -4,17 +4,18 @@ namespace App\Models;
 
 use App\Enums\CivilStatus;
 use App\Enums\DocumentType;
+use App\Models\Traits\HasCategory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Buyer extends Model
 {
     use HasFactory;
     use SoftDeletes;
+    use HasCategory;
 
     /**
      * The attributes that are mass assignable.
@@ -31,6 +32,7 @@ class Buyer extends Model
         'phone_one',
         'phone_two',
         'address',
+        'category_id',
     ];
 
     /**

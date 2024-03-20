@@ -19,9 +19,6 @@ class BlockForm extends Form
     #[Validate('nullable|numeric')]
     public $area_m2;
 
-    #[Validate('required|exists:categories,id')]
-    public $category_id;
-
     public function setBlock(Block $block): void
     {
         $this->block = $block;
@@ -29,7 +26,6 @@ class BlockForm extends Form
             'code',
             'area',
             'area_m2',
-            'category_id',
         ]));
     }
 
@@ -46,7 +42,6 @@ class BlockForm extends Form
             'code' => $this->code,
             'area' => $this->area,
             'area_m2' => $this->area_m2,
-            'category_id' => $this->category_id,
         ]);
 
         $this->reset();
@@ -67,7 +62,6 @@ class BlockForm extends Form
             'code' => $this->code,
             'area' => $this->area,
             'area_m2' => $this->area_m2,
-            'category_id' => $this->category_id,
         ]);
 
         $this->reset();

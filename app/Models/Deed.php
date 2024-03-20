@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\DeedStatus;
+use App\Models\Traits\HasCategory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -10,7 +11,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Deed extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, SoftDeletes, HasCategory;
 
     protected $fillable = [
         'number',
@@ -19,7 +20,8 @@ class Deed extends Model
         'book',
         'status',
         'observations',
-        'parcel_id'
+        'parcel_id',
+        'category_id'
     ];
 
     protected $casts = [

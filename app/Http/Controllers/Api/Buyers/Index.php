@@ -14,7 +14,7 @@ class Index extends Controller
     public function __invoke(Request $request): Collection
     {
         return Buyer::query()
-            ->select('id', 'names', 'surnames', 'document_type', 'document_number', 'email')
+            ->select('id', 'names', 'surnames', 'document_type', 'document_number', 'email', 'category_id')
             ->orderBy('names')
             ->when(
                 $request->search,

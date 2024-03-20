@@ -32,6 +32,7 @@ class User extends Authenticatable
         'email',
         'password',
         'expanded_sidebar',
+        'current_category_id',
     ];
 
     /**
@@ -89,6 +90,52 @@ class User extends Authenticatable
         })->join(' '));
 
         return 'https://ui-avatars.com/api/?name=' . urlencode($name) . '&color=FFFFFF&background=F59E0B';
+    }
+
+    /**
+     * Determine if the given team is the current team.
+     *
+     * @param  mixed  $team
+     * @return bool
+     */
+    public function isCurrentCategory($category)
+    {
+        return $category->id === $this->currentCategory->id;
+    }
+
+    /**
+     * Get the current category of the user's context.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function currentCategory()
+    {
+        if (is_null($this->current_category_id) && $this->id) {
+            $this->switchCategory(Category::first());
+        }
+
+        return $this->belongsTo(Category::class, 'current_category_id')->withDefault();
+    }
+
+    /**
+     * Switch the user's context to the given category.
+     *
+     * @param  mixed  $category
+     * @return bool
+     */
+    public function switchCategory($category)
+    {
+        if (! $category instanceof Category) {
+            return false;
+        }
+
+        $this->forceFill([
+            'current_category_id' => $category->id,
+        ])->save();
+
+        $this->setRelation('currentCategory', $category);
+
+        return true;
     }
 
     /**

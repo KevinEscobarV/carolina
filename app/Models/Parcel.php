@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\ParcelPosition;
+use App\Models\Traits\HasCategory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -16,7 +17,7 @@ use MatanYadaev\EloquentSpatial\Objects\Polygon;
 
 class Parcel extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, SoftDeletes, HasCategory;
 
     /**
      * The attributes that are mass assignable.
@@ -32,6 +33,7 @@ class Parcel extends Model
         'value',
         'block_id',
         'promise_id',
+        'category_id',
     ];
 
     /**

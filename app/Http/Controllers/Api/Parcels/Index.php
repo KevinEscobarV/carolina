@@ -14,7 +14,7 @@ class Index extends Controller
     public function promises(Block $block, Request $request): Collection
     {
         return Parcel::query()
-            ->select('id', 'number', 'value', 'area_m2', 'promise_id', 'block_id')
+            ->select('id', 'number', 'value', 'area_m2', 'promise_id', 'block_id', 'category_id')
             ->orderBy('number')
             ->with('block')
             ->when(

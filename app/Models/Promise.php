@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Enums\PaymentFrequency;
 use App\Enums\PromisePaymentMethod;
 use App\Enums\PromiseStatus;
+use App\Models\Traits\HasCategory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -14,7 +15,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Promise extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, SoftDeletes, HasCategory;
 
     /**
      * The attributes that are mass assignable.
@@ -33,6 +34,7 @@ class Promise extends Model
         'payment_method',
         'status',
         'observations',
+        'category_id'
     ];
 
     /**

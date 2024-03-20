@@ -10,11 +10,6 @@
         </div>
     </div>
     <div class="col-span-6 sm:col-span-3">
-        <x-wireui-select label="Campaña" wire:model="form.category_id"
-            placeholder="Seleccione la campaña" :async-data="route('api.categories.index')" option-label="name"
-            option-value="id" />
-    </div>
-    <div class="col-span-6 sm:col-span-3">
         <x-wireui-input label="Numero o Codigo de Manzana" right-icon="puzzle" placeholder="1" wire:model="form.code" />
     </div>
     <div class="col-span-6 sm:col-span-3">

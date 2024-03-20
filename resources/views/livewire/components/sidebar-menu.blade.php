@@ -1,7 +1,7 @@
 <aside class="flex-shrink-0 hidden z-20 bg-gray-50 dark:bg-gray-900/95 border-r border-primary-800/50 dark:border-gray-700 md:block" x-data="{ open: '{{ Auth::user()->expanded_sidebar }}' }">
     <div class="flex flex-col h-full transition-all duration-500" :class="{ 'w-52': open, 'w-20': !open }">
 
-        <div class="flex items-center justify-center px-4 my-10">
+        <div class="flex items-center justify-center px-4 my-6">
             <x-application-mark class="text-gray-500 dark:text-gray-200 w-full" />
         </div>
 
@@ -19,7 +19,7 @@
         </div>
 
         <!-- Sidebar links -->
-        <nav aria-label="Main" class="flex flex-col h-full py-3 mt-12 soft-scrollbar overflow-hidden hover:overflow-y-auto">
+        <nav aria-label="Main" class="flex flex-col h-full py-3 mt-8 soft-scrollbar overflow-hidden hover:overflow-y-auto">
             <x-side-link href="{{ route('dashboard') }}" :active="request()->routeIs('dashboard')" icon="chart-pie" wire:navigate>
                 <span x-show="open" x-transition.duration.500ms>Administración</span>
             </x-side-link>
@@ -54,6 +54,14 @@
 
             <x-side-link href="{{ route('categories') }}" :active="request()->routeIs(['categories', 'categories.*'])" icon="megaphone" wire:navigate>
                 <span x-show="open" x-transition.duration.500ms>Campañas</span>
+            </x-side-link>
+
+            <x-side-link href="{{ route('notifications') }}" :active="request()->routeIs(['notifications', 'notifications.*'])" icon="bell" wire:navigate>
+                <span x-show="open" x-transition.duration.500ms>Notificaciones</span>
+            </x-side-link>
+
+            <x-side-link href="{{ route('settings') }}" :active="request()->routeIs(['settings', 'settings.*'])" icon="cog" wire:navigate>
+                <span x-show="open" x-transition.duration.500ms>Configuración</span>
             </x-side-link>
         </nav>
 

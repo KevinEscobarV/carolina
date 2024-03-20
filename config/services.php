@@ -31,4 +31,9 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
+    'labsmobile' => [
+        'username' => env('LABSMOBILE_USERNAME', 'contabilidad@edsloscanarios.com.co'),
+        'password' => env('LABSMOBILE_PASSWORD', 'qdlMAKL1BMAKe8jehHAl9WfesZP29mDo'),
+    ],
+
 ];

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CurrentCategoryController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -13,6 +14,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+// Route to redirect to login
 Route::get('/', function () {
     return redirect()->route('login');
 });
@@ -22,23 +24,53 @@ Route::middleware([
     config('jetstream.auth_session'),
     'verified',
 ])->group(function () {
+
+    // Dashboard
     Route::get('/dashboard', App\Livewire\Dashboard\Index\Page::class)->name('dashboard');
 
+    // Buyers
     Route::get('/buyers', App\Livewire\Buyer\Index\Page::class)->name('buyers');
     Route::get('/buyers/{buyer}/edit', App\Livewire\Buyer\Edit\Page::class)->name('buyers.edit');
 
+    // Parcels
     Route::get('/parcels', App\Livewire\Parcel\Index\Page::class)->name('parcels');
 
+    // Blocks
     Route::get('/blocks', App\Livewire\Block\Index\Page::class)->name('blocks');
 
+    // Payments
     Route::get('/payments', App\Livewire\Payment\Index\Page::class)->name('payments');
     Route::get('/payments/{payment}/edit', App\Livewire\Payment\Edit\Page::class)->name('payments.edit');
 
+    // Promises
     Route::get('/promises', App\Livewire\Promise\Index\Page::class)->name('promises');
     Route::get('/promises/{promise}/edit', App\Livewire\Promise\Edit\Page::class)->name('promises.edit');
 
+    // Categories
     Route::get('/categories', App\Livewire\Category\Index\Page::class)->name('categories');
 
+    // Deeds
     Route::get('/deeds', App\Livewire\Deed\Index\Page::class)->name('deeds');
     Route::get('/deeds/{deed}/edit', App\Livewire\Deed\Edit\Page::class)->name('deeds.edit');
+
+    // Notifications
+    Route::get('/notifications', App\Livewire\Notification\Index\Page::class)->name('notifications');
+
+    // Settings
+    Route::get('/settings', App\Livewire\Setting\Index\Page::class)->name('settings');
+
+    // Current Category
+    Route::put('/current-category', [CurrentCategoryController::class, 'update'])->name('current-category.update');
+
+    /*
+    |--------------------------------------------------------------------------
+    | API Routes for Selects
+    |--------------------------------------------------------------------------
+    */
+    Route::get('/select/buyers', \App\Http\Controllers\Api\Buyers\Index::class)->name('api.buyers.index');
+    Route::get('/select/promises', \App\Http\Controllers\Api\Promises\Index::class)->name('api.promises.index');
+    Route::get('/select/categories', \App\Http\Controllers\Api\Categories\Index::class)->name('api.categories.index');
+    Route::get('/select/blocks', \App\Http\Controllers\Api\Blocks\Index::class)->name('api.blocks.index');
+    Route::get('/select/blocks/parcels/promises/{block?}', [\App\Http\Controllers\Api\Parcels\Index::class, 'promises'])->name('api.parcels.promises');
+    Route::get('/select/blocks/parcels/deeds/{block?}', [\App\Http\Controllers\Api\Parcels\Index::class, 'deeds'])->name('api.parcels.deeds');
 });

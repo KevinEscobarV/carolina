@@ -13,7 +13,7 @@ class Index extends Controller
     public function __invoke(Request $request): Collection
     {
         return Category::query()
-            ->select('id', 'name')
+            ->select('id', 'name', 'category_id')
             ->with('blocks')
             ->orderBy('name')
             ->when(

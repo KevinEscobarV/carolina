@@ -13,7 +13,7 @@ class Index extends Controller
     public function __invoke(Request $request): Collection
     {
         return Promise::query()
-            ->select('id', 'number', 'status')
+            ->select('id', 'number', 'status', 'category_id')
             ->with('buyers:id,names,surnames,document_number', 'parcels.block')
             ->when(
                 $request->search,
