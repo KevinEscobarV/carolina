@@ -18,24 +18,21 @@ class Page extends Component
 
     public function mount()
     {
-        $header = Setting::firstOrCreate(
+        $this->message_header = Setting::firstOrCreate(
             ['key' => 'message_header'],
             [
                 'value' => config('sms.message_header'),
                 'description' => 'Mensaje de cabecera para los SMS'
             ]
-        );
+        )->value;
 
-        $footer = Setting::firstOrCreate(
+        $this->message_footer = Setting::firstOrCreate(
             ['key' => 'message_footer'],
             [
                 'value' => config('sms.message_footer'),
                 'description' => 'Mensaje de pie para los SMS'
             ]
-        );
-
-        $this->message_header = $header->value;
-        $this->message_footer = $footer->value;
+        )->value;
     }
 
     public function save()
