@@ -34,6 +34,8 @@ Route::middleware([
 
     // Parcels
     Route::get('/parcels', App\Livewire\Parcel\Index\Page::class)->name('parcels');
+    Route::get('/parcels/create', App\Livewire\Parcel\Create\Page::class)->name('parcels.create');
+    Route::get('/parcels/{parcel}/edit', App\Livewire\Parcel\Edit\Page::class)->name('parcels.edit');
 
     // Blocks
     Route::get('/blocks', App\Livewire\Block\Index\Page::class)->name('blocks');

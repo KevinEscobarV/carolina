@@ -6,6 +6,9 @@ use App\Enums\ParcelPosition;
 use App\Models\Parcel;
 use Livewire\Attributes\Validate;
 use Livewire\Form;
+use MatanYadaev\EloquentSpatial\Objects\Point;
+use MatanYadaev\EloquentSpatial\Objects\Polygon;
+use MatanYadaev\EloquentSpatial\Objects\LineString;
 
 class ParcelForm extends Form
 {
@@ -17,10 +20,10 @@ class ParcelForm extends Form
     #[Validate('required', 'ubicacion')]
     public ParcelPosition $position = ParcelPosition::POSITION_MIDDLE;
 
-    #[Validate('nullable|string', 'localizacion')]
+    #[Validate('nullable', 'localizacion')]
     public $location;
 
-    #[Validate('nullable|string', 'area')]
+    #[Validate('nullable', 'area')]
     public $area;
 
     #[Validate('nullable|numeric', 'area en m2')]
@@ -62,8 +65,8 @@ class ParcelForm extends Form
         Parcel::create([
             'number' => $this->number,
             'position' => $this->position,
-            'location' => $this->location,
-            'area' => $this->area,
+            'location' => $this->location ? new Point($this->location['lat'], $this->location['lng']) : null,
+            'area' => $this->area ? new Polygon([new LineString(array_map(fn ($point) => new Point($point['lat'], $point['lng']), $this->area))]) : null,
             'area_m2' => $this->area_m2,
             'value' => $this->value,
             'block_id' => $this->block_id,
@@ -87,8 +90,8 @@ class ParcelForm extends Form
         $this->parcel->update([
             'number' => $this->number,
             'position' => $this->position,
-            'location' => $this->location,
-            'area' => $this->area,
+            'location' => $this->location ? new Point($this->location['lat'], $this->location['lng']) : null,
+            'area' => $this->area ? new Polygon([new LineString(array_map(fn ($point) => new Point($point['lat'], $point['lng']), $this->area))]) : null,
             'area_m2' => $this->area_m2,
             'value' => $this->value,
             'block_id' => $this->block_id,

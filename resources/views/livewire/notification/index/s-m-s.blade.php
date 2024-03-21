@@ -1,5 +1,5 @@
 <div class="max-w-4xl">
-    <x-card cardClasses="p-3">
+    <x-card cardClasses="p-2">
         <form wire:submit.prevent="sendSMS">
             <div class="grid grid-cols-6 gap-6">
                 <div class="col-span-6">

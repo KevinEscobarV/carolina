@@ -14,10 +14,11 @@ use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use MatanYadaev\EloquentSpatial\Objects\Point;
 use MatanYadaev\EloquentSpatial\Objects\Polygon;
+use MatanYadaev\EloquentSpatial\Traits\HasSpatial;
 
 class Parcel extends Model
 {
-    use HasFactory, SoftDeletes, HasCategory;
+    use HasFactory, SoftDeletes, HasCategory, HasSpatial;
 
     /**
      * The attributes that are mass assignable.

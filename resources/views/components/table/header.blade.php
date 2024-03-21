@@ -13,10 +13,14 @@
     ]" option-label="name" option-value="id" wire:model.live="perPage" autocomplete="off" />
 </div>
 <div class="col-span-1">
-    <x-wireui-button x-on:click="open = ! open" lime>
-        <span class="mr-2" x-text="open ? 'Cerrar' : 'Crear'"></span>
-        <x-wireui-icon name="plus" class="w-5 h-5" />
-    </x-wireui-button>
+    @if (isset($routeCreate))
+        <x-wireui-button href="{{ $routeCreate }}" icon="plus" label="Crear" lime wire:navigate />
+    @else
+        <x-wireui-button x-on:click="open = ! open" lime>
+            <span class="mr-2" x-text="open ? 'Cerrar' : 'Crear'"></span>
+            <x-wireui-icon name="plus" class="w-5 h-5" />
+        </x-wireui-button>
+    @endif
 </div>
 <div class="col-span-3 flex justify-end">
     <x-wireui-button icon="{{ $trash ? 'x' : 'trash' }}" 
