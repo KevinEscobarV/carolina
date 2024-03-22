@@ -1,13 +1,9 @@
 <div>
     <div x-data="chart" wire:ignore wire:loading.class="opacity-50"
         class="relative h-[5rem] sm:h-[13rem] w-full">
-        <canvas class="w-full"></canvas>
+        <canvas id="area" class="w-full"></canvas>
     </div>
 </div>
-
-@assets
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-@endassets
 
 @script
     <script>
@@ -39,7 +35,7 @@
                 },
 
                 initChart(dataset) {
-                    let el = this.$wire.$el.querySelector('canvas')
+                    let el = this.$wire.$el.querySelector('#area')
 
                     let {
                         labels,

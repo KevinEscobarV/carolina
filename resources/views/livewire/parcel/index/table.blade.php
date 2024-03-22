@@ -70,7 +70,7 @@
                                 {{ $parcel->block->category->name }}
                             </p>
                         </x-table.td>
-                        <x-table.actions :item="$parcel" />
+                        <x-table.actions :item="$parcel" :route="route('parcels.edit', $parcel->id)" />
                     </tr>
                 @empty
                     <tr>
@@ -89,18 +89,4 @@
                 </x-slot>
             @endif
     </x-table.template>
-
-    <x-modal wire:model="modal">
-        <div class="max-w-4xl">
-            <x-card>
-                <form wire:submit.prevent="update">
-                    <x-parcel.form />
-                    <div class="flex items-center justify-end gap-2 mt-6">
-                        <x-wireui-button gray label="Volver" x-on:click="show = false" />
-                        <x-wireui-button type="submit" spinner="update" primary label="Actualizar Lote" />
-                    </div>
-                </form>
-            </x-card>
-        </div>
-    </x-modal>
 </div>

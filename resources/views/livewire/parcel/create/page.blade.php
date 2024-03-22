@@ -15,7 +15,7 @@
             </form>
         </x-card>
         <x-card>
-            <div x-data="map" wire:ignore x-init="initMap()" class="rounded-lg overflow-hidden dark:bg-gray-50">
+            <div x-data="map" wire:ignore x-init="initMap()" class="rounded-lg overflow-hidden">
                 <div id="map" class="h-[550px] w-full"></div>
             </div>
         </x-card>
@@ -49,15 +49,21 @@
                 let map = L.map('map').setView([5.3174118648923745, -72.40578830189148], 15);
 
                 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                    maxZoom: 19,
+                    maxZoom: 20,
                 }).addTo(map);
-
 
                 // add Leaflet-Geoman controls with some options to the map  
                 map.pm.addControls({
                     position: 'topright',
+                    drawPolyline: false,
+                    drawRectangle: false,
+                    drawCircle: false,
                     drawCircleMarker: false,
+                    drawText: false,
                     rotateMode: false,
+                    cutPolygon: false,
+                    dragMode: false,
+                    editMode: false,
                 });
 
                 map.on("pm:create", (e) => {

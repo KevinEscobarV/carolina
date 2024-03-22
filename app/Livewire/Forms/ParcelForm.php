@@ -44,8 +44,6 @@ class ParcelForm extends Form
         $this->fill($parcel->only([
             'number',
             'position',
-            'location',
-            'area',
             'area_m2',
             'value',
             'block_id',
@@ -90,8 +88,8 @@ class ParcelForm extends Form
         $this->parcel->update([
             'number' => $this->number,
             'position' => $this->position,
-            'location' => $this->location ? new Point($this->location['lat'], $this->location['lng']) : null,
-            'area' => $this->area ? new Polygon([new LineString(array_map(fn ($point) => new Point($point['lat'], $point['lng']), $this->area))]) : null,
+            'location' => $this->location ? new Point($this->location['lat'], $this->location['lng']) : $this->parcel->location,
+            'area' => $this->area ? new Polygon([new LineString(array_map(fn ($point) => new Point($point['lat'], $point['lng']), $this->area))]) : $this->parcel->area,
             'area_m2' => $this->area_m2,
             'value' => $this->value,
             'block_id' => $this->block_id,

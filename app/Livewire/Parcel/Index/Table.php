@@ -2,7 +2,6 @@
 
 namespace App\Livewire\Parcel\Index;
 
-use App\Livewire\Forms\ParcelForm;
 use App\Livewire\Traits\SoftDeletes;
 use App\Livewire\Traits\Sortable;
 use App\Models\Parcel;
@@ -22,30 +21,10 @@ class Table extends Component
     use Sortable;
 
     public $model = null;
-    public $modal = false;
-    public ParcelForm $form;
 
     public function mount()
     {
         $this->model = new Parcel(); // This is used for the SoftDeletes trait
-    }
-
-    public function edit(Parcel $parcel)
-    {
-        $this->form->setParcel($parcel);
-        $this->modal = true;
-    }
-
-    public function update()
-    {
-        $update = $this->form->update();
-        if ($update) {
-            $this->modal = false;
-            $this->notification()->success(
-                'Lote actualizado',
-                'El lote se ha actualizado correctamente'
-            );
-        }
     }
 
     #[Renderless]

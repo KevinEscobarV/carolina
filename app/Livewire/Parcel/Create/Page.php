@@ -38,12 +38,16 @@ class Page extends Component
         $save = $this->form->save();
 
         if ($save) {
-            $this->notification()->success(
-                'Lote creado exitosamente',
-                'El lote se ha creado correctamente'
-            );
-
-            $this->dispatch('refresh-parcel-table');
+            $this->notification()->confirm([
+                'icon'        => 'success',
+                'title'       => 'Lote creado exitosamente',
+                'description' => 'El lote se ha creado correctamente',
+                'accept'      => [
+                    'label' => 'Volver a tabla de lotes',
+                    'url' => route('parcels'),
+                ],
+                'rejectLabel' => 'Permanecer aquí',
+            ]);
         }
     }
 
