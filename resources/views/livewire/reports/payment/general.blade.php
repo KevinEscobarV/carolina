@@ -8,6 +8,8 @@
     <div class="flex flex-col gap-4">
         <x-wireui-datetime-picker label="Fecha Inicial" placeholder="Fecha de pago" wire:model="fromDate" without-time />
         <x-wireui-datetime-picker label="Fecha Final" placeholder="Fecha de pago" wire:model="toDate" without-time />
+        <x-wireui-select label="Filtrar Medio de Pago" placeholder="Seleccione un medios de pago" :options="App\Enums\PaymentMethod::select()"
+            option-label="label" option-value="value" wire:model="paymentMethods" autocomplete="off" multiselect />
     </div>
     <div>
         <x-wireui-button class="w-full" icon="download" color="lime" label="Exportar" wire:click="exportGeneral" spinner="exportGeneral" />

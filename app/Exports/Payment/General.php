@@ -24,22 +24,25 @@ class General implements FromQuery, WithHeadings, WithMapping, ShouldAutoSize, W
     public function __construct(
         public string $fromDate,
         public string $toDate,
-    ) 
-    {}
+        public array $paymentMethods,
+    ) {
+    }
 
     /**
-    * @return \Illuminate\Support\Collection
-    */
+     * @return \Illuminate\Support\Collection
+     */
     public function query()
     {
         $query = Payment::query()->with('promise.buyers', 'promise.parcels.block')
-        ->whereDate('payment_date', '>=', $this->fromDate)->whereDate('payment_date', '<=', $this->toDate)->orderBy('payment_date', 'asc');
+            ->whereDate('payment_date', '>=', $this->fromDate)->whereDate('payment_date', '<=', $this->toDate)
+            ->when($this->paymentMethods, fn ($query) => $query->whereIn('payment_method', $this->paymentMethods))
+            ->orderBy('payment_date', 'asc');
         return $query;
     }
 
     /**
-    * @param Payment $payment
-    */
+     * @param Payment $payment
+     */
     public function map($payment): array
     {
         return [
@@ -51,9 +54,9 @@ class General implements FromQuery, WithHeadings, WithMapping, ShouldAutoSize, W
             $payment->bank ?? 'No aplica',
             $payment->payment_method->label(),
             $payment->promise ? $payment->promise->number : 'Sin promesa',
-            $payment->promise ? $payment->promise->buyers->map(fn($buyer) => $buyer->document_number)->implode(', ') : 'N/A',
-            $payment->promise ? $payment->promise->buyers->map(fn($buyer) => $buyer->names . ' ' . $buyer->surnames)->implode(', ') : 'N/A',
-            $payment->promise ? $payment->promise->parcels->map(fn($parcel) => $parcel->block->code . ':' . $parcel->number)->implode(', ') : 'N/A',
+            $payment->promise ? $payment->promise->buyers->map(fn ($buyer) => $buyer->document_number)->implode(', ') : 'N/A',
+            $payment->promise ? $payment->promise->buyers->map(fn ($buyer) => $buyer->names . ' ' . $buyer->surnames)->implode(', ') : 'N/A',
+            $payment->promise ? $payment->promise->parcels->map(fn ($parcel) => $parcel->block->code . ':' . $parcel->number)->implode(', ') : 'N/A',
             $payment->observations,
         ];
     }
@@ -126,8 +129,8 @@ class General implements FromQuery, WithHeadings, WithMapping, ShouldAutoSize, W
     {
         $highestRow = $event->sheet->getDelegate()->getHighestRow();
 
-        $agreement_amount = '=SUM(C2:C'.$highestRow.')'; 
-        $paid_amount = '=SUM(E2:E'.$highestRow.')';
+        $agreement_amount = '=SUM(C2:C' . $highestRow . ')';
+        $paid_amount = '=SUM(E2:E' . $highestRow . ')';
 
         // // Add total row
         $event->sheet->appendRows([

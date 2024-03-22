@@ -9,6 +9,7 @@ class General extends Component
 {
     public $fromDate;
     public $toDate;
+    public $paymentMethods = [];
 
     public function mount()
     {
@@ -18,8 +19,18 @@ class General extends Component
 
     public function exportGeneral()
     {
+        $this->validate([
+            'fromDate' => 'required|date',
+            'toDate' => 'required|date',
+        ],
+        [],
+        [
+            'fromDate' => 'fecha de inicial',
+            'toDate' => 'fecha de final',
+        ]);
+
         $name = 'Reporte-Pagos-' . now()->format('Y-m-d-h') . '.xlsx';
-        return (new PaymentGeneral($this->fromDate, $this->toDate))->download($name);
+        return (new PaymentGeneral($this->fromDate, $this->toDate, $this->paymentMethods))->download($name);
     }
 
     public function render()

@@ -52,7 +52,7 @@
         </div>
     </div>
     <div class="col-span-6 sm:col-span-3">
-        <x-wireui-select label="Medio de Pago" placeholder="Seleccione un medio de documento" :options="App\Enums\PaymentMethod::select()"
+        <x-wireui-select label="Medio de Pago" placeholder="Seleccione un medio de pago" :options="App\Enums\PaymentMethod::select()"
             option-label="label" option-value="value" wire:model="form.payment_method" autocomplete="off" />
     </div>
     <div class="col-span-6 sm:col-span-3">
