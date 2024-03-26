@@ -28,7 +28,7 @@
             option-value="id" multiselect />
     </div>
     <div class="col-span-6 sm:col-span-3">
-        <x-wireui-inputs.currency disabled label="Valor Bienes" placeholder="Suma de valor de Lotes" right-icon="trending-up" prefix="$" thousands="," precision="0" wire:model="form.value" />
+        <x-wireui-inputs.currency label="Valor Bienes" placeholder="Suma de valor de Lotes" right-icon="trending-up" prefix="$" thousands="," precision="0" wire:model="form.value" />
     </div>
     <div class="col-span-6 sm:col-span-3">
         <x-wireui-datetime-picker label="Fecha de firma" placeholder="Fecha de promesa" wire:model="form.signature_date" without-time />

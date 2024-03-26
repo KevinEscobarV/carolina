@@ -5,39 +5,78 @@ namespace App\Livewire\Forms;
 use App\Enums\CivilStatus;
 use App\Enums\DocumentType;
 use App\Models\Buyer;
-use Livewire\Attributes\Validate;
+use Illuminate\Validation\Rule;
 use Livewire\Form;
 
 class BuyerForm extends Form
 {
     public ?Buyer $buyer;
 
-    #[Validate('required|string|max:255', 'nombres')]
     public $names;
-
-    #[Validate('required|string|max:255', 'apellidos')]
     public $surnames;
-
-    #[Validate('required|email|max:255|unique:buyers,email', 'correo electrónico')]
     public $email;
-
-    #[Validate('required', 'tipo de documento')]
-    public DocumentType $document_type = DocumentType::CC;
-
-    #[Validate('required|string|max:255|unique:buyers,document_number', 'número de documento')]
+    public $document_type = DocumentType::CC;
     public $document_number;
-
-    #[Validate('required', 'estado civil')]
-    public CivilStatus $civil_status = CivilStatus::SINGLE;
-
-    #[Validate('required|string|max:255', 'teléfono principal')]
+    public $civil_status = CivilStatus::SINGLE;
     public $phone_one;
-
-    #[Validate('nullable|string|max:255', 'teléfono alternativo')]
     public $phone_two;
-
-    #[Validate('required|string|max:255', 'direccion')]
     public $address;
+
+    public function rules()
+    {
+        return [
+            'names' => 'required|string|max:255',
+            'surnames' => 'required|string|max:255',
+            'email' => 'required|email|max:255|unique:buyers,email',
+            'document_type' => [
+                'required',
+                Rule::enum(DocumentType::class)
+            ],
+            'document_number' => 'required|string|max:255|unique:buyers,document_number',
+            'civil_status' => [
+                'required',
+                Rule::enum(CivilStatus::class)
+            ],
+            'phone_one' => 'required|string|max:255',
+            'phone_two' => 'nullable|string|max:255',
+            'address' => 'required|string|max:255',
+        ];
+    }
+
+    public function editRules()
+    {
+        return [
+            'names' => 'required|string|max:255',
+            'surnames' => 'required|string|max:255',
+            'email' => 'required|email|max:255|unique:buyers,email,' . $this->buyer->id,
+            'document_type' => [
+                'required',
+                Rule::enum(DocumentType::class)
+            ],
+            'document_number' => 'required|string|max:255|unique:buyers,document_number,' . $this->buyer->id,
+            'civil_status' => [
+                'required',
+                Rule::enum(CivilStatus::class)
+            ],
+            'phone_one' => 'required|string|max:255',
+            'phone_two' => 'nullable|string|max:255',
+            'address' => 'required|string|max:255',
+        ];
+    }
+
+    public function validationAttributes() 
+    {
+        return [
+            'names' => 'nombres',
+            'surnames' => 'apellidos',
+            'email' => 'correo electrónico',
+            'document_type' => 'tipo de documento',
+            'document_number' => 'número de documento',
+            'civil_status' => 'estado civil',
+            'phone_one' => 'teléfono principal',
+            'phone_two' => 'teléfono alternativo',
+        ];
+    }
 
     public function setBuyer(Buyer $buyer): void
     {
@@ -57,7 +96,7 @@ class BuyerForm extends Form
 
     public function save()
     {
-        $this->validate();
+        $this->validate($this->rules());
 
         Buyer::create($this->all());
 
@@ -68,26 +107,7 @@ class BuyerForm extends Form
 
     public function update()
     {
-        $this->validate([
-            'names' => 'required|string|max:255',
-            'surnames' => 'required|string|max:255',
-            'email' => 'required|email|max:255|unique:buyers,email,' . $this->buyer->id,
-            'document_type' => 'required',
-            'document_number' => 'required|string|max:255|unique:buyers,document_number,' . $this->buyer->id,
-            'civil_status' => 'required',
-            'phone_one' => 'required|string|max:255',
-            'phone_two' => 'nullable|string|max:255',
-        ],
-        $attributes = [
-            'names' => 'nombres',
-            'surnames' => 'apellidos',
-            'email' => 'correo electrónico',
-            'document_type' => 'tipo de documento',
-            'document_number' => 'número de documento',
-            'civil_status' => 'estado civil',
-            'phone_one' => 'teléfono principal',
-            'phone_two' => 'teléfono alternativo',
-        ]);
+        $this->validate($this->editRules());
 
         $this->buyer->update($this->all());
 

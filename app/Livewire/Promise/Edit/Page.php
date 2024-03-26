@@ -3,6 +3,7 @@
 namespace App\Livewire\Promise\Edit;
 
 use App\Livewire\Forms\PromiseForm;
+use App\Models\Parcel;
 use App\Models\Promise;
 use Livewire\Attributes\Title;
 use Livewire\Component;
@@ -18,6 +19,11 @@ class Page extends Component
     public Promise $promise;
 
     public PromiseForm $form;
+
+    public function updatedFormParcels($parcels): void
+    {
+        $this->form->value = Parcel::whereIn('id', $parcels)->sum('value');
+    }
 
     public function mount()
     {

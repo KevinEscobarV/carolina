@@ -14,15 +14,19 @@
 </div>
 <div class="col-span-1">
     @if (isset($routeCreate))
-        <x-wireui-button href="{{ $routeCreate }}" icon="plus" label="Crear" lime wire:navigate />
+        <x-wireui-button href="{{ $routeCreate }}" class="h-full" icon="plus" label="Crear" lime wire:navigate />
     @else
-        <x-wireui-button x-on:click="open = ! open" lime>
+        <x-wireui-button x-on:click="open = ! open" class="h-full" lime>
             <span class="mr-2" x-text="open ? 'Cerrar' : 'Crear'"></span>
             <x-wireui-icon name="plus" class="w-5 h-5" />
         </x-wireui-button>
     @endif
 </div>
-<div class="col-span-3 flex justify-end">
+
+<div class="col-span-3 flex justify-end gap-3">
+    @if (isset($import))
+        {{ $import }}
+    @endif
     <x-wireui-button icon="{{ $trash ? 'x' : 'trash' }}" 
         label="{{ $trash ? 'Cerrar Papelera' : 'Papelera' }}" 
         color="{{ $trash ? 'secondary' : 'negative' }}"

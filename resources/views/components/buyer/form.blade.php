@@ -35,7 +35,7 @@
     <div class="col-span-6 sm:col-span-2">
         <x-wireui-select
             label="Estado Civil"
-            placeholder="Seleccione un tipo de documento"
+            placeholder="Seleccione un tipo de estado civil"
             :options="App\Enums\CivilStatus::select()"
             option-label="label"
             option-value="value"
