@@ -37,6 +37,7 @@
         </div>
         <div class="grid grid-cols-2 gap-4 sm:grid-cols-4 p-6">
             <livewire:reports.payment.general />
+            <livewire:reports.promises.general />
         </div>
     </div>
 </div>

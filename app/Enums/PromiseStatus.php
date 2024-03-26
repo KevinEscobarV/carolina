@@ -17,6 +17,15 @@ enum PromiseStatus: string
         };
     }
 
+    public function text(): string
+    {
+        return match ($this) {
+            self::PENDING => 'Pendiente',
+            self::CONFIRMED => 'Confirmado',
+            self::CANCELLED => 'Cancelado',
+        };
+    }
+
     public function badge(): string
     {
         return match ($this) {
@@ -43,12 +52,5 @@ enum PromiseStatus: string
                 'label' => $case->label(),
             ];
         })->toArray();
-    }
-
-    public static function implode(): string
-    {
-        return collect(self::cases())->map(function ($case) {
-            return '\'' . $case->value . '\''; // Add quotes to the value
-        })->implode(',');
     }
 }

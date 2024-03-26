@@ -61,6 +61,16 @@ class General implements FromQuery, WithHeadings, WithMapping, ShouldAutoSize, W
         ];
     }
 
+    public function columnFormats(): array
+    {
+        return [
+            'B' => NumberFormat::FORMAT_DATE_DDMMYYYY,
+            'C' => NumberFormat::FORMAT_ACCOUNTING_USD,
+            'D' => NumberFormat::FORMAT_DATE_DDMMYYYY,
+            'E' => NumberFormat::FORMAT_ACCOUNTING_USD,
+        ];
+    }
+
     public function headings(): array
     {
         return [
@@ -115,16 +125,6 @@ class General implements FromQuery, WithHeadings, WithMapping, ShouldAutoSize, W
         ];
     }
 
-    public function columnFormats(): array
-    {
-        return [
-            'B' => NumberFormat::FORMAT_DATE_DDMMYYYY,
-            'C' => NumberFormat::FORMAT_ACCOUNTING_USD,
-            'D' => NumberFormat::FORMAT_DATE_DDMMYYYY,
-            'E' => NumberFormat::FORMAT_ACCOUNTING_USD,
-        ];
-    }
-
     public static function afterSheet(AfterSheet $event)
     {
         $highestRow = $event->sheet->getDelegate()->getHighestRow();
@@ -132,11 +132,8 @@ class General implements FromQuery, WithHeadings, WithMapping, ShouldAutoSize, W
         $agreement_amount = '=SUM(C2:C' . $highestRow . ')';
         $paid_amount = '=SUM(E2:E' . $highestRow . ')';
 
-        // // Add total row
-        $event->sheet->appendRows([
-            ['', '', '', '', '', '', '', ''],
-            ['Total', '', $agreement_amount, '', $paid_amount, '', '', ''],
-        ], $event->sheet);
+        $event->sheet->setCellValue('C' . ($highestRow + 2), $agreement_amount);
+        $event->sheet->setCellValue('E' . ($highestRow + 2), $paid_amount);
 
         $event->sheet->getStyle('A' . ($highestRow + 2) . ':E' . ($highestRow + 2))->applyFromArray([
             'font' => ['bold' => true, 'size' => 12],
