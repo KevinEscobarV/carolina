@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Exports\Buyer;
+namespace App\Exports\Parcel;
 
-use App\Models\Buyer;
+use App\Models\Parcel;
 use Maatwebsite\Excel\Concerns\Exportable;
 use Maatwebsite\Excel\Concerns\FromQuery;
 use Maatwebsite\Excel\Concerns\RegistersEventListeners;
@@ -22,8 +22,8 @@ class General implements FromQuery, WithHeadings, WithMapping, ShouldAutoSize, W
     use Exportable, RegistersEventListeners;
 
     public function __construct(
-        public string $fromDate,
-        public string $toDate,
+        public string $position,
+        public string $status
     ) {
     }
 
@@ -32,76 +32,61 @@ class General implements FromQuery, WithHeadings, WithMapping, ShouldAutoSize, W
      */
     public function query()
     {
-        $query = Buyer::query()->with('promises.payments')
-            ->whereDate('created_at', '>=', $this->fromDate)->whereDate('created_at', '<=', $this->toDate)
+        $query = Parcel::query()->with('block', 'category', 'promise', 'deed')
+            ->when($this->position, fn ($query) => $query->where('position', $this->position))
+            ->when($this->status, fn ($query) => $this->status === 'available' ? $query->whereHas('promise') : $query->whereDoesntHave('promise'))
             ->orderBy('created_at', 'asc');
         return $query;
     }
 
     /**
-     * @param Buyer $buyer
+     * @param Parcel $parcel
      */
-    public function map($buyer): array
+    public function map($parcel): array
     {
         return [
-            $buyer->names,
-            $buyer->surnames,
-            $buyer->email,
-            $buyer->document_type->label(),
-            $buyer->document_number,
-            $buyer->civil_status->label(),
-            $buyer->phone_one,
-            $buyer->phone_two,
-            $buyer->address,
-            $buyer->category->name,
-            $buyer->promises->count(),
-            $buyer->promises ? $buyer->promises->map(fn ($promise) => $promise->number)->implode(', ') : 'Sin promesas',
-            $buyer->promises->sum('value'),
-            $buyer->promises->sum('total_paid'),
-            $buyer->last_payment ? Date::dateTimeToExcel($buyer->last_payment->payment_date) : 'Sin fecha',
-            $buyer->last_payment ? $buyer->last_payment->paid_amount : 0,
-            $buyer->created_at ? Date::dateTimeToExcel($buyer->created_at) : 'Sin fecha',
+            $parcel->category ? $parcel->category->name : 'Sin campaña',
+            $parcel->block->code,
+            $parcel->number,
+            $parcel->position->label(),
+            $parcel->area_m2,
+            $parcel->value,
+            $parcel->deed ? $parcel->deed->number : null,
+            $parcel->deed ? $parcel->deed->value : 0,
+            $parcel->deed ? Date::dateTimeToExcel($parcel->deed->signature_date) : null,
+            $parcel->promise ? $parcel->promise->number : null,
         ];
     }
 
     public function columnFormats(): array
     {
         return [
-            'M' => NumberFormat::FORMAT_ACCOUNTING_USD,
-            'N' => NumberFormat::FORMAT_ACCOUNTING_USD,
-            'O' => NumberFormat::FORMAT_DATE_DDMMYYYY,
-            'P' => NumberFormat::FORMAT_ACCOUNTING_USD,
-            'Q' => NumberFormat::FORMAT_DATE_DDMMYYYY,
+            'F' => NumberFormat::FORMAT_ACCOUNTING_USD,
+            'H' => NumberFormat::FORMAT_ACCOUNTING_USD,
+            'I' => NumberFormat::FORMAT_DATE_DDMMYYYY,
         ];
     }
 
     public function headings(): array
     {
         return [
-            'Nombres',
-            'Apellidos',
-            'Correo',
-            'Tipo de documento',
-            'Número de documento',
-            'Estado civil',
-            'Teléfono 1',
-            'Teléfono 2',
-            'Dirección',
             'Campaña',
-            'Promesas',
-            'Números de promesas',
-            'Valor total de promesas',
-            'Valor total pagado',
-            'Última fecha de pago',
-            'Último monto pagado',
-            'Fecha de creación',
+            'Manzana',
+            'Lote',
+            'Posición',
+            'Área (m2)',
+            'Valor',
+            'Escritura',
+            'Valor escritura',
+            'Fecha escritura',
+            'Promesa',
         ];
     }
 
     public function styles(Worksheet $sheet)
     {
         $sheet->getRowDimension(1)->setRowHeight(20);
-        $sheet->setAutoFilter('A1:Q1');
+        $sheet->setAutoFilter('A1:J1');
 
         return [
             1    => [
@@ -131,14 +116,14 @@ class General implements FromQuery, WithHeadings, WithMapping, ShouldAutoSize, W
     {
         $highestRow = $event->sheet->getDelegate()->getHighestRow();
 
-        $agreement_amount = '=SUM(M2:M' . $highestRow . ')';
-        $paid_amount = '=SUM(N2:N' . $highestRow . ')';
+        $agreement_amount = '=SUM(F2:F' . $highestRow . ')';
+        $paid_amount = '=SUM(H2:H' . $highestRow . ')';
 
-        $event->sheet->setCellValue('L' . ($highestRow + 2), 'Total');
-        $event->sheet->setCellValue('M' . ($highestRow + 2), $agreement_amount);
-        $event->sheet->setCellValue('N' . ($highestRow + 2), $paid_amount);
+        $event->sheet->setCellValue('E' . ($highestRow + 2), 'Total');
+        $event->sheet->setCellValue('F' . ($highestRow + 2), $agreement_amount);
+        $event->sheet->setCellValue('H' . ($highestRow + 2), $paid_amount);
 
-        $event->sheet->getStyle('A' . ($highestRow + 2) . ':Q' . ($highestRow + 2))->applyFromArray([
+        $event->sheet->getStyle('A' . ($highestRow + 2) . ':J' . ($highestRow + 2))->applyFromArray([
             'font' => ['bold' => true, 'size' => 12],
             'fill' => [
                 'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_GRADIENT_LINEAR,
@@ -161,4 +146,3 @@ class General implements FromQuery, WithHeadings, WithMapping, ShouldAutoSize, W
         ]);
     }
 }
-

@@ -92,7 +92,7 @@
                         <x-table.td class="first-letter:uppercase">
                             @if ($buyer->last_payment)
                                 <p class="font-medium text-indigo-700 dark:text-indigo-400">{{ $buyer->last_payment->payment_date->translatedFormat('F j/Y') }}</p>
-                                <p class="text-gray-500">$</span> {{ $buyer->last_payment->agreement_amount_formatted }} <span class="text-gray-500 text-sm">COP</p>
+                                <p class="text-gray-500">$</span> {{ $buyer->last_payment->paid_amount_formatted }} <span class="text-gray-500 text-sm">COP</p>
                             @else
                                 <p class="text-gray-400">Sin pagos</p>
                             @endif

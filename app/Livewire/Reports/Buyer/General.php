@@ -4,9 +4,11 @@ namespace App\Livewire\Reports\Buyer;
 
 use App\Exports\Buyer\General as BuyerGeneral;
 use Livewire\Component;
+use WireUi\Traits\Actions;
 
 class General extends Component
 {
+    use Actions;
     public $fromDate;
     public $toDate;
 
