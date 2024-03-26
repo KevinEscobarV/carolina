@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Exports\Promises;
+namespace App\Exports\Promise;
 
 use App\Models\Promise;
 use Maatwebsite\Excel\Concerns\Exportable;

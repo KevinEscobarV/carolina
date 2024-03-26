@@ -1,21 +1,18 @@
 <?php
 
-namespace App\Livewire\Reports\Payment;
+namespace App\Livewire\Reports\Buyer;
 
-use App\Exports\Payment\General as PaymentGeneral;
+use App\Exports\Buyer\General as BuyerGeneral;
 use Livewire\Component;
-use WireUi\Traits\Actions;
 
 class General extends Component
 {
-    use Actions;
     public $fromDate;
     public $toDate;
-    public $paymentMethods = [];
 
     public function mount()
     {
-        $this->fromDate = now()->subMonth();
+        $this->fromDate = now()->subYear();
         $this->toDate = now();
     }
 
@@ -32,13 +29,13 @@ class General extends Component
         ]);
 
         try {
-            $name = 'Reporte-Pagos-' . now()->format('Y-m-d-h') . '.xlsx';
-            $report = new PaymentGeneral($this->fromDate, $this->toDate, $this->paymentMethods);
+            $name = 'Reporte-Clientes-' . now()->format('Y-m-d-h') . '.xlsx';
+            $report = new BuyerGeneral($this->fromDate, $this->toDate);
 
             $this->notification()->success('Reporte generado', 'El reporte se ha exportado correctamente');
 
             return $report->download($name);
-            
+
         } catch (\Throwable $th) {
             $this->notification()->error(
                 'Error al exportar el reporte',
@@ -49,6 +46,6 @@ class General extends Component
 
     public function render()
     {
-        return view('livewire.reports.payment.general');
+        return view('livewire.reports.buyer.general');
     }
 }
