@@ -11,12 +11,13 @@ class General extends Component
     use Actions;
     public $status = '';
     public $position = '';
+    public $registrationNumber = '';
 
     public function exportGeneral()
     {
         try {
             $name = 'Reporte-Lotes-' . now()->format('Y-m-d-h') . '.xlsx';
-            $report = new ParcelGeneral($this->position, $this->status);
+            $report = new ParcelGeneral($this->position, $this->status, $this->registrationNumber);
 
             $this->notification()->success('Reporte generado', 'El reporte se ha exportado correctamente');
 

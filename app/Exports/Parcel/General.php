@@ -23,7 +23,8 @@ class General implements FromQuery, WithHeadings, WithMapping, ShouldAutoSize, W
 
     public function __construct(
         public string $position,
-        public string $status
+        public string $status,
+        public string $registrationNumber
     ) {
     }
 
@@ -32,7 +33,8 @@ class General implements FromQuery, WithHeadings, WithMapping, ShouldAutoSize, W
      */
     public function query()
     {
-        $query = Parcel::query()->with('block', 'category', 'promise', 'deed')
+        $query = Parcel::query()->with('block', 'category', 'promise.deed')
+            ->when($this->registrationNumber, fn ($query) => $this->registrationNumber === 'withRegistrationNumber' ? $query->whereNotNull('registration_number') : $query->whereNull('registration_number'))
             ->when($this->position, fn ($query) => $query->where('position', $this->position))
             ->when($this->status, fn ($query) => $this->status === 'available' ? $query->whereHas('promise') : $query->whereDoesntHave('promise'))
             ->orderBy('created_at', 'asc');
@@ -44,6 +46,8 @@ class General implements FromQuery, WithHeadings, WithMapping, ShouldAutoSize, W
      */
     public function map($parcel): array
     {
+        $deed = $parcel->promise ? $parcel->promise->deed : null;
+
         return [
             $parcel->category ? $parcel->category->name : 'Sin campaña',
             $parcel->block->code,
@@ -51,10 +55,13 @@ class General implements FromQuery, WithHeadings, WithMapping, ShouldAutoSize, W
             $parcel->position->label(),
             $parcel->area_m2,
             $parcel->value,
-            $parcel->deed ? $parcel->deed->number : null,
-            $parcel->deed ? $parcel->deed->value : 0,
-            $parcel->deed ? Date::dateTimeToExcel($parcel->deed->signature_date) : null,
             $parcel->promise ? $parcel->promise->number : null,
+            $parcel->promise ? $parcel->promise->value : 0,
+            $parcel->promise ? Date::dateTimeToExcel($parcel->promise->signature_date) : null,
+            $parcel->registration_number,
+            $deed ? $deed->number : null,
+            $deed ? $deed->value : 0,
+            $deed ? Date::dateTimeToExcel($deed->signature_date) : null,
         ];
     }
 
@@ -64,6 +71,9 @@ class General implements FromQuery, WithHeadings, WithMapping, ShouldAutoSize, W
             'F' => NumberFormat::FORMAT_ACCOUNTING_USD,
             'H' => NumberFormat::FORMAT_ACCOUNTING_USD,
             'I' => NumberFormat::FORMAT_DATE_DDMMYYYY,
+            'K' => NumberFormat::FORMAT_TEXT,
+            'L' => NumberFormat::FORMAT_ACCOUNTING_USD,
+            'M' => NumberFormat::FORMAT_DATE_DDMMYYYY,
         ];
     }
 
@@ -76,17 +86,20 @@ class General implements FromQuery, WithHeadings, WithMapping, ShouldAutoSize, W
             'Posición',
             'Área (m2)',
             'Valor',
+            'Promesa',
+            'Valor promesa',
+            'Fecha promesa',
+            'Folio de Matrícula',
             'Escritura',
             'Valor escritura',
             'Fecha escritura',
-            'Promesa',
         ];
     }
 
     public function styles(Worksheet $sheet)
     {
         $sheet->getRowDimension(1)->setRowHeight(20);
-        $sheet->setAutoFilter('A1:J1');
+        $sheet->setAutoFilter('A1:M1');
 
         return [
             1    => [
@@ -116,14 +129,13 @@ class General implements FromQuery, WithHeadings, WithMapping, ShouldAutoSize, W
     {
         $highestRow = $event->sheet->getDelegate()->getHighestRow();
 
-        $agreement_amount = '=SUM(F2:F' . $highestRow . ')';
-        $paid_amount = '=SUM(H2:H' . $highestRow . ')';
+        $parcels_value = '=SUM(F2:F' . $highestRow . ')';
 
         $event->sheet->setCellValue('E' . ($highestRow + 2), 'Total');
-        $event->sheet->setCellValue('F' . ($highestRow + 2), $agreement_amount);
-        $event->sheet->setCellValue('H' . ($highestRow + 2), $paid_amount);
+        $event->sheet->setCellValue('F' . ($highestRow + 2), $parcels_value);
+        
 
-        $event->sheet->getStyle('A' . ($highestRow + 2) . ':J' . ($highestRow + 2))->applyFromArray([
+        $event->sheet->getStyle('A' . ($highestRow + 2) . ':M' . ($highestRow + 2))->applyFromArray([
             'font' => ['bold' => true, 'size' => 12],
             'fill' => [
                 'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_GRADIENT_LINEAR,

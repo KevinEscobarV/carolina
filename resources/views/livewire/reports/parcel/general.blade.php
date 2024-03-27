@@ -12,6 +12,10 @@
         <x-wireui-select label="Filtrar estado" placeholder="Seleccione un estado" 
             :options="[['label' => 'Disponible 🟢', 'value' => 'available'], ['label' => 'Vendido 🟡', 'value' => 'sold']]"
             option-label="label" option-value="value" wire:model="status" autocomplete="off" />
+
+        <x-wireui-select label="Filtrar folio" placeholder="Seleccione un item" 
+            :options="[['label' => 'Con folio de matricula 🟢', 'value' => 'withRegistrationNumber'], ['label' => 'Sin folio de matricula 🟡', 'value' => 'withoutRegistrationNumber']]"
+            option-label="label" option-value="value" wire:model="registrationNumber" autocomplete="off" />
     </div>
     <div class="mt-auto">
         <x-wireui-button class="w-full" icon="download" color="red" label="Exportar" wire:click="exportGeneral" spinner="exportGeneral" />
