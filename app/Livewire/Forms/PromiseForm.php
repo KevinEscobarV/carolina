@@ -40,16 +40,16 @@ class PromiseForm extends Form
     public $interest_rate = 0;
     
     #[Validate('required', 'frecuencia de pago')]
-    public PaymentFrequency $payment_frequency = PaymentFrequency::MONTHLY;
+    public $payment_frequency = PaymentFrequency::MONTHLY;
 
     #[Validate('nullable|date', 'fecha de corte')]
     public $cut_off_date;
 
     #[Validate('nullable', 'método de pago')]
-    public PromisePaymentMethod $payment_method = PromisePaymentMethod::CASH;
+    public $payment_method = PromisePaymentMethod::CASH;
 
     #[Validate('nullable', 'estado')]
-    public PromiseStatus $status = PromiseStatus::CONFIRMED;
+    public $status = PromiseStatus::CONFIRMED;
 
     #[Validate('nullable', 'observaciones')]
     public $observations;

@@ -9,7 +9,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use MatanYadaev\EloquentSpatial\Objects\Point;
@@ -31,6 +30,7 @@ class Parcel extends Model
         'location',
         'area',
         'area_m2',
+        'registration_number',
         'value',
         'block_id',
         'promise_id',
@@ -67,14 +67,6 @@ class Parcel extends Model
     public function promise(): BelongsTo
     {
         return $this->belongsTo(Promise::class);
-    }
-
-    /**
-     * Get the deed for the parcel.
-     */
-    public function deed(): HasOne
-    {
-        return $this->hasOne(Deed::class);
     }
 
     /**

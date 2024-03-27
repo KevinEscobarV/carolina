@@ -43,7 +43,7 @@ class Table extends Component
     public function render()
     {
         return view('livewire.deed.index.table', [
-            'deeds' => Deed::search($this->search)->sort($this->sortCol, $this->sortAsc)->with('parcel.block', 'parcel.promise.buyers')->trash($this->trash)->paginate($this->perPage),
+            'deeds' => Deed::search($this->search)->sort($this->sortCol, $this->sortAsc)->with('promise.parcels.block', 'promise.buyers')->trash($this->trash)->paginate($this->perPage),
         ]);
     }
 }

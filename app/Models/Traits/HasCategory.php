@@ -14,11 +14,11 @@ trait HasCategory
      */
     public static function bootHasCategory(): void
     {
-        static::creating(function ($model) {
-            $model->category_id = auth()->user()->currentCategory->id;
-        });
+        // static::creating(function ($model) {
+        //     $model->category_id = auth()->user()->currentCategory->id;
+        // });
 
-        static::addGlobalScope(new CategoryScope);
+        // static::addGlobalScope(new CategoryScope);
     }
 
     /**

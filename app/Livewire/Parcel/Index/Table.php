@@ -42,7 +42,7 @@ class Table extends Component
     public function render()
     {
         return view('livewire.parcel.index.table', [
-            'parcels' => Parcel::search($this->search)->sort($this->sortCol, $this->sortAsc)->with('block.category', 'promise')->trash($this->trash)->paginate($this->perPage),
+            'parcels' => Parcel::search($this->search)->sort($this->sortCol, $this->sortAsc)->with('block.category', 'promise.buyers')->trash($this->trash)->paginate($this->perPage),
         ]);
     }
 }

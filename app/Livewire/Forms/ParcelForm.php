@@ -18,7 +18,7 @@ class ParcelForm extends Form
     public $number;
 
     #[Validate('required', 'ubicacion')]
-    public ParcelPosition $position = ParcelPosition::POSITION_MIDDLE;
+    public $position = ParcelPosition::POSITION_MIDDLE;
 
     #[Validate('nullable', 'localizacion')]
     public $location;
@@ -28,6 +28,9 @@ class ParcelForm extends Form
 
     #[Validate('nullable|numeric', 'area en m2')]
     public $area_m2 = 0;
+
+    #[Validate('nullable', 'folio de matricula')]
+    public $registration_number;
 
     #[Validate('nullable|numeric', 'valor')]
     public $value = 0;
@@ -45,6 +48,7 @@ class ParcelForm extends Form
             'number',
             'position',
             'area_m2',
+            'registration_number',
             'value',
             'block_id',
             'promise_id',
@@ -66,6 +70,7 @@ class ParcelForm extends Form
             'location' => $this->location ? new Point($this->location['lat'], $this->location['lng']) : null,
             'area' => $this->area ? new Polygon([new LineString(array_map(fn ($point) => new Point($point['lat'], $point['lng']), $this->area))]) : null,
             'area_m2' => $this->area_m2,
+            'registration_number' => $this->registration_number,
             'value' => $this->value,
             'block_id' => $this->block_id,
             'promise_id' => $this->promise_id,
@@ -91,6 +96,7 @@ class ParcelForm extends Form
             'location' => $this->location ? new Point($this->location['lat'], $this->location['lng']) : $this->parcel->location,
             'area' => $this->area ? new Polygon([new LineString(array_map(fn ($point) => new Point($point['lat'], $point['lng']), $this->area))]) : $this->parcel->area,
             'area_m2' => $this->area_m2,
+            'registration_number' => $this->registration_number,
             'value' => $this->value,
             'block_id' => $this->block_id,
             'promise_id' => $this->promise_id,

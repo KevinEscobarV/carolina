@@ -33,7 +33,7 @@ class PaymentForm extends Form
     public $bank;
 
     #[Validate('required', 'método de pago')]
-    public PaymentMethod $payment_method = PaymentMethod::CASH;
+    public $payment_method = PaymentMethod::CASH;
 
     #[Validate('nullable', 'observaciones')]
     public $observations;

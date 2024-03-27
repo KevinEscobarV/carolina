@@ -16,7 +16,7 @@
         </x-card>
         <x-card>
             <div x-data="map" wire:ignore class="rounded-lg overflow-hidden">
-                <div id="map" style="height: 530px; width: 100%"></div>
+                <div id="map" style="height: 680px; width: 100%"></div>
             </div>
         </x-card>
     </div>

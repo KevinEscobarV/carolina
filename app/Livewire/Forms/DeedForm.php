@@ -24,13 +24,13 @@ class DeedForm extends Form
     public $book;
 
     #[Validate('required', 'estado')]
-    public DeedStatus $status = DeedStatus::PAID;
+    public $status = DeedStatus::PAID;
 
     #[Validate('nullable', 'observaciones')]
     public $observations;
 
-    #[Validate('required|exists:parcels,id', 'lote')]
-    public $parcel_id;
+    #[Validate('required|exists:promises,id', 'promesa')]
+    public $promise_id;
 
     public function setModel(Deed $model): void
     {
@@ -42,7 +42,7 @@ class DeedForm extends Form
             'book',
             'status',
             'observations',
-            'parcel_id'
+            'promise_id'
         ]));
     }
 

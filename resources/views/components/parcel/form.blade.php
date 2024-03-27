@@ -2,7 +2,7 @@
     <div class="col-span-6">
         <div class="flex items-center gap-3">
             <div class="border-2 border-lime-500 rounded-full h-10 w-10 flex items-center justify-center">
-                <x-wireui-icon name="map" class="h-6 text-lime-500" />
+                <x-icon name="map" class="h-6 text-lime-500" />
             </div>
             <h2 class="text-xl text-gray-800 dark:text-gray-200 leading-tight">
                 Información de Lote
@@ -28,12 +28,25 @@
         <x-wireui-inputs.currency label="Valor Lote (Opcional)" placeholder="Valor Lote" right-icon="trending-up" prefix="$" thousands="," precision="0" wire:model="form.value" />
     </div>
     <div class="col-span-6">
-        <div class="flex items-center gap-3 mt-6">
-            <div class="border-2 border-yellow-500 rounded-full h-10 w-10 flex items-center justify-center">
-                <x-wireui-icon name="scale" class="h-6 text-yellow-500" />
+        <div class="flex items-center gap-3">
+            <div class="border-2 border-violet-500 rounded-full h-10 w-10 flex items-center justify-center">
+                <x-icon name="book-open" class="h-6 text-violet-500" />
             </div>
             <h2 class="text-xl text-gray-800 dark:text-gray-200 leading-tight">
-                Promesa <span class="text-sm text-gray-500 dark:text-gray-400">(Opcional)</span>
+                Folio de matricula N°
+            </h2>
+        </div>
+    </div>
+    <div class="col-span-6 sm:col-span-4">
+        <x-wireui-input label="Numero de matricula" right-icon="book-open" wire:model="form.registration_number" />
+    </div>
+    <div class="col-span-6">
+        <div class="flex items-center gap-3 mt-6">
+            <div class="border-2 border-yellow-500 rounded-full h-10 w-10 flex items-center justify-center">
+                <x-icon name="scale" class="h-6 text-yellow-500" />
+            </div>
+            <h2 class="text-xl text-gray-800 dark:text-gray-200 leading-tight">
+                Asignar a una Promesa <span class="text-sm text-gray-500 dark:text-gray-400">(Opcional)</span>
             </h2>
         </div>
     </div>

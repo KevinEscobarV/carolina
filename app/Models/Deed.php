@@ -20,7 +20,7 @@ class Deed extends Model
         'book',
         'status',
         'observations',
-        'parcel_id',
+        'promise_id',
         'category_id'
     ];
 
@@ -29,9 +29,9 @@ class Deed extends Model
         'status' => DeedStatus::class
     ];
 
-    public function parcel()
+    public function promise()
     {
-        return $this->belongsTo(Parcel::class);
+        return $this->belongsTo(Promise::class);
     }
 
     public function getValueFormattedAttribute(): string
@@ -51,16 +51,14 @@ class Deed extends Model
         if ($search) {
             $query->where('number', 'like', '%' . $search . '%')
                 ->orWhere('book', 'like', '%' . $search . '%')
-                ->orWhereHas('parcel', function ($query) use ($search) {
-                    $query->whereHas('promise', function ($query) use ($search) {
-                        $query->whereHas('buyers', function ($query) use ($search) {
-                            $query->where('names', 'like', '%' . $search . '%');
-                        });
+                ->orWhereHas('promise', function ($query) use ($search) {
+                    $query->whereHas('buyers', function ($query) use ($search) {
+                        $query->where('names', 'like', '%' . $search . '%');
                     });
                 });
         }
     }
-    
+
     /**
      * Scope a query to only include buyers that match the search.
      * 
@@ -71,18 +69,7 @@ class Deed extends Model
     public function scopeSort(Builder $query, string $column = null, bool $asc): void
     {
         if ($column) {
-            if ($column == 'parcel') {
-                $query->join('parcels', 'parcels.id', '=', 'deeds.parcel_id')
-                    ->orderBy('parcels.number', $asc ? 'asc' : 'desc')
-                    ->select('deeds.*');
-            } else if ($column == 'block') {
-                $query->join('parcels', 'parcels.id', '=', 'deeds.parcel_id')
-                    ->join('blocks', 'blocks.id', '=', 'parcels.block_id')
-                    ->orderBy('blocks.code', $asc ? 'asc' : 'desc')
-                    ->select('deeds.*');
-            } else {
-                $query->orderBy($column, $asc ? 'asc' : 'desc');
-            }
+            $query->orderBy($column, $asc ? 'asc' : 'desc');
         }
     }
 

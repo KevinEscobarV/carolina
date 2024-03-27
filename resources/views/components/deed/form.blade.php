@@ -7,19 +7,13 @@
                 </span>
             </div>
             <h2 class="text-xl text-gray-800 dark:text-gray-200 leading-tight">
-                Selección de Bienes
+                Selección de Promesa
             </h2>
         </div>
     </div>
     <div class="col-span-6 sm:col-span-3">
-        <x-wireui-select label="Manzanas" wire:model.live="block"
-            placeholder="Seleccione una Manzana" :async-data="route('api.blocks.index')" option-label="code"
-            option-value="id" />
-    </div>
-    <div class="col-span-6 sm:col-span-3">
-        <x-wireui-select label="Lote" wire:model.live.debounce.500ms="form.parcel_id" empty-message="Seleccione una manzana primero"
-            :async-data="route('api.parcels.deeds', $block)"
-            placeholder="Seleccione el Lote"  option-label="number"
+        <x-wireui-select label="Promesa " wire:model="form.promise_id"
+            placeholder="Buscar por Promesa o Usuario" :async-data="route('api.promises.index')" option-label="number"
             option-value="id" />
     </div>
     <div class="col-span-6">
@@ -35,7 +29,7 @@
         </div>
     </div>
     <div class="col-span-6 sm:col-span-3">
-        <x-wireui-input label="Numero de Folio de Matricula" right-icon="bookmark" placeholder="Numero Escritura" wire:model="form.number" />
+        <x-wireui-input label="Numero de Escritura" right-icon="bookmark" placeholder="Numero Escritura" wire:model="form.number" />
     </div>
     <div class="col-span-6 sm:col-span-3">
         <x-wireui-input label="Libro (Opcional)" right-icon="book-open" placeholder="Numero de Libro" wire:model="form.book" />

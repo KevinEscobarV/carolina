@@ -1,6 +1,10 @@
 <div class="divide-y divide-gray-200 rounded-xl bg-white shadow-sm ring-1 ring-gray-950/5 dark:divide-white/10 dark:bg-gray-800 dark:ring-white/10">
     <div class="flex flex-col sm:grid grid-cols-8 gap-2 p-6">
-        <x-table.header :$trash routeCreate="{{route('parcels.create')}}" />
+        <x-table.header :$trash routeCreate="{{route('parcels.create')}}">
+            <x-slot name="import">
+                <livewire:parcel.index.import-registration-number />
+            </x-slot>
+        </x-table.header>
         {{-- <x-parcel.index.bulk-actions /> --}}
     </div>
     {{-- parcels table... --}}
@@ -22,12 +26,21 @@
                     <x-table.sortable column="value" :$sortCol :$sortAsc right>
                         Valor
                     </x-table.sortable>
+                    <x-table.th>
+                        Promesa
+                    </x-table.th>
+                    <x-table.th>
+                        Compradores
+                    </x-table.th>
                     <x-table.sortable column="promise_id" :$sortCol :$sortAsc>
                         Estado
                     </x-table.sortable>
-                    <x-table.th>
-                        Campaña
-                    </x-table.th>
+                    <x-table.sortable column="registration_number" :$sortCol :$sortAsc>
+                        Folio de matricula N°
+                    </x-table.sortable>
+                    <x-table.sortable column="updated_at" :$sortCol :$sortAsc>
+                        Fecha actualización
+                    </x-table.sortable>
                     <x-table.th>
                     </x-table.th>
                 </tr>
@@ -60,14 +73,49 @@
                         </x-table.td>
                         <x-table.td>
                             @if ($parcel->promise_id)
+                                <p class="font-medium">
+                                    {{ $parcel->promise->number }}
+                                </p>
+                            @else
+                                <p class="font-medium text-sm text-gray-400">
+                                    Libre
+                                </p>
+                            @endif
+                        </x-table.td>
+                        <x-table.td>
+                            @if ($parcel->promise_id)
+                                <div class="flex flex-col gap-1 max-h-20 soft-scrollbar overflow-auto">
+                                    @forelse ($parcel->promise->buyers as $user)
+                                        <span class="text-xs text-gray-600 dark:text-gray-300">{{ $user->names }} {{ $user->surnames }}</span>
+                                    @empty
+                                        <span class="text-xs text-gray-600 dark:text-gray-300">Sin compradores</span>
+                                    @endforelse
+                                </div>
+                            @else
+                                <span class="text-xs text-gray-600 dark:text-gray-300">Sin compradores</span>
+                            @endif
+                        </x-table.td>
+                        <x-table.td>
+                            @if ($parcel->promise_id)
                                 <x-wireui-badge lg icon="{{ $parcel->promise->status->icon() }}" flat rounded color="{{ $parcel->promise->status->badge() }}" label="{{ $parcel->promise->status->label() }}" />
                             @else
                                 <x-wireui-badge lg icon="lock-open" rounded indigo flat label="Disponible" />
                             @endif
                         </x-table.td>
                         <x-table.td>
-                            <p class="font-medium text-lg">
-                                {{ $parcel->block->category->name }}
+                            @if ($parcel->registration_number)
+                                <p class="font-medium text-lg">
+                                    {{ $parcel->registration_number }}
+                                </p>
+                            @else
+                                <p class="font-medium text-sm text-gray-400">
+                                    Sin asignar
+                                </p>
+                            @endif
+                        </x-table.td>
+                        <x-table.td>
+                            <p class="font-medium first-letter:uppercase text-sm text-gray-400">
+                                {{ $parcel->updated_at->translatedFormat('F j, Y') }}
                             </p>
                         </x-table.td>
                         <x-table.actions :item="$parcel" :route="route('parcels.edit', $parcel->id)" />
