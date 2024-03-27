@@ -57,7 +57,7 @@
                             {{ $deed->number }}
                         </x-table.td>
                         <x-table.td>
-                            <x-wireui-badge lg right-icon="{{ $deed->status->icon() }}" flat rounded color="{{ $deed->status->badge() }}" label="{{ $deed->status->label() }}" />
+                            <x-wireui-badge md right-icon="{{ $deed->status->icon() }}" flat rounded color="{{ $deed->status->badge() }}" label="{{ $deed->status->label() }}" />
                         </x-table.td>
                         <x-table.td class="first-letter:uppercase">
                             {{ $deed->signature_date ? $deed->signature_date->translatedFormat("F j/Y") : 'Sin definir' }}
@@ -83,35 +83,27 @@
                                 <span class="text-xs text-gray-600 dark:text-gray-300">Sin compradores</span>
                             @endif
                         </x-table.td>
-                        <td colspan="3" class="border-l border-gray-200 dark:border-gray-700">
-                            <div class="divide-y divide-gray-200 dark:divide-gray-700">
-                                @if ($deed->promise)
-                                    <div class="flex items-center px-6 py-3">
-                                        <div class="flex gap-2 items-center whitespace-nowrap pr-3 w-40">
-                                            <p>{{ $deed->promise->number }}</p> <x-icon name="hand-raised" class="w-4 h-4 text-gray-500" />
-                                        </div>
-                                        <div class="whitespace-nowrap px-3 w-48">
-                                            <p class="font-light text-lg">
-                                                <span class="text-gray-400">$</span> {{ $deed->promise->value_formatted }} <span class="text-gray-400 text-sm">COP</span>
-                                            </p>
-                                            <p class="font-light text-gray-400 text-sm">
-                                                {{ $deed->promise->status->label() }}
-                                            </p>
-                                        </div>
-                                        <div class="whitespace-nowrap px-3">
-                                            {!! deed->$promise->parcels->groupBy('block_id')->map(function ($parcels) {
-                                                return '<span class="dark:text-amber-500 text-amber-600 font-bold">' . $parcels->first()->block->code . ' : </span>' . $parcels->pluck('number')->join(', ');
-                                            })->join('<br>'); !!}
-                                        </div>
-                                    </div>
-                                @else
-                                    <div class="flex justify-center items-center gap-2">
-                                        <x-wireui-icon name="document-search" class="w-8 h-8 text-gray-400" />
-                                        <span class="font-medium py-8">No se encontraron promesas...</span>
-                                    </div>
-                                @endif
-                            </div>
-                        </td>
+                        <x-table.td>
+                            @if ($deed->promise)
+                                <span class="text-xs text-gray-600 dark:text-gray-300">{{ $deed->promise->number }}</span>
+                            @else
+                                <span class="text-xs text-gray-600 dark:text-gray-300">Sin promesa</span>
+                            @endif
+                        </x-table.td>
+                        <x-table.td class="text-right">
+                            <p class="font-light text-lg">
+                                <span class="text-gray-400">$</span> {{ $deed->promise ? $deed->promise->value_formatted : 'Sin definir' }} <span class="text-gray-400 text-sm">COP</span>
+                            </p>
+                        </x-table.td>
+                        <x-table.td>
+                            @if ($deed->promise->parcels->isNotEmpty())
+                                {!! $deed->promise->parcels->groupBy('block_id')->map(function ($parcels) {
+                                    return '<span class="dark:text-amber-500 text-amber-600 font-bold">' . $parcels->first()->block->code . ' : </span>' . $parcels->pluck('number')->join(', ');
+                                })->join('<br>'); !!}
+                            @else
+                                <span class="text-xs text-gray-400">Sin lotes</span>
+                            @endif
+                        </x-table.td>
                         <x-table.td>
                             {{ str($deed->observations)->words(20) }}
                         </x-table.td>

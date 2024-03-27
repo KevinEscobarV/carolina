@@ -97,14 +97,14 @@
                         </x-table.td>
                         <x-table.td>
                             @if ($parcel->promise_id)
-                                <x-wireui-badge lg icon="{{ $parcel->promise->status->icon() }}" flat rounded color="{{ $parcel->promise->status->badge() }}" label="{{ $parcel->promise->status->label() }}" />
+                                <x-wireui-badge md icon="{{ $parcel->promise->status->icon() }}" flat rounded color="{{ $parcel->promise->status->badge() }}" label="{{ $parcel->promise->status->label() }}" />
                             @else
-                                <x-wireui-badge lg icon="lock-open" rounded indigo flat label="Disponible" />
+                                <x-wireui-badge md icon="lock-open" rounded indigo flat label="Disponible" />
                             @endif
                         </x-table.td>
                         <x-table.td>
                             @if ($parcel->registration_number)
-                                <p class="font-medium text-lg">
+                                <p class="font-medium">
                                     {{ $parcel->registration_number }}
                                 </p>
                             @else

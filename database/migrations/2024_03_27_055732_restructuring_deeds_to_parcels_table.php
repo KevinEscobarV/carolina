@@ -17,19 +17,26 @@ return new class extends Migration
             $table->string('registration_number')->nullable()->unique()->after('area_m2');
         });
 
-        DB::select('UPDATE parcels p
+        if (config('database.default') === 'pgsql') {
+            DB::select('UPDATE parcels
+            SET registration_number = d.number
+            FROM deeds d
+            WHERE parcels.id = d.parcel_id;');
+        } else {
+            DB::select('UPDATE parcels p
             JOIN deeds d ON p.id = d.parcel_id
             SET p.registration_number = d.number');
-        
+        }
+
         DB::select('DELETE FROM deeds');
 
         Schema::table('deeds', function (Blueprint $table) {
             $table->foreignId('promise_id')
-            ->unique()
-            ->after('observations')
-            ->constrained('promises')
-            ->cascadeOnDelete()
-            ->cascadeOnUpdate();
+                ->unique()
+                ->after('observations')
+                ->constrained('promises')
+                ->cascadeOnDelete()
+                ->cascadeOnUpdate();
 
             $table->dropForeign(['parcel_id']);
             $table->dropUnique(['parcel_id']);

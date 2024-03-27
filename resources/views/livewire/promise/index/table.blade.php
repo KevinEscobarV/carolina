@@ -78,7 +78,7 @@
                             </div>
                         </x-table.td>
                         <x-table.td>
-                            <x-wireui-badge lg right-icon="{{ $promise->status->icon() }}" flat rounded color="{{ $promise->status->badge() }}" label="{{ $promise->status->label() }}" />
+                            <x-wireui-badge md right-icon="{{ $promise->status->icon() }}" flat rounded color="{{ $promise->status->badge() }}" label="{{ $promise->status->label() }}" />
                         </x-table.td>
                         <x-table.td class="first-letter:uppercase">
                             {{ $promise->signature_date ? $promise->signature_date->translatedFormat("F j/Y") : 'Sin definir' }}
