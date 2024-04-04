@@ -22,8 +22,8 @@ class General implements FromQuery, WithHeadings, WithMapping, ShouldAutoSize, W
     use Exportable, RegistersEventListeners;
 
     public function __construct(
-        public string $fromDate,
-        public string $toDate,
+        public $fromDate = null,
+        public $toDate = null,
     ) {
     }
 

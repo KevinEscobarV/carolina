@@ -22,11 +22,10 @@ class General implements FromQuery, WithHeadings, WithMapping, ShouldAutoSize, W
     use Exportable, RegistersEventListeners;
 
     public function __construct(
-        public string $position,
-        public string $status,
-        public string $registrationNumber
-    ) {
-    }
+        public $position = null,
+        public $status = null,
+        public $registrationNumber = null,
+    ) {}
 
     /**
      * @return \Illuminate\Support\Collection

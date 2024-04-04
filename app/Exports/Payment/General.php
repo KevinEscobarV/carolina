@@ -22,11 +22,10 @@ class General implements FromQuery, WithHeadings, WithMapping, ShouldAutoSize, W
     use Exportable, RegistersEventListeners;
 
     public function __construct(
-        public string $fromDate,
-        public string $toDate,
-        public array $paymentMethods,
-    ) {
-    }
+        public $fromDate = null,
+        public $toDate = null,
+        public $paymentMethods = null,
+    ) {}
 
     /**
      * @return \Illuminate\Support\Collection
