@@ -32,11 +32,15 @@ class General implements FromQuery, WithHeadings, WithMapping, ShouldAutoSize, W
      */
     public function query()
     {
-        $query = Parcel::query()->with('block', 'category', 'promise.deed')
-            ->when($this->registrationNumber, fn ($query) => $this->registrationNumber === 'withRegistrationNumber' ? $query->whereNotNull('registration_number') : $query->whereNull('registration_number'))
+        $query = Parcel::query()
+            ->when($this->registrationNumber, fn ($query) => $this->registrationNumber == 'withRegistrationNumber' ? $query->whereNotNull('registration_number') : $query->whereNull('registration_number'))
             ->when($this->position, fn ($query) => $query->where('position', $this->position))
-            ->when($this->status, fn ($query) => $this->status === 'available' ? $query->whereHas('promise') : $query->whereDoesntHave('promise'))
-            ->orderBy('created_at', 'asc');
+            ->when($this->status, fn ($query) => $this->status == 'available' ? $query->whereNull('promise_id') : $query->whereNotNull('promise_id'))
+            ->with('block', 'category', 'promise.deed')
+            ->join('blocks', 'parcels.block_id', '=', 'blocks.id')
+            ->orderBy('blocks.code', 'asc')
+            ->orderBy('parcels.number', 'asc');
+
         return $query;
     }
 
@@ -61,6 +65,7 @@ class General implements FromQuery, WithHeadings, WithMapping, ShouldAutoSize, W
             $deed ? $deed->number : null,
             $deed ? $deed->value : 0,
             $deed ? Date::dateTimeToExcel($deed->signature_date) : null,
+            $parcel->promise ? $parcel->promise->status->text() : 'Disponible',
         ];
     }
 
@@ -92,13 +97,14 @@ class General implements FromQuery, WithHeadings, WithMapping, ShouldAutoSize, W
             'Escritura',
             'Valor escritura',
             'Fecha escritura',
+            'Estado',
         ];
     }
 
     public function styles(Worksheet $sheet)
     {
         $sheet->getRowDimension(1)->setRowHeight(20);
-        $sheet->setAutoFilter('A1:M1');
+        $sheet->setAutoFilter('A1:N1');
 
         return [
             1    => [
@@ -134,7 +140,7 @@ class General implements FromQuery, WithHeadings, WithMapping, ShouldAutoSize, W
         $event->sheet->setCellValue('F' . ($highestRow + 2), $parcels_value);
         
 
-        $event->sheet->getStyle('A' . ($highestRow + 2) . ':M' . ($highestRow + 2))->applyFromArray([
+        $event->sheet->getStyle('A' . ($highestRow + 2) . ':N' . ($highestRow + 2))->applyFromArray([
             'font' => ['bold' => true, 'size' => 12],
             'fill' => [
                 'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_GRADIENT_LINEAR,
