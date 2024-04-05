@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\CurrentCategoryController;
+use App\Models\Buyer;
+use App\Models\Promise;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -18,6 +20,12 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return redirect()->route('login');
 });
+
+// Route to download personal account statement
+Route::get('/personal-account-statement', App\Livewire\Public\Buyer\Statement\Page::class)->name('personal-account-statement');
+
+// Route to download general parcel report
+Route::get('/personal-account-statement/download/{promise}/{buyer}', [App\Http\Controllers\Reports\StatementController::class, 'download'])->name('statement-download');
 
 Route::middleware([
     'auth:sanctum',
