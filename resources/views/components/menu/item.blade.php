@@ -5,7 +5,7 @@
         'text-gray-600': ! $menuItem.isActive,
         'opacity-50 cursor-not-allowed': $menuItem.isDisabled,
     }"
-    class="flex text-sm items-center gap-2 w-full px-3 py-1.5 text-left text-sm hover:bg-slate-50 disabled:text-gray-500 transition-colors"
+    class="flex text-sm items-center gap-2 w-full px-3 py-1.5 text-left hover:bg-slate-50 disabled:text-gray-500 transition-colors"
     {{ $attributes->merge([
         'type' => 'button',
     ]) }}

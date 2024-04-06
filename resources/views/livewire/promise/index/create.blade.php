@@ -1,4 +1,4 @@
-<div class="max-w-4xl" x-show="open" :class="{ 'pb-8': open }" x-transition>
+<div x-show="open" :class="{ 'pb-8': open }" x-transition>
     <x-card>
         <form wire:submit.prevent="save">
             <x-promise.form :$block />

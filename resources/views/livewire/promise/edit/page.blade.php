@@ -5,7 +5,7 @@
 </x-slot>
 
 <div class="mx-auto sm:px-6 lg:px-8 flex flex-col gap-8">
-    <x-card cardClasses="max-w-4xl p-2">
+    <x-card>
         <form wire:submit.prevent="save">
             <x-promise.form :$block />
             <div class="flex items-center justify-end gap-2 mt-6">
