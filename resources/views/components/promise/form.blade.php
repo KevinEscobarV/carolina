@@ -33,6 +33,9 @@
     <div class="col-span-6 sm:col-span-3">
         <x-wireui-datetime-picker label="Fecha de firma" placeholder="Fecha de promesa" wire:model="form.signature_date" without-time />
     </div>
+    <div class="col-span-6 sm:col-span-3">
+        <x-wireui-datetime-picker label="Fecha de firma Escritura" placeholder="Fecha de escritura" wire:model="form.signature_deed_date" without-time />
+    </div>
     <div class="col-span-6">
         <div class="flex items-center gap-3 mt-6">
             <div class="border-2 border-gray-500 rounded-full h-10 w-10 flex items-center justify-center">
@@ -67,6 +70,10 @@
     <div class="col-span-6 sm:col-span-3">
         <x-wireui-select label="Periodicidad de Pago" placeholder="Seleccione una frecuencia" :options="App\Enums\PaymentFrequency::select()"
             option-label="label" option-value="value" wire:model="form.payment_frequency" autocomplete="off" />
+    </div>
+    <div class="col-span-6 sm:col-span-3">
+        <x-label for="switch_payment" value="Configuracion de abono a capital" class="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2" />
+        <x-wireui-toggle wire:model.defer="form.switch_payment" label="Reducir el valor de la cuota" left-label="Reducir el numero de cuotas" />
     </div>
     <div class="col-span-6">
         <div class="flex items-center gap-3">

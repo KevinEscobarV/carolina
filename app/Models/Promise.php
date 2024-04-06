@@ -26,6 +26,7 @@ class Promise extends Model
     protected $fillable = [
         'number',
         'signature_date',
+        'signature_deed_date',
         'value',
         'initial_fee',
         'quota_amount',
@@ -34,6 +35,7 @@ class Promise extends Model
         'payment_frequency',
         'payment_method',
         'status',
+        'switch_payment',
         'observations',
         'category_id'
     ];
@@ -49,6 +51,7 @@ class Promise extends Model
         'payment_frequency' => PaymentFrequency::class,
         'payment_method' => PromisePaymentMethod::class,
         'status' => PromiseStatus::class,
+        'switch_payment' => 'boolean'
     ];
 
     public function payments(): HasMany
@@ -59,6 +62,22 @@ class Promise extends Model
     public function deed(): HasOne
     {
         return $this->hasOne(Deed::class);
+    }
+
+    /**
+     * Get the current cut off date by payment frequency.
+     */
+    public function getCurrentCutOffDateAttribute(): string
+    {
+        $cutOffDate = $this->cut_off_date;
+        $paymentFrequency = $this->payment_frequency;
+
+        if ($cutOffDate && $paymentFrequency) {
+            $multiplier = $paymentFrequency->multiplier();
+            $cutOffDate = $cutOffDate->addMonths($multiplier);
+        }
+
+        return $cutOffDate ? $cutOffDate->format('Y-m-d') : '';
     }
 
     /**

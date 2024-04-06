@@ -27,6 +27,9 @@ class PromiseForm extends Form
     #[Validate('required', 'fecha de firma')]
     public $signature_date;
 
+    #[Validate('nullable', 'fecha de firma de escritura')]
+    public $signature_deed_date;
+
     #[Validate('required|numeric', 'valor de la promesa')]
     public $value = 0;
 
@@ -50,6 +53,9 @@ class PromiseForm extends Form
 
     #[Validate('nullable', 'estado')]
     public $status = PromiseStatus::CONFIRMED;
+
+    #[Validate('required', 'abono de pago')]
+    public $switch_payment = false;
 
     #[Validate('nullable', 'observaciones')]
     public $observations;

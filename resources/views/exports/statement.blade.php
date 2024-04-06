@@ -207,11 +207,11 @@
             <img src="{{ asset('img/logo.png') }}">
           </div>
         <div id="company">
-            <h2 class="name">{{$promise->category->name}}</h2>
+            <h2 class="name">Martha Carolina Riveros Vargas - {{$promise->category->name}}</h2>
             <div>Yopal - Casanare</div>
-            <div>Tel: 321654987</div>
-            <div>NIT: 321231321</div>
-            <div><a href="mailto:contabilidad@edsloscanarios.com.co">contabilidad@edsloscanarios.com.co</a></div>
+            <div>Tel: 312 885 4721</div>
+            <div>NIT: 1.098.656.012-1</div>
+            <div><a href="mailto:carolinarv.ciudadelarivarca@gmail.com">carolinarv.ciudadelarivarca@gmail.com</a></div>
         </div>
         </div>
     </header>

@@ -12,7 +12,7 @@
         </div>
     </div>
     <div class="col-span-6 sm:col-span-3">
-        <x-wireui-select label="Promesa " wire:model="form.promise_id"
+        <x-wireui-select label="Promesa " wire:model.live="form.promise_id"
             placeholder="Buscar por Promesa o Usuario" :async-data="route('api.promises.index')" option-label="number"
             option-value="id" />
     </div>
