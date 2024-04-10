@@ -32,12 +32,14 @@ class Payment extends Model
         'bill_path',
         'promise_id',
         'category_id',
+        'is_initial_fee',
     ];
 
     protected $casts = [
         'agreement_date' => 'date',
         'payment_date' => 'date',
         'payment_method' => PaymentMethod::class,
+        'is_initial_fee' => 'boolean',
     ];
 
     public function getPaidAmountFormattedAttribute(): string

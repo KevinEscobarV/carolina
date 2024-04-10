@@ -1,6 +1,6 @@
 <x-slot:header>
-    <h2 class="text-3xl text-gray-700 dark:text-gray-200 leading-tight">
-        Editar Promesa N° {{ $promise->number }}
+    <h2 class="text-3xl text-gray-800 dark:text-gray-200 leading-tight">
+        Crear Promesa
     </h2>
 </x-slot>
 
@@ -9,8 +9,8 @@
         <form wire:submit.prevent="save">
             <x-promise.form :$block :projection="$form->projection" :$isCreate :interest="$form->interest_rate" />
             <div class="flex items-center justify-end gap-2 mt-6">
-                <x-wireui-button lg rose label="Volver" href="{{ route('promises') }}" wire:navigate />
-                <x-wireui-button lg type="submit" spinner="save" primary label="Actualizar Promesa" />
+                <x-wireui-button lg rose label="Volver" href="{{ route('promises') }}" icon="rewind" wire:navigate />
+                <x-wireui-button lg type="submit" spinner="save" lime label="Crear Promesa" icon="save-as" />
             </div>
         </form>
     </x-card>
@@ -43,10 +43,6 @@
 
                     this.$wire.$watch('form.payment_frequency', () => {
                         this.$wire.form.quota_amount = this.calculateQuota(this.$wire.form.value, this.$wire.form.number_of_fees, this.$wire.form.interest_rate, this.$wire.form.initial_fee, this.$wire.form.payment_frequency)
-                    })
-
-                    this.$wire.$watch('form.projection', () => {
-                        console.log(this.$wire.form.projection)
                     })
                 },
 
@@ -81,8 +77,6 @@
                         return 0;
                     }
                 },
-
-
 
                 multiplier(frequency) {
                     switch (frequency) {

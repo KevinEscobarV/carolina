@@ -54,6 +54,7 @@ Route::middleware([
 
     // Promises
     Route::get('/promises', App\Livewire\Promise\Index\Page::class)->name('promises');
+    Route::get('/promises/create', App\Livewire\Promise\Create\Page::class)->name('promises.create');
     Route::get('/promises/{promise}/edit', App\Livewire\Promise\Edit\Page::class)->name('promises.edit');
 
     // Categories

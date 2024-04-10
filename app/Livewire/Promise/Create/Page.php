@@ -1,28 +1,24 @@
 <?php
 
-namespace App\Livewire\Promise\Edit;
+namespace App\Livewire\Promise\Create;
 
 use App\Livewire\Forms\PromiseForm;
 use App\Models\Parcel;
-use App\Models\Promise;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 use WireUi\Traits\Actions;
 
-#[Title('Editar promesa')]
+#[Title('Crear promesa')]
 class Page extends Component
-{    
+{
     use Actions;
-
-    public $block = null;
-    
-    public Promise $promise;
-
     public PromiseForm $form;
 
-    public $switch_quota = 0;
+    public $block;
 
-    public $isCreate = false;
+    public $switch_quota = 1;
+
+    public $isCreate = true;
 
     public function updatedFormParcels($parcels): void
     {
@@ -31,7 +27,7 @@ class Page extends Component
 
     public function mount()
     {
-        $this->form->setModel($this->promise);
+        $this->form->signature_date = now();
     }
 
     public function project(): void
@@ -39,25 +35,31 @@ class Page extends Component
         $this->form->project();
     }
 
-    public function save()
+    public function save(): void
     {
-        $save = $this->form->update();
+        $save = $this->form->save();
 
         if ($save) {
+            $this->notification()->success(
+                'Promesa creada exitosamente',
+                'La promesa se ha creado correctamente'
+            );
+
             $this->notification()->confirm([
                 'icon'        => 'success',
-                'title'       => 'Promesa actualizada exitosamente',
-                'description' => 'La promesa se ha actualizado correctamente',
+                'title'       => 'Promesa creada exitosamente',
+                'description' => 'La promesa se ha creado correctamente',
                 'accept'      => [
-                    'label' => 'Volver a promesas',
+                    'label' => 'Volver a tabla de promesas',
                     'url' => route('promises'),
                 ],
                 'rejectLabel' => 'Permanecer aquí',
             ]);
         }
     }
+
     public function render()
     {
-        return view('livewire.promise.edit.page');
+        return view('livewire.promise.create.page');
     }
 }

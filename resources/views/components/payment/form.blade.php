@@ -16,6 +16,17 @@
             placeholder="Buscar por Promesa o Usuario" :async-data="route('api.promises.index')" option-label="number"
             option-value="id" />
     </div>
+    <div class="col-span-6 sm:col-span-3">
+        <x-label for="switch_payment" value="Cuota Inicial" class="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1" />
+        <input type="checkbox" id="reduction" wire:model.live="form.is_initial_fee" value="false" class="hidden peer">
+        <label for="reduction" class="inline-flex items-center justify-between w-full p-4 text-gray-500 bg-white border border-gray-200 rounded-lg cursor-pointer dark:hover:text-gray-300 dark:border-gray-700 dark:peer-checked:text-primary-500 peer-checked:border-primary-600 peer-checked:text-primary-600 hover:text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:bg-gray-800 dark:hover:bg-gray-700">
+            <div class="block">
+                <div class="w-full text-lg font-semibold">Es cuota inicial</div>
+                <div class="w-full">Seleccione si el pago es la cuota inicial de la promesa</div>
+            </div>
+            <x-icon name="lock-closed" class="w-6 h-6" />
+        </label>
+    </div>
     <div class="col-span-6">
         <div class="flex items-center gap-3">
             <div class="border-2 border-gray-500 rounded-full h-10 w-10 flex items-center justify-center">

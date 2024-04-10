@@ -8,6 +8,7 @@ use App\Enums\PromisePaymentMethod;
 use App\Enums\PromiseStatus;
 use App\Models\Parcel;
 use App\Models\Promise;
+use Carbon\Carbon;
 use Livewire\Attributes\Validate;
 use Livewire\Form;
 
@@ -41,7 +42,7 @@ class PromiseForm extends Form
 
     #[Validate('required|numeric', 'tasa de interés')]
     public $interest_rate = 0;
-    
+
     #[Validate('required', 'frecuencia de pago')]
     public $payment_frequency = PaymentFrequency::MONTHLY;
 
@@ -57,8 +58,14 @@ class PromiseForm extends Form
     #[Validate('required', 'abono de pago')]
     public $switch_payment = false;
 
+    #[Validate('required|numeric|min:1', 'número de cuotas')]
+    public $number_of_fees = 1;
+
     #[Validate('nullable', 'observaciones')]
     public $observations;
+
+    #[Validate('array', 'proyección de pagos')]
+    public $projection = [];
 
     public function setModel(Promise $model): void
     {
@@ -75,18 +82,98 @@ class PromiseForm extends Form
             'payment_method',
             'status',
             'observations',
+            'projection',
+            'number_of_fees',
         ]));
 
         $this->buyers = $model->buyers->pluck('id')->toArray();
         $this->parcels = $model->parcels->pluck('id')->toArray();
     }
 
+    public function project()
+    {
+        $this->validate([
+            'quota_amount' => 'required|numeric',
+            'number_of_fees' => 'required|numeric|min:1',
+            'cut_off_date' => 'required|date',
+            'payment_frequency' => 'required',
+        ], [], [
+            'quota_amount' => 'monto de cuota',
+            'number_of_fees' => 'número de cuotas',
+            'cut_off_date' => 'fecha de corte',
+            'payment_frequency' => 'frecuencia de pago',
+        ]);
+
+        $interes = $this->interest_rate;
+        $valorTotal = $this->value - $this->initial_fee;
+        $numCuotas = $this->number_of_fees;
+        $fechaPago = Carbon::parse($this->cut_off_date);
+        $periodicidad = $this->payment_frequency;
+
+        $cronograma = [];
+
+        // Calcular la tasa de interés según la periodicidad
+        $tasaInteres = $interes > 0
+            ? $interes / 100 / $periodicidad->multiplier()
+            : 0;
+
+        // Calcular el valor de la cuota
+        $valorCuota = $tasaInteres > 0
+            ? ($valorTotal * $tasaInteres) / (1 - pow((1 + $tasaInteres), -$numCuotas))
+            : $valorTotal / $numCuotas;
+
+        // Calcular el balance inicial
+        $balance = $valorTotal;
+
+        // Iterar sobre el número de cuotas
+        for ($cuota = 1; $cuota <= $numCuotas; $cuota++) {
+            // Calcular el pago de intereses
+            $pagoIntereses = $balance * $tasaInteres;
+
+            // Calcular el pago a capital
+            $pagoCapital = $valorCuota - $pagoIntereses;
+
+            // Calcular el nuevo balance
+            $balance -= $pagoCapital;
+
+            // Agregar detalles del pago al array
+            $cronograma[] = [
+                'number' => $cuota,
+                'due_date' => $fechaPago->format('Y-m-d'),
+                'payment_amount' => round($valorCuota, 2),
+                'interest_payment' => round($pagoIntereses, 2),
+                'principal_payment' => round($pagoCapital, 2),
+                'remaining_balance' => round($balance, 2),
+            ];
+
+            // Actualizar la fecha de corte
+            $fechaPago = match ($this->payment_frequency) {
+                PaymentFrequency::WEEKLY => $fechaPago->addWeek(),
+                PaymentFrequency::BIWEEKLY => $fechaPago->addWeeks(2),
+                PaymentFrequency::MONTHLY => $fechaPago->addMonth(),
+                PaymentFrequency::QUARTERLY => $fechaPago->addMonths(3),
+                PaymentFrequency::SEMI_ANNUAL => $fechaPago->addMonths(6),
+                PaymentFrequency::ANNUAL => $fechaPago->addYear(),
+                PaymentFrequency::IRREGULAR => $fechaPago,
+            };
+        }
+
+        $this->projection = $cronograma;
+
+        return true;
+    }
+
+
     public function save()
     {
+        if (!is_array($this->projection) || empty($this->projection)) {
+            $this->project();
+        }
+
         $this->validate();
 
         $promise = Promise::create($this->all());
-        
+
         $promise->buyers()->attach($this->buyers);
 
         Parcel::whereIn('id', $this->parcels)->whereNull('promise_id')->update(['promise_id' => $promise->id]);

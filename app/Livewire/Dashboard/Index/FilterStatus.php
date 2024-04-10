@@ -18,7 +18,7 @@ enum FilterStatus: string
     public function label()
     {
         return match ($this) {
-            static::All => 'All',
+            static::All => 'Todos',
             static::Cash => PaymentMethod::CASH->label(),
             static::Card => PaymentMethod::CREDIT_CARD->label(),
             static::Check => PaymentMethod::CHECK->label(),

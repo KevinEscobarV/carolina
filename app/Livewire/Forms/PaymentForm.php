@@ -38,6 +38,9 @@ class PaymentForm extends Form
     #[Validate('nullable', 'observaciones')]
     public $observations;
 
+    #[Validate('nullable|boolean', 'es cuota inicial')]
+    public $is_initial_fee;
+
     public function setPayment(Payment $payment): void
     {
         $this->payment = $payment;
@@ -51,6 +54,7 @@ class PaymentForm extends Form
             'bank',
             'payment_method',
             'observations',
+            'is_initial_fee',
         ]));
     }
 

@@ -37,7 +37,9 @@ class Promise extends Model
         'status',
         'switch_payment',
         'observations',
-        'category_id'
+        'category_id',
+        'projection',
+        'number_of_fees'
     ];
 
     /**
@@ -51,7 +53,8 @@ class Promise extends Model
         'payment_frequency' => PaymentFrequency::class,
         'payment_method' => PromisePaymentMethod::class,
         'status' => PromiseStatus::class,
-        'switch_payment' => 'boolean'
+        'switch_payment' => 'boolean',
+        'projection' => 'array'
     ];
 
     public function payments(): HasMany
@@ -144,13 +147,6 @@ class Promise extends Model
     public function getQuotaAmountFormattedAttribute(): string
     {
         return number_format($this->quota_amount, 0, ',', '.');
-    }
-
-    public function getNumberOfFeesAttribute(): int
-    {
-        // $numeroCuotas = $this->value / $this->quota_amount;
-        $numeroCuotas = $this->quota_amount > 0 ? $this->value / $this->quota_amount : 0;
-        return round($numeroCuotas);
     }
 
     /**

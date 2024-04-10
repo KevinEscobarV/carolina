@@ -41,7 +41,7 @@
                         Lotes
                     </x-table.th>
                     <x-table.sortable column="observations" :$sortCol :$sortAsc>
-                        Obsservaciones
+                        Observaciones
                     </x-table.sortable>
                     <x-table.th>
                     </x-table.th>
