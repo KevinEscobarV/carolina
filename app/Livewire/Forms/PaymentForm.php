@@ -38,8 +38,8 @@ class PaymentForm extends Form
     #[Validate('nullable', 'observaciones')]
     public $observations;
 
-    #[Validate('nullable|boolean', 'es cuota inicial')]
-    public $is_initial_fee;
+    #[Validate('required|boolean', 'es cuota inicial')]
+    public $is_initial_fee = false;
 
     public function setPayment(Payment $payment): void
     {
