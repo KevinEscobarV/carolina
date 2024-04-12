@@ -20,7 +20,10 @@
                         Estado
                     </x-table.sortable>
                     <x-table.sortable column="signature_date" :$sortCol :$sortAsc>
-                        Fecha Firma
+                        Firma Promesa
+                    </x-table.sortable>
+                    <x-table.sortable column="signature_deed_date" :$sortCol :$sortAsc>
+                        Fecha Escritura
                     </x-table.sortable>
                     <x-table.sortable column="value" :$sortCol :$sortAsc right>
                         Valor Promesa
@@ -83,15 +86,25 @@
                         <x-table.td class="first-letter:uppercase">
                             {{ $promise->signature_date ? $promise->signature_date->translatedFormat("F j/Y") : 'Sin definir' }}
                         </x-table.td>
+                        <x-table.td class="first-letter:uppercase">
+                            {{ $promise->signature_deed_date ? $promise->signature_deed_date->translatedFormat("F j/Y") : 'Sin definir' }}
+                        </x-table.td>
                         <x-table.td class="text-right">
                             <p class="font-light text-lg">
                                 <span class="text-gray-400">$</span> {{ $promise->value_formatted }} <span class="text-gray-400 text-sm">COP</span>
                             </p>
                         </x-table.td>
                         <x-table.td class="text-right">
-                            <p class="font-light text-lg">
-                                <span class="text-gray-400">$</span> {{ $promise->initial_fee_formatted }} <span class="text-gray-400 text-sm">COP</span>
-                            </p>
+                            <div class="relative">
+                                <div class="font-light text-lg">
+                                    <span class="text-gray-400">$</span> {{ $promise->initial_fee_formatted }} <span class="text-gray-400 text-sm">COP</span>
+                                </div>
+                                <div class="absolute -top-1 -right-2" x-show="!{{ $promise->has_initial_fee }}">
+                                    <div class="w-2 h-2 bg-amber-500 rounded-full dark:bg-amber-400" title="Sin registrar">
+                                        <div class="w-2 h-2 bg-amber-500 rounded-full dark:bg-amber-400 animate-ping">
+                                    </div>
+                                </div>
+                            </div>
                         </x-table.td>
                         <x-table.td class="text-right">
                             <p class="font-light text-lg">

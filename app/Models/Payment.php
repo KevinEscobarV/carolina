@@ -118,6 +118,18 @@ class Payment extends Model
     }
 
     /**
+     * Scope a query to only include payments that match the promise ids.
+     * 
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @param  array<int>  $promiseIds
+     * @return void
+     */
+    public function scopePromiseFilter(Builder $query, array $promiseIds): void
+    {
+        if ($promiseIds) $query->whereIn('promise_id', $promiseIds);
+    }
+
+    /**
      * Scope a query to only include buyers that are trashed.
      * 
      * @param  \Illuminate\Database\Eloquent\Builder  $query

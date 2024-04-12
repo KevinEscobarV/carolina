@@ -1,6 +1,6 @@
 <div class="divide-y divide-gray-200 rounded-xl bg-white shadow-sm ring-1 ring-gray-950/5 dark:divide-white/10 dark:bg-gray-800 dark:ring-white/10">
     <div class="flex flex-col sm:grid grid-cols-8 gap-3 p-6">
-        <x-table.header :$trash />
+        <x-payment.header :$trash />
         {{-- <x-payment.index.bulk-actions /> --}}
     </div>
     {{-- payments table... --}}
@@ -49,7 +49,7 @@
             </x-slot>
             <x-slot name="body">
                 @forelse ($payments as $payment)
-                    <tr wire:key="{{ $payment->id }}">
+                    <tr wire:key="{{ $payment->id }}" class="{{ $payment->is_initial_fee ? 'bg-primary-100 dark:bg-primary-700/30' : ''}}" title="{{ $payment->is_initial_fee ? 'Cuota Inicial' : ''}}">
                         <x-table.td class="bg-gray-400/10">
                             {{ $payment->id }}
                         </x-table.td>

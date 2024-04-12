@@ -49,6 +49,7 @@ class Promise extends Model
      */
     protected $casts = [
         'signature_date' => 'date',
+        'signature_deed_date' => 'date',
         'cut_off_date' => 'date',
         'payment_frequency' => PaymentFrequency::class,
         'payment_method' => PromisePaymentMethod::class,
@@ -107,6 +108,11 @@ class Promise extends Model
     public function getTotalPaidAttribute(): float
     {
         return $this->payments->sum('paid_amount');
+    }
+
+    public function getHasInitialFeeAttribute(): string
+    {
+        return $this->payments->where('is_initial_fee', true)->count() > 0 ? 'true' : 'false';
     }
 
     public function getBalanceAttribute(): float

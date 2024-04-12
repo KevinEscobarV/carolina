@@ -4,6 +4,7 @@ namespace App\Livewire\Forms;
 
 use App\Enums\PaymentMethod;
 use App\Models\Payment;
+use App\Models\Promise;
 use Livewire\Attributes\Validate;
 use Livewire\Form;
 
@@ -62,6 +63,23 @@ class PaymentForm extends Form
     {
         $this->validate();
 
+        // Validate if the promise has an initial fee payment
+        if ($this->is_initial_fee) {
+            $promise = Promise::find($this->promise_id);
+
+            $initialFeePayment = $promise->payments()->where('is_initial_fee', true)->first();
+
+            if ($initialFeePayment) {
+                $this->addError('is_initial_fee', 'La cuota inicial de esta promesa ya ha sido registrada');
+
+                return false;
+            } else if ($this->paid_amount != $promise->initial_fee) {
+                $this->addError('paid_amount', 'El monto pagado debe ser igual al monto de la cuota inicial indicada en la promesa, por favor no modifiques este campo después de haber marcado la casilla de cuota inicial');
+
+                return false;
+            }
+        }
+
         Payment::create($this->all());
 
         $this->reset();
@@ -72,6 +90,23 @@ class PaymentForm extends Form
     public function update()
     {
         $this->validate();
+
+        // Validate if the promise has an initial fee payment
+        if ($this->is_initial_fee) {
+            $promise = $this->payment->promise;
+
+            $initialFeePayment = $promise->payments()->where('is_initial_fee', true)->where('id', '!=', $this->payment->id)->first();
+
+            if ($initialFeePayment) {
+                $this->addError('is_initial_fee', 'La cuota inicial de esta promesa ya ha sido registrada');
+
+                return false;
+            } else if ($this->paid_amount != $promise->initial_fee) {
+                $this->addError('paid_amount', 'El monto pagado debe ser igual al monto de la cuota inicial indicada en la promesa, por favor no modifiques este campo después de haber marcado la casilla de cuota inicial');
+
+                return false;
+            }
+        }
 
         $this->payment->update($this->all());
 

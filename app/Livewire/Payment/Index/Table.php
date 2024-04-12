@@ -23,6 +23,8 @@ class Table extends Component
 
     public $model = null;
 
+    public $promiseIds = [];
+
     public function mount()
     {
         $this->model = new Payment(); // This is used for the SoftDeletes trait
@@ -43,10 +45,10 @@ class Table extends Component
     #[On('refresh-payment-table')]
     public function render()
     {
-        $total = Payment::select( DB::raw('SUM(agreement_amount) as total_agreement_amount'), DB::raw('SUM(paid_amount) as total_paid_amount') )->first();
+        $total = Payment::select( DB::raw('SUM(agreement_amount) as total_agreement_amount'), DB::raw('SUM(paid_amount) as total_paid_amount') )->promiseFilter($this->promiseIds)->trash($this->trash)->first();
 
         return view('livewire.payment.index.table', [
-            'payments' => Payment::search($this->search)->sort($this->sortCol, $this->sortAsc)->trash($this->trash)->with('promise.buyers', 'promise.parcels.block')->paginate($this->perPage),
+            'payments' => Payment::search($this->search)->sort($this->sortCol, $this->sortAsc)->promiseFilter($this->promiseIds)->trash($this->trash)->with('promise.buyers', 'promise.parcels.block')->paginate($this->perPage),
             'total_agreement_amount' => number_format($total->total_agreement_amount, 0, ',', '.'),
             'total_paid_amount' => number_format($total->total_paid_amount, 0, ',', '.'),
         ]);
