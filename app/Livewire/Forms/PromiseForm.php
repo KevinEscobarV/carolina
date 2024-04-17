@@ -65,7 +65,7 @@ class PromiseForm extends Form
     public $observations;
 
     #[Validate('array', 'proyección de pagos')]
-    public array $projection = [];
+    public $projection = [];
 
     public function setModel(Promise $model): void
     {

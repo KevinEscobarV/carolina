@@ -36,7 +36,7 @@ class Page extends Component
 
     public function project(): void
     {
-        $this->form->project();
+        $this->form->amortization();
     }
 
     public function save()
