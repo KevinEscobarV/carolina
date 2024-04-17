@@ -65,7 +65,7 @@ class PromiseForm extends Form
     public $observations;
 
     #[Validate('array', 'proyección de pagos')]
-    public $projection = [];
+    public array $projection = [];
 
     public function setModel(Promise $model): void
     {
@@ -90,7 +90,7 @@ class PromiseForm extends Form
         $this->parcels = $model->parcels->pluck('id')->toArray();
     }
 
-    public function project()
+    public function amortization()
     {
         $this->validate([
             'quota_amount' => 'required|numeric',
@@ -158,7 +158,7 @@ class PromiseForm extends Form
             };
         }
 
-        $this->projection = $cronograma;
+        $this->projection = json_decode(json_encode($cronograma), true);
 
         return true;
     }
@@ -167,7 +167,7 @@ class PromiseForm extends Form
     public function save()
     {
         if (!is_array($this->projection) || empty($this->projection)) {
-            $this->project();
+            $this->amortization();
         }
 
         $this->validate();
