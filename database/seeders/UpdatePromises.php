@@ -36,6 +36,7 @@ class UpdatePromises extends Seeder
                             : 1;
 
                         $numCuotas = round($numCuotas);
+                        $numCuotas = $numCuotas < 1 ? 1 : $numCuotas;
 
                         $interes = $promise->interest_rate;
                         $valorTotal = $promise->value;
