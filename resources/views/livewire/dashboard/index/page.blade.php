@@ -40,6 +40,7 @@
             <livewire:reports.buyer.general />
             <livewire:reports.parcel.general />
             <livewire:reports.payment.general />
+            <livewire:reports.promise.wallet-status />
         </div>
     </div>
 </div>

@@ -19,7 +19,7 @@ class UpdatePromises extends Seeder
     {
         $this->command->info('Updating promises...');
 
-        $chunk = 1000;
+        $chunk = 100;
 
         try {
 
