@@ -9,6 +9,16 @@
             <h2 class="text-xl text-gray-800 dark:text-gray-200 leading-tight">
                 Seleccione la promesa
             </h2>
+            <div wire:loading class="flex items-start ml-auto">
+                <svg class="animate-spin h-9 w-9 dark:text-secondary-300" xmlns="http://www.w3.org/2000/svg"
+                    fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
+                        stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z">
+                    </path>
+                </svg>
+            </div>
         </div>
     </div>
     <div class="col-span-6 sm:col-span-3">
@@ -43,8 +53,8 @@
         <x-wireui-input label="Numero de Recibo o Pago" placeholder="N° Recibo" wire:model="form.bill_number" />
     </div>
     <div class="col-span-6 sm:col-span-3">
-        <x-wireui-datetime-picker label="Fecha pactada" placeholder="Fecha pactada" wire:model="form.agreement_date"
-            without-time />
+        {{-- <x-wireui-datetime-picker label="Fecha pactada" placeholder="Fecha pactada" wire:model="form.agreement_date" without-time /> --}}
+        <x-wireui-input type="date" label="Fecha pactada" placeholder="Fecha pactada" wire:model="form.agreement_date" />
     </div>
     <div class="col-span-6 sm:col-span-3">
         <x-wireui-inputs.currency label="Valor" placeholder="Valor pactado" right-icon="trending-up" prefix="$" thousands=","
@@ -71,8 +81,8 @@
             option-label="label" option-value="value" wire:model="form.bank" autocomplete="off" />
     </div>
     <div class="col-span-6 sm:col-span-3">
-        <x-wireui-datetime-picker label="Fecha de pago" placeholder="Fecha de pago" wire:model="form.payment_date"
-            without-time />
+        {{-- <x-wireui-datetime-picker label="Fecha de pago" placeholder="Fecha de pago" wire:model="form.payment_date" without-time /> --}}
+        <x-wireui-input type="date" label="Fecha de pago" placeholder="Fecha de pago" wire:model="form.payment_date" />
     </div>
     <div class="col-span-6 sm:col-span-3">
         <x-wireui-inputs.currency label="Valor cancelado" placeholder="Valor cancelado" right-icon="trending-up" prefix="$"

@@ -50,6 +50,7 @@ Route::middleware([
 
     // Payments
     Route::get('/payments', App\Livewire\Payment\Index\Page::class)->name('payments');
+    Route::get('/payments/create', App\Livewire\Payment\Create\Page::class)->name('payments.create');
     Route::get('/payments/{payment}/edit', App\Livewire\Payment\Edit\Page::class)->name('payments.edit');
 
     // Promises

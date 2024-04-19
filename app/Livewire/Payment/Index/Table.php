@@ -7,7 +7,6 @@ use App\Livewire\Traits\Sortable;
 use App\Models\Payment;
 use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\Lazy;
-use Livewire\Attributes\On;
 use Livewire\Attributes\Renderless;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -42,7 +41,6 @@ class Table extends Component
         return view('components.table.placeholder');
     }
 
-    #[On('refresh-payment-table')]
     public function render()
     {
         $total = Payment::select( DB::raw('SUM(agreement_amount) as total_agreement_amount'), DB::raw('SUM(paid_amount) as total_paid_amount') )->promiseFilter($this->promiseIds)->trash($this->trash)->first();

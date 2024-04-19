@@ -4,7 +4,6 @@
     </h2>
 </x-slot>
 
-<div class="mx-auto sm:px-6 lg:px-8" x-data="{ open: false }">
-    <livewire:payment.index.create />
+<div class="mx-auto sm:px-6 lg:px-8">
     <livewire:payment.index.table />
 </div>

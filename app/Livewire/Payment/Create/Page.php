@@ -1,38 +1,28 @@
 <?php
 
-namespace App\Livewire\Payment\Index;
+namespace App\Livewire\Payment\Create;
 
 use App\Livewire\Forms\PaymentForm;
 use App\Models\Promise;
+use Livewire\Attributes\Title;
 use Livewire\Component;
 use WireUi\Traits\Actions;
 
-class Create extends Component
+#[Title('Crear pago')]
+class Page extends Component
 {
     use Actions;
 
     public PaymentForm $form;
 
-    public function updatedFormPromiseId($value): void
-    {
-        $this->autocompleteFields($value);
-    }
-
-    public function updatedFormIsInitialFee(): void
-    {
-        if ($this->form->promise_id) {
-            $this->autocompleteFields($this->form->promise_id);
-        }
-    }
-
     public function autocompleteFields($promise_id): void
     {
-        $promise = Promise::find($promise_id);
+        $promise = Promise::with('payments')->find($promise_id);
 
         if ($this->form->is_initial_fee) {
 
             // Check if the promise has a initial fee payment
-            $initial_fee_payment = $promise->payments()->where('is_initial_fee', true)->first();
+            $initial_fee_payment = $promise->payments->where('is_initial_fee', true)->first();
 
             if ($initial_fee_payment) {
                 $this->notification()->warning(
@@ -51,20 +41,37 @@ class Create extends Component
             $this->form->payment_date = $promise->signature_date;
 
         } else {
-            $this->form->agreement_amount = $promise->quota_amount;
-            $this->form->agreement_date = $promise->current_cut_off_date;
+
+            $number = 1;
+            $check = $promise->payments->where('is_initial_fee', false)->count() + 1;
+
+            if ($promise->projection) {
+                foreach ($promise->projection as $quota) {
+                    if ($check == $number) {
+                        $this->form->agreement_date = $quota['due_date'];
+                        $this->form->agreement_amount = $quota['payment_amount'];
+                        $this->form->paid_amount = $quota['payment_amount'];
+                        break;
+                    }
+                    $number++;
+                }
+            } else {
+                $this->form->agreement_date = now()->format('Y-m-d');
+            }
         }
 
         $this->notification()->info(
             'Se han autocompletado los campos',
             'Recuerda revisar los datos antes de guardar el pago'
         );
+
+        $this->dispatch('show-amortization', $promise);
     }
 
     public function mount()
     {
-        $this->form->payment_date = now();
-        $this->form->agreement_date = now();
+        $this->form->payment_date = now()->format('Y-m-d');
+        $this->form->agreement_date = now()->format('Y-m-d');
     }
 
     public function save(): void
@@ -83,6 +90,10 @@ class Create extends Component
 
     public function render()
     {
-        return view('livewire.payment.index.create');
+        if ($this->form->promise_id) {
+            $this->autocompleteFields($this->form->promise_id);
+        }
+
+        return view('livewire.payment.create.page');
     }
 }
