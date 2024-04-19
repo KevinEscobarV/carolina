@@ -5,9 +5,12 @@ namespace App\Livewire\Payment\Components;
 use App\Models\Promise;
 use Livewire\Attributes\On;
 use Livewire\Component;
+use WireUi\Traits\Actions;
 
 class Amortization extends Component
 {
+    use Actions;
+
     public $promiseId;
 
     public $promise;
@@ -28,6 +31,21 @@ class Amortization extends Component
             'principal_payment' => 0,
             'remaining_balance' => 0,
         ];
+    }
+
+    public function save()
+    {
+        $this->validate([
+            'projection' => 'required',
+        ]);
+
+        $this->promise->projection = $this->projection;
+        $this->promise->save();
+
+        $this->notification()->success(
+            'Proyección de amortización guardada',
+            'La proyección de amortización ha sido guardada correctamente.'
+        );
     }
 
     public function addPayments()
