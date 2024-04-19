@@ -6,6 +6,7 @@ use App\Enums\PaymentFrequency;
 use App\Enums\PromisePaymentMethod;
 use App\Enums\PromiseStatus;
 use App\Models\Traits\HasCategory;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -73,15 +74,43 @@ class Promise extends Model
      */
     public function getCurrentCutOffDateAttribute(): string
     {
-        $cutOffDate = $this->cut_off_date;
-        $paymentFrequency = $this->payment_frequency;
+        $number = 1;
+        $check = $this->payments->where('is_initial_fee', false)->count() + 1;
+        $date = now();
 
-        if ($cutOffDate && $paymentFrequency) {
-            $multiplier = $paymentFrequency->multiplier();
-            $cutOffDate = $cutOffDate->addMonths($multiplier);
+        if ($this->projection) {
+            foreach ($this->projection as $quota) {
+                if ($check == $number) {
+                    $date = Carbon::parse($quota['due_date']);
+                    break;
+                }
+                $number++;
+            }
         }
 
-        return $cutOffDate ? $cutOffDate->format('Y-m-d') : '';
+        return $date;
+    }
+    
+    /**
+     * Get the current cut off date by payment frequency.
+     */
+    public function getCurrentQuotaAttribute(): array
+    {
+        $number = 1;
+        $check = $this->payments->where('is_initial_fee', false)->count() + 1;
+        $quota = [];
+
+        if ($this->projection) {
+            foreach ($this->projection as $quota) {
+                if ($check == $number) {
+                    $quota = $quota;
+                    break;
+                }
+                $number++;
+            }
+        }
+
+        return $quota;
     }
 
     /**

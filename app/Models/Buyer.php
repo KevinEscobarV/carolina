@@ -45,6 +45,34 @@ class Buyer extends Model
         'civil_status' => CivilStatus::class,
     ];
 
+    /**
+     * Get the phone_one masked attribute.
+     */
+    public function getPhoneOneMaskedAttribute(): string
+    {
+        return sprintf(
+            '+%s %s %s %s',
+            substr($this->phone_one, 0, 2),
+            substr($this->phone_one, 2, 3),
+            substr($this->phone_one, 5, 3),
+            substr($this->phone_one, 8)
+        );
+    }
+
+    /**
+     * Get the phone_two masked attribute.
+     */
+    public function getPhoneTwoMaskedAttribute(): string
+    {
+        if (!$this->phone_two) return '';
+        return sprintf(
+            '+%s %s %s %s',
+            substr($this->phone_two, 0, 2),
+            substr($this->phone_two, 2, 3),
+            substr($this->phone_two, 5, 3),
+            substr($this->phone_two, 8)
+        );
+    }
 
     /**
      * Get the promises for the buyer.

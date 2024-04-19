@@ -44,10 +44,10 @@
         />
     </div>
     <div class="col-span-6 sm:col-span-2">
-        <x-wireui-inputs.phone label="Telefono" placeholder="(321) 202-8286" wire:model="form.phone_one" />
+        <x-wireui-inputs.phone label="Telefono (Incluir codigo Pais)" placeholder="(+57) 321 202 8286" mask="['(+##) ### ### ####', '(+##) ##### ####']" wire:model="form.phone_one" />
     </div>
     <div class="col-span-6 sm:col-span-2">
-        <x-wireui-inputs.phone label="Telefono Alternativo"  placeholder="(321) 202-8286" wire:model="form.phone_two" />
+        <x-wireui-inputs.phone label="Telefono Alternativo"  placeholder="(+57) 321 202 8286" mask="['(+##) ### ### ####', '(+##) ##### ####']" wire:model="form.phone_two" />
     </div>
     <div class="col-span-6">
         <x-wireui-input label="Dirección" placeholder="Carrera 34 # 12 - 34" wire:model="form.address" />

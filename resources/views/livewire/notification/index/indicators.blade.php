@@ -1,4 +1,4 @@
-<div>
+<div class="col-span-12">
     <div class="flex flex-col text-center w-full mb-6">
         <h1 class="sm:text-3xl text-2xl font-medium title-font mb-4 text-gray-700 dark:text-gray-300">
             Indicadores de notificaciones

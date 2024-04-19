@@ -1,4 +1,4 @@
-<div class="max-w-4xl">
+<div class="col-span-12 lg:col-span-5">
     <x-card cardClasses="p-2">
         <form wire:submit.prevent="sendSMS">
             <div class="grid grid-cols-6 gap-6">

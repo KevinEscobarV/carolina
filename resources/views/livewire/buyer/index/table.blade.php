@@ -82,8 +82,12 @@
                         </x-table.td>
                         <x-table.td>
                             <div class="flex flex-col gap-1">
-                                {{ $buyer->phone_one }}
-                                {{ $buyer->phone_two }}
+                                <p>
+                                    {{ $buyer->phone_one_masked }}
+                                </p>
+                                <p>
+                                    {{ $buyer->phone_two_masked }}
+                                </p>
                             </div>
                         </x-table.td>
                         <x-table.td>

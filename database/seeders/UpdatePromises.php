@@ -4,7 +4,6 @@ namespace Database\Seeders;
 
 use App\Enums\PaymentFrequency;
 use App\Enums\PromisePaymentMethod;
-use App\Models\Payment;
 use App\Models\Promise;
 use App\Models\Scopes\CategoryScope;
 use Illuminate\Database\Seeder;

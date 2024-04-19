@@ -40,9 +40,8 @@
                     <div class="bg-gray-100 dark:bg-black/20 border-2 border-primary-500 rounded-lg p-4">
                         <p>
                             <p x-text="$wire.message_header"></p>
-                            Lotes: A27:4, A27:5, A27:6 <br>
-                            Fecha pactada promesa de compraventa: 02 de febrero de 2024 <br>
-                            Días en mora: 14 <br>
+                            Fecha: 02/04/2024, <br>
+                            Días mora: 14 <br>
                             <p x-text="$wire.message_footer"></p>
                         </p>
                     </div>
