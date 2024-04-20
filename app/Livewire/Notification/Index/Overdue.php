@@ -69,8 +69,12 @@ class Overdue extends Component
 
     public function render()
     {
+        $raw = config('database.default') === 'pgsql'
+        ? "((projection->>(((SELECT COUNT(*) FROM payments WHERE payments.promise_id = promises.id and payments.is_initial_fee = '0') + 1)::int))::jsonb->>'due_date')::date < CURRENT_DATE"
+        : "JSON_UNQUOTE(JSON_EXTRACT(`projection`, CONCAT('$[', ((SELECT COUNT(*) FROM `payments` WHERE `payments`.`promise_id` = `promises`.`id` AND `payments`.`is_initial_fee` = '0') + 1), '].due_date'))) < CURDATE()";
+
         $promises = Promise::whereNotNull('projection')
-            ->whereRaw("JSON_UNQUOTE(JSON_EXTRACT(`projection`, CONCAT('$[', ((SELECT COUNT(*) FROM `payments` WHERE `payments`.`promise_id` = `promises`.`id`) + 1), '].due_date'))) < CURDATE()")
+            ->whereRaw($raw)
             ->sort($this->sortCol, $this->sortAsc)
             ->with('buyers', 'payments', 'parcels.block')->paginate($this->perPage);
 
