@@ -82,7 +82,7 @@
                                     <span class="text-xs text-gray-400">Sin proyección</span>
                                 @endif
                             </x-table.td>
-                            <x-table.td>
+                            <x-table.td class="bg-red-500/20 dark:bg-red-500/50">
                                 @if (isset($promise->current_quota['due_date']))
                                     {{ Carbon\Carbon::parse($promise->current_quota['due_date'])->diffInDays(Carbon\Carbon::now()->format('Y-m-d')) }}
                                 @else

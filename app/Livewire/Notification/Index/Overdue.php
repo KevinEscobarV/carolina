@@ -34,6 +34,8 @@ class Overdue extends Component
 
         $promises = Promise::whereIn('id', $this->selectedIds)->with('buyers')->get();
 
+        $reponses = 'Respuestas: LabsmobileSMS: <br>';
+
         foreach ($promises as $promise) {
             $message_header = Setting::firstOrCreate(
                 ['key' => 'message_header'],
@@ -55,13 +57,16 @@ class Overdue extends Component
 
             if ($promise->buyers->count() > 0) {
                 $to = $promise->buyers->pluck('phone_one')->toArray();
-                LabsmobileSMS::send($to, $message);
+
+                $send = LabsmobileSMS::send($to, $message);
+
+                $reponses .= $send . '<br>';
             }
         }
 
-        $this->notification()->success(
+        $this->notification()->info(
             'SMS enviado correctamente',
-            'Los mensajes se han enviado correctamente'
+            'Los mensajes se han enviado correctamente: ' . $reponses
         );
 
         $this->reset(['selectedIds']);

@@ -2,6 +2,8 @@
 
 namespace App\Services\Labsmobile;
 
+use App\Models\Setting;
+
 class SMS
 {
     public static function send(array $to = [], string $message = '')
@@ -45,7 +47,19 @@ class SMS
         if ($err) {
             return "Error al enviar el mensaje: " . $err;
         } else {
-            return json_decode($response);
+
+            $count = Setting::firstOrCreate(
+                ['key' => 'sms_count'],
+                [
+                    'value' => 0,
+                    'description' => 'Cantidad de mensajes enviados'
+                ]
+            );
+
+            $count->value = $count->value + count($to);
+            $count->save();
+
+            return json_decode($response)->message;
         }
     }
 

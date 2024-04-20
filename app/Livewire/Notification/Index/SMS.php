@@ -17,7 +17,7 @@ class SMS extends Component
     public function sendSMS()
     {
         $this->validate([
-            'message' => 'required',
+            'message' => 'required|min:10|max:160',
             'buyers' => 'required'
         ]);
 
