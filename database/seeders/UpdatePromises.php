@@ -25,7 +25,7 @@ class UpdatePromises extends Seeder
             DB::beginTransaction();
 
             Promise::withoutGlobalScope(CategoryScope::class)
-                ->where('projection', null)
+                ->where('created_at', '<', '2024-04-11 00:00:00')
                 ->where('payment_method', PromisePaymentMethod::CREDIT)
                 ->chunk($chunk, function ($promises) {
                     foreach ($promises as $promise) {
@@ -40,7 +40,7 @@ class UpdatePromises extends Seeder
                         $interes = $promise->interest_rate;
                         $valorTotal = $promise->value;
 
-                        $fechaPago = $promise->cut_off_date;
+                        $fechaPago = $promise->signature_date;
                         $periodicidad = $promise->payment_frequency;
                 
                         $cronograma = [];
@@ -92,6 +92,7 @@ class UpdatePromises extends Seeder
                         }
                 
                         $promise->update([
+                            'cut_off_date' => $fechaPago,
                             'number_of_fees' => $numCuotas,
                             'projection' => $cronograma,
                         ]);
