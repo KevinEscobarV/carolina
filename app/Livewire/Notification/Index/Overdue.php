@@ -3,7 +3,6 @@
 namespace App\Livewire\Notification\Index;
 
 use App\Livewire\Traits\Sortable;
-use App\Models\Buyer;
 use App\Models\Promise;
 use App\Models\Setting;
 use App\Services\Labsmobile\SMS as LabsmobileSMS;
@@ -24,6 +23,11 @@ class Overdue extends Component
     public function mount()
     {
         $this->perPage = '20';
+    }
+
+    public function selectAll()
+    {
+        $this->selectedIds = $this->promises()->pluck('id')->map(fn ($id) => (string) $id)->toArray();
     }
 
     public function sendSelected()
@@ -72,16 +76,21 @@ class Overdue extends Component
         $this->reset(['selectedIds']);
     }
 
-    public function render()
+    public function promises(): object
     {
         $raw = config('database.default') === 'pgsql'
         ? "((projection->>(((SELECT COUNT(*) FROM payments WHERE payments.promise_id = promises.id and payments.is_initial_fee = '0') + 1)::int))::jsonb->>'due_date')::date < CURRENT_DATE"
         : "JSON_UNQUOTE(JSON_EXTRACT(`projection`, CONCAT('$[', ((SELECT COUNT(*) FROM `payments` WHERE `payments`.`promise_id` = `promises`.`id` AND `payments`.`is_initial_fee` = '0') + 1), '].due_date'))) < CURDATE()";
 
-        $promises = Promise::whereNotNull('projection')
+        return Promise::whereNotNull('projection')
             ->whereRaw($raw)
             ->sort($this->sortCol, $this->sortAsc)
-            ->with('buyers', 'payments', 'parcels.block')->paginate($this->perPage);
+            ->with('buyers', 'payments', 'parcels.block');
+    }
+
+    public function render()
+    {
+        $promises = $this->promises()->paginate($this->perPage);
 
         $this->idsOnPage = $promises->map(fn ($order) => (string) $order->id)->toArray();
 

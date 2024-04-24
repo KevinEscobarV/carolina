@@ -11,4 +11,5 @@
     <form wire:submit="sendSelected">
         <x-wireui-button type="submit" class="h-full" icon="speakerphone" label="Enviar Mensajes" lime spinner="sendSelected" />
     </form>
+    <x-wireui-button wire:click="selectAll" class="h-full" icon="check" label="Seleccionar Todas las Paginas" indigo spinner="selectAll" />
 </div>

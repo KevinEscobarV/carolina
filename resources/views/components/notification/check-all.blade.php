@@ -7,9 +7,6 @@
         Alpine.data('checkAll', () => {
             return {
                 init() {
-
-                    this.selectAll()
-
                     this.$wire.$watch('selectedIds', () => {
                         this.updateCheckAllState()
                     })
