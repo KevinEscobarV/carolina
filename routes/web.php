@@ -71,6 +71,12 @@ Route::middleware([
     // Settings
     Route::get('/settings', App\Livewire\Setting\Index\Page::class)->name('settings');
 
+    // Users
+    Route::get('/users', App\Livewire\User\Index\Page::class)->name('users');
+
+    // Roles & Permissions
+    Route::get('/permissions', App\Livewire\Permission\Index\Page::class)->name('permissions');
+
     // Current Category
     Route::put('/current-category', [CurrentCategoryController::class, 'update'])->name('current-category.update');
 

@@ -16,6 +16,10 @@
                 </p>
                 <x-wireui-icon name="reply" class="w-5 h-5 text-gray-500 rotate-90" />
             </div>
+            <div class="col-span-2">
+                <x-label for="onlyLate" value="Solo promesas en mora" class="my-2" />
+                <x-wireui-toggle wire:model="onlyLate" lg />
+            </div>
         </div>
         <div class="mt-auto">
             <x-wireui-button class="w-full" icon="download" color="primary" label="Exportar" wire:click="exportGeneral" spinner="exportGeneral" />

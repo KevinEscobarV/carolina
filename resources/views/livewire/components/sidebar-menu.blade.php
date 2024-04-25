@@ -63,6 +63,14 @@
             <x-side-link href="{{ route('settings') }}" :active="request()->routeIs(['settings', 'settings.*'])" icon="cog-6-tooth" wire:navigate>
                 <span x-show="open" x-transition.duration.500ms>Configuración</span>
             </x-side-link>
+            
+            {{-- <x-side-link href="{{ route('users') }}" :active="request()->routeIs(['users', 'settings.*'])" icon="user-group" wire:navigate>
+                <span x-show="open" x-transition.duration.500ms>Usuarios</span>
+            </x-side-link>
+
+            <x-side-link href="{{ route('permissions') }}" :active="request()->routeIs(['permissions', 'permissions.*'])" icon="key" wire:navigate>
+                <span x-show="open" x-transition.duration.500ms>Roles</span>
+            </x-side-link> --}}
         </nav>
 
         <!-- Sidebar footer -->
