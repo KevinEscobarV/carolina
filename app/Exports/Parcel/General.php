@@ -37,9 +37,7 @@ class General implements FromQuery, WithHeadings, WithMapping, ShouldAutoSize, W
             ->when($this->position, fn ($query) => $query->where('position', $this->position))
             ->when($this->status, fn ($query) => $this->status == 'available' ? $query->whereNull('promise_id') : $query->whereNotNull('promise_id'))
             ->with('block', 'category', 'promise.deed')
-            ->join('blocks', 'parcels.block_id', '=', 'blocks.id')
-            ->orderBy('blocks.code', 'asc')
-            ->orderBy('parcels.number', 'asc');
+            ->orderBy('parcels.block_id', 'asc');
 
         return $query;
     }
