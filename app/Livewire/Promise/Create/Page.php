@@ -37,6 +37,7 @@ class Page extends Component
 
     public function save(): void
     {
+        $this->form->switch_quota = $this->switch_quota;
         $save = $this->form->save();
 
         if ($save) {

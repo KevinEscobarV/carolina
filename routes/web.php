@@ -1,8 +1,6 @@
 <?php
 
 use App\Http\Controllers\CurrentCategoryController;
-use App\Models\Buyer;
-use App\Models\Promise;
 use Illuminate\Support\Facades\Route;
 
 /*

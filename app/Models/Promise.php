@@ -40,7 +40,8 @@ class Promise extends Model
         'observations',
         'category_id',
         'projection',
-        'number_of_fees'
+        'number_of_fees',
+        'switch_quota'
     ];
 
     /**
@@ -56,6 +57,7 @@ class Promise extends Model
         'payment_method' => PromisePaymentMethod::class,
         'status' => PromiseStatus::class,
         'switch_payment' => 'boolean',
+        'switch_quota' => 'boolean',
         'projection' => 'array'
     ];
 
@@ -111,6 +113,11 @@ class Promise extends Model
         }
 
         return $quota;
+    }
+
+    public function getCurrentQuotaAmountFormattedAttribute()
+    {
+        return $this->current_quota ? number_format($this->current_quota['payment_amount'], 0, ',', '.') : null;
     }
 
     /**

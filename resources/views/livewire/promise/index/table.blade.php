@@ -31,10 +31,10 @@
                     <x-table.sortable column="initial_fee" :$sortCol :$sortAsc right>
                         Cuota Inicial
                     </x-table.sortable>
-                    <x-table.sortable column="quota_amount" :$sortCol :$sortAsc>
-                        Valor Cuota
+                    <x-table.sortable column="quota_amount" :$sortCol :$sortAsc right>
+                        Proxima Cuota
                     </x-table.sortable>
-                    <x-table.th>
+                    <x-table.th class="text-right">
                         Total Pagado
                     </x-table.th>
                     <x-table.th>
@@ -107,9 +107,13 @@
                             </div>
                         </x-table.td>
                         <x-table.td class="text-right">
-                            <p class="font-light text-lg">
-                                <span class="text-gray-400">$</span> {{ $promise->quota_amount_formatted }} <span class="text-gray-400 text-sm">COP</span>
-                            </p>
+                            @if ($promise->current_quota_amount_formatted)
+                                <p class="font-light text-lg">
+                                    <span class="text-gray-400">$</span> {{ $promise->current_quota_amount_formatted }} <span class="text-gray-400 text-sm">COP</span>
+                                </p>
+                            @else
+                                <p class="text-gray-400">Sin cuota</p>
+                            @endif
                         </x-table.td>
                         <x-table.td class="text-right bg-lime-500/10">
                             <p class="font-light text-lg">

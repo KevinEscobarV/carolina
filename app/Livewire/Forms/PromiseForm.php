@@ -58,6 +58,9 @@ class PromiseForm extends Form
     #[Validate('required', 'abono de pago')]
     public $switch_payment = false;
 
+    #[Validate('required', 'proyección de pago')]
+    public $switch_quota = false;
+
     #[Validate('required|numeric|min:1', 'número de cuotas')]
     public $number_of_fees = 1;
 
@@ -73,17 +76,20 @@ class PromiseForm extends Form
         $this->fill($model->only([
             'number',
             'signature_date',
+            'signature_deed_date',
             'value',
             'initial_fee',
             'quota_amount',
             'interest_rate',
-            'payment_frequency',
             'cut_off_date',
+            'payment_frequency',
             'payment_method',
             'status',
+            'switch_payment',
+            'switch_quota',
             'observations',
             'projection',
-            'number_of_fees',
+            'number_of_fees'
         ]));
 
         $this->buyers = $model->buyers->pluck('id')->toArray();

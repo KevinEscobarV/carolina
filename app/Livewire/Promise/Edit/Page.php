@@ -20,7 +20,7 @@ class Page extends Component
 
     public PromiseForm $form;
 
-    public $switch_quota = 0;
+    public $switch_quota = 1;
 
     public $isCreate = false;
 
@@ -31,6 +31,7 @@ class Page extends Component
 
     public function mount()
     {
+        $this->switch_quota = $this->promise->switch_quota;
         $this->form->setModel($this->promise);
     }
 
@@ -41,6 +42,7 @@ class Page extends Component
 
     public function save()
     {
+        $this->form->switch_quota = $this->switch_quota;
         $save = $this->form->update();
 
         if ($save) {

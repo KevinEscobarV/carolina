@@ -109,12 +109,16 @@
                                             <p>{{ $promise->number }}</p> <x-icon name="hand-raised" class="w-4 h-4 text-gray-500" />
                                         </div>
                                         <div class="whitespace-nowrap px-3 w-48">
-                                            <p class="font-light text-lg">
-                                                <span class="text-gray-400">$</span> {{ $promise->quota_amount_formatted }} <span class="text-gray-400 text-sm">COP</span>
-                                            </p>
-                                            <p class="font-light text-gray-400 text-sm">
-                                                {{ $promise->payment_frequency->label() }}
-                                            </p>
+                                            @if ($promise->current_quota_amount_formatted)
+                                                <p class="font-light text-lg">
+                                                    <span class="text-gray-400">$</span> {{ $promise->current_quota_amount_formatted }} <span class="text-gray-400 text-sm">COP</span>
+                                                </p>
+                                                <p class="font-light text-gray-400 text-sm">
+                                                    {{ $promise->payment_frequency->label() }}
+                                                </p>
+                                            @else
+                                                <p class="text-orange-400">Sin proyección</p>
+                                            @endif
                                         </div>
                                         <div class="whitespace-nowrap px-3">
                                             {!! $promise->parcels->groupBy('block_id')->map(function ($parcels) {
