@@ -3,14 +3,25 @@
 namespace App\Livewire\User\Index;
 
 use App\Livewire\Forms\UserForm;
+use App\Models\Category;
 use Livewire\Component;
+use Spatie\Permission\Models\Role;
 use WireUi\Traits\Actions;
 
 class Create extends Component
 {
     use Actions;
+    
+    public $roles = [];
+    public $categories = [];
 
     public UserForm $form;
+
+    public function mount()
+    {
+        $this->roles = Role::select('id', 'name')->get();
+        $this->categories = Category::select('id', 'name')->get();
+    }
 
     public function save(): void
     {

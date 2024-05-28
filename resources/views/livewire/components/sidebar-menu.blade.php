@@ -19,7 +19,7 @@
         </div>
 
         <!-- Sidebar links -->
-        <nav aria-label="Main" class="flex flex-col h-full py-3 mt-8 soft-scrollbar overflow-hidden hover:overflow-y-auto">
+        <nav aria-label="Main" class="flex flex-col h-full py-3 mt-4 soft-scrollbar overflow-hidden hover:overflow-y-auto">
             <x-side-link href="{{ route('dashboard') }}" :active="request()->routeIs('dashboard')" icon="chart-pie" wire:navigate>
                 <span x-show="open" x-transition.duration.500ms>Administración</span>
             </x-side-link>
@@ -64,13 +64,13 @@
                 <span x-show="open" x-transition.duration.500ms>Configuración</span>
             </x-side-link>
             
-            {{-- <x-side-link href="{{ route('users') }}" :active="request()->routeIs(['users', 'settings.*'])" icon="user-group" wire:navigate>
+            <x-side-link href="{{ route('users') }}" :active="request()->routeIs(['users', 'settings.*'])" icon="user-group" wire:navigate>
                 <span x-show="open" x-transition.duration.500ms>Usuarios</span>
             </x-side-link>
 
             <x-side-link href="{{ route('permissions') }}" :active="request()->routeIs(['permissions', 'permissions.*'])" icon="key" wire:navigate>
                 <span x-show="open" x-transition.duration.500ms>Roles</span>
-            </x-side-link> --}}
+            </x-side-link>
         </nav>
 
         <!-- Sidebar footer -->

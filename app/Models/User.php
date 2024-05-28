@@ -6,6 +6,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Fortify\TwoFactorAuthenticatable;
@@ -21,6 +22,7 @@ class User extends Authenticatable
     use HasProfilePhoto;
     use Notifiable;
     use TwoFactorAuthenticatable;
+    use SoftDeletes;
 
     /**
      * The attributes that are mass assignable.
@@ -65,6 +67,14 @@ class User extends Authenticatable
     protected $appends = [
         'profile_photo_url',
     ];
+
+    /**
+     * Get the name role attribute.
+     */
+    public function getNameRoleAttribute(): string
+    {
+        return $this->roles->pluck('name')->join(', ');
+    }
 
     /**
      * Toggle the user's sidebar preference.
@@ -136,6 +146,35 @@ class User extends Authenticatable
         $this->setRelation('currentCategory', $category);
 
         return true;
+    }
+
+        /**
+     * Scope a query to only include buyers that match the search.
+     * 
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @param  string  $search
+     * @return void
+     */
+    public function scopeSearch(Builder $query, string $search): void
+    {
+        if ($search) {
+            $query->where('name', 'like', '%' . $search . '%')
+                ->orWhere('email', 'like', '%' . $search . '%');
+        }
+    }
+
+    /**
+     * Scope a query to only include buyers that match the search.
+     * 
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @param  string  $search
+     * @return void
+     */
+    public function scopeSort(Builder $query, string $column = null, bool $asc): void
+    {
+        if ($column) {
+            $query->orderBy($column, $asc ? 'asc' : 'desc');
+        }
     }
 
     /**

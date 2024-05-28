@@ -11,14 +11,12 @@ class UserForm extends Form
 {
     public ?User $user;
 
-    #[Validate('required|string|max:255')]
-    public string $name = '';
-
-    #[Validate('required|email|max:255')]
-    public string $email = '';
-
-    #[Validate('required|string|max:255')]
-    public string $password = '';
+    public $name;
+    public $email;
+    public $password;
+    public $password_confirmation;
+    public $current_category_id;
+    public $roles = [];
 
     public function setUser(User $user)
     {
@@ -26,18 +24,44 @@ class UserForm extends Form
         $this->fill($user->only([
             'name',
             'email',
+            'current_category_id',
         ]));
+
+        $this->roles = $user->roles->pluck('id')->toArray();
+    }
+
+    public function rules()
+    {
+        return [
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|max:255|unique:users,email',
+            'roles' => 'required|array|min:1',
+            'password' => 'required|string|min:8|confirmed',
+            'current_category_id' => 'required|integer',
+        ];
+    }
+
+    public function editRules()
+    {
+        return [
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|max:255|unique:users,email,' . $this->user->id,
+            'roles' => 'required|array|min:1',
+            'password' => 'nullable|string|min:8|confirmed',
+            'current_category_id' => 'required|integer',
+        ];
     }
 
     public function save()
     {
-        $this->validate();
+        $this->validate($this->rules());
 
         User::create([
             'name' => $this->name,
             'email' => $this->email,
             'password' => Hash::make($this->password),
-        ]);
+            'current_category_id' => $this->current_category_id,
+        ])->assignRole($this->roles);
 
         $this->reset();
 
@@ -46,11 +70,12 @@ class UserForm extends Form
 
     public function update()
     {
-        $this->validate();
+        $this->validate($this->editRules());
 
         $this->user->update([
             'name' => $this->name,
             'email' => $this->email,
+            'current_category_id' => $this->current_category_id,
         ]);
 
         // If the password is not empty, update it
@@ -60,7 +85,7 @@ class UserForm extends Form
             ]);
         }
 
-        $this->reset();
+        $this->reset('password', 'password_confirmation');
 
         return true;
     }

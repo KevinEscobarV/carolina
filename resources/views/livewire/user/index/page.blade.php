@@ -4,7 +4,7 @@
     </h2>
 </x-slot>
 
-<div class="mx-auto sm:px-6 lg:px-8" x-data="{ open: true }">
+<div class="mx-auto sm:px-6 lg:px-8" x-data="{ open: false }">
     <livewire:user.index.create />
     <livewire:user.index.table />
 </div>

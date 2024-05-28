@@ -27,10 +27,12 @@
     @if (isset($import))
         {{ $import }}
     @endif
-    <x-wireui-button icon="{{ $trash ? 'x' : 'trash' }}" 
-        label="{{ $trash ? 'Cerrar Papelera' : 'Papelera' }}" 
-        color="{{ $trash ? 'secondary' : 'negative' }}"
-        spinner="onlyTrash"
-        wire:click="onlyTrash"
-    />
+    @if (isset($trash))
+        <x-wireui-button icon="{{ $trash ? 'x' : 'trash' }}" 
+            label="{{ $trash ? 'Cerrar Papelera' : 'Papelera' }}" 
+            color="{{ $trash ? 'secondary' : 'negative' }}"
+            spinner="onlyTrash"
+            wire:click="onlyTrash"
+        />
+    @endif
 </div>
