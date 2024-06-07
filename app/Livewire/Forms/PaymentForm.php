@@ -48,15 +48,16 @@ class PaymentForm extends Form
         $this->fill($payment->only([
             'promise_id',
             'bill_number',
-            'agreement_date',
             'agreement_amount',
-            'payment_date',
             'paid_amount',
             'bank',
             'payment_method',
             'observations',
             'is_initial_fee',
         ]));
+
+        $this->agreement_date = $payment->agreement_date->format('Y-m-d');
+        $this->payment_date = $payment->payment_date->format('Y-m-d');
     }
 
     public function save()
