@@ -81,6 +81,13 @@ class PaymentForm extends Form
             }
         }
 
+        // Validate if the payment method is bank transfer or deposit, the bank field is required
+        if (in_array($this->payment_method, [PaymentMethod::BANK_TRANSFER, PaymentMethod::DEPOSIT]) && !$this->bank) {
+            $this->addError('bank', 'El campo banco es requerido para los métodos de pago transferencia bancaria y consignación');
+
+            return false;
+        }
+
         Payment::create($this->all());
 
         $this->reset();
@@ -107,6 +114,13 @@ class PaymentForm extends Form
 
                 return false;
             }
+        }
+
+        // Validate if the payment method is bank transfer or deposit, the bank field is required
+        if (in_array($this->payment_method, [PaymentMethod::BANK_TRANSFER, PaymentMethod::DEPOSIT]) && !$this->bank) {
+            $this->addError('bank', 'El campo banco es requerido para los métodos de pago transferencia bancaria y consignación');
+
+            return false;
         }
 
         $this->payment->update($this->all());
