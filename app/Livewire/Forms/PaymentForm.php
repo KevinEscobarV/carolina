@@ -56,8 +56,8 @@ class PaymentForm extends Form
             'is_initial_fee',
         ]));
 
-        $this->agreement_date = $payment->agreement_date->format('Y-m-d');
-        $this->payment_date = $payment->payment_date->format('Y-m-d');
+        $this->agreement_date = $payment->agreement_date ? $payment->agreement_date->format('Y-m-d') : null;
+        $this->payment_date = $payment->payment_date ? $payment->payment_date->format('Y-m-d') : null;
     }
 
     public function save()

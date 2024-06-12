@@ -10,10 +10,10 @@
         </div>
     </div>
     <div class="col-span-6 sm:col-span-3">
-        <x-wireui-input label="Nombre" placeholder="Nombre del Usuario" wire:model="form.name" />
+        <x-wireui-input label="Nombre" placeholder="Nombre del Usuario" wire:model="form.name" autocomplete="off" />
     </div>
     <div class="col-span-6 sm:col-span-4">
-        <x-wireui-input label="Correo electronico" placeholder="@example.com" wire:model="form.email" />
+        <x-wireui-input label="Correo electronico" placeholder="@example.com" wire:model="form.email" autocomplete="off" />
     </div>
     <div class="col-span-6 sm:col-span-2">
         <x-wireui-select
@@ -49,9 +49,9 @@
         </div>
     </div>
     <div class="col-span-6 sm:col-span-3">
-        <x-wireui-inputs.password label="Contraseña" placeholder="Contraseña" wire:model="form.password" />
+        <x-wireui-inputs.password label="Contraseña" placeholder="Contraseña" wire:model="form.password" autocomplete="off" />
     </div>
     <div class="col-span-6 sm:col-span-3">
-        <x-wireui-inputs.password label="Confirmar Contraseña" placeholder="Repite la contraseña" wire:model="form.password_confirmation" />
+        <x-wireui-inputs.password label="Confirmar Contraseña" placeholder="Repite la contraseña" wire:model="form.password_confirmation" autocomplete="off" />
     </div>
 </div>
