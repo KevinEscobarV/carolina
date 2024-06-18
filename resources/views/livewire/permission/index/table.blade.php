@@ -52,7 +52,7 @@
                                 </div>
                             </x-table.td>
                         @else
-                            <x-table.actions-without-softdelete :item="$role" />
+                            <x-table.actions-without-softdelete :item="$role" model="roles" />
                         @endif
                     </tr>
                 @empty

@@ -118,7 +118,7 @@
                                 {{ $parcel->updated_at->translatedFormat('F j, Y') }}
                             </p>
                         </x-table.td>
-                        <x-table.actions :item="$parcel" :route="route('parcels.edit', $parcel->id)" />
+                        <x-table.actions :item="$parcel" :route="route('parcels.edit', $parcel->id)" model="parcels" />
                     </tr>
                 @empty
                     <tr>

@@ -35,48 +35,48 @@ Route::middleware([
     Route::get('/dashboard', App\Livewire\Dashboard\Index\Page::class)->name('dashboard');
 
     // Buyers
-    Route::get('/buyers', App\Livewire\Buyer\Index\Page::class)->name('buyers');
-    Route::get('/buyers/{buyer}/edit', App\Livewire\Buyer\Edit\Page::class)->name('buyers.edit');
+    Route::get('/buyers', App\Livewire\Buyer\Index\Page::class)->middleware('can:view.buyers')->name('buyers');
+    Route::get('/buyers/{buyer}/edit', App\Livewire\Buyer\Edit\Page::class)->middleware('can:edit.buyers')->name('buyers.edit');
 
     // Parcels
-    Route::get('/parcels', App\Livewire\Parcel\Index\Page::class)->name('parcels');
-    Route::get('/parcels/create', App\Livewire\Parcel\Create\Page::class)->name('parcels.create');
-    Route::get('/parcels/{parcel}/edit', App\Livewire\Parcel\Edit\Page::class)->name('parcels.edit');
+    Route::get('/parcels', App\Livewire\Parcel\Index\Page::class)->middleware('can:view.parcels')->name('parcels');
+    Route::get('/parcels/create', App\Livewire\Parcel\Create\Page::class)->middleware('can:create.parcels')->name('parcels.create');
+    Route::get('/parcels/{parcel}/edit', App\Livewire\Parcel\Edit\Page::class)->middleware('can:edit.parcels')->name('parcels.edit');
 
     // Blocks
-    Route::get('/blocks', App\Livewire\Block\Index\Page::class)->name('blocks');
+    Route::get('/blocks', App\Livewire\Block\Index\Page::class)->middleware('can:view.blocks')->name('blocks');
 
     // Payments
-    Route::get('/payments', App\Livewire\Payment\Index\Page::class)->name('payments');
-    Route::get('/payments/create', App\Livewire\Payment\Create\Page::class)->name('payments.create');
-    Route::get('/payments/{payment}/edit', App\Livewire\Payment\Edit\Page::class)->name('payments.edit');
+    Route::get('/payments', App\Livewire\Payment\Index\Page::class)->middleware('can:view.payments')->name('payments');
+    Route::get('/payments/create', App\Livewire\Payment\Create\Page::class)->middleware('can:create.payments')->name('payments.create');
+    Route::get('/payments/{payment}/edit', App\Livewire\Payment\Edit\Page::class)->middleware('can:edit.payments')->name('payments.edit');
 
     // Promises
-    Route::get('/promises', App\Livewire\Promise\Index\Page::class)->name('promises');
-    Route::get('/promises/create', App\Livewire\Promise\Create\Page::class)->name('promises.create');
-    Route::get('/promises/{promise}/edit', App\Livewire\Promise\Edit\Page::class)->name('promises.edit');
+    Route::get('/promises', App\Livewire\Promise\Index\Page::class)->middleware('can:view.promises')->name('promises');
+    Route::get('/promises/create', App\Livewire\Promise\Create\Page::class)->middleware('can:create.promises')->name('promises.create');
+    Route::get('/promises/{promise}/edit', App\Livewire\Promise\Edit\Page::class)->middleware('can:edit.promises')->name('promises.edit');
 
     // Categories
-    Route::get('/categories', App\Livewire\Category\Index\Page::class)->name('categories');
+    Route::get('/categories', App\Livewire\Category\Index\Page::class)->middleware('can:view.categories')->name('categories');
 
     // Deeds
-    Route::get('/deeds', App\Livewire\Deed\Index\Page::class)->name('deeds');
-    Route::get('/deeds/{deed}/edit', App\Livewire\Deed\Edit\Page::class)->name('deeds.edit');
+    Route::get('/deeds', App\Livewire\Deed\Index\Page::class)->middleware('can:view.deeds')->name('deeds');
+    Route::get('/deeds/{deed}/edit', App\Livewire\Deed\Edit\Page::class)->middleware('can:edit.deeds')->name('deeds.edit');
 
     // Notifications
-    Route::get('/notifications', App\Livewire\Notification\Index\Page::class)->name('notifications');
+    Route::get('/notifications', App\Livewire\Notification\Index\Page::class)->middleware('can:send.messages')->name('notifications');
 
     // Settings
-    Route::get('/settings', App\Livewire\Setting\Index\Page::class)->name('settings');
+    Route::get('/settings', App\Livewire\Setting\Index\Page::class)->middleware('can:edit.settings')->name('settings');
 
     // Users
-    Route::get('/users', App\Livewire\User\Index\Page::class)->name('users');
+    Route::get('/users', App\Livewire\User\Index\Page::class)->middleware('can:view.users')->name('users');
 
     // Roles & Permissions
-    Route::get('/permissions', App\Livewire\Permission\Index\Page::class)->name('permissions');
+    Route::get('/permissions', App\Livewire\Permission\Index\Page::class)->middleware('can:view.roles')->name('permissions');
 
     // Current Category
-    Route::put('/current-category', [CurrentCategoryController::class, 'update'])->name('current-category.update');
+    Route::put('/current-category', [CurrentCategoryController::class, 'update'])->middleware('can:change.category')->name('current-category.update');
 
     /*
     |--------------------------------------------------------------------------

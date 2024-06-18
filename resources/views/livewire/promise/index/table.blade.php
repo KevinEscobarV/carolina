@@ -147,7 +147,7 @@
                                 <span class="text-xs text-gray-400">Sin lotes</span>
                             @endif
                         </x-table.td>
-                        <x-table.actions :item="$promise" :route="route('promises.edit', $promise->id)" />
+                        <x-table.actions :item="$promise" model="promises" :route="route('promises.edit', $promise->id)" />
                     </tr>
                 @empty
                     <tr>

@@ -106,7 +106,7 @@
                                 <span class="text-xs text-gray-400">Sin promesa</span>
                             @endif
                         </x-table.td>
-                        <x-table.actions :item="$payment" :route="route('payments.edit', $payment->id)" />
+                        <x-table.actions :item="$payment" :route="route('payments.edit', $payment->id)" model="payments" />
                     </tr>
                 @empty
                     <tr>

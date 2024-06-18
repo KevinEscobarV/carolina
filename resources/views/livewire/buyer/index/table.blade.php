@@ -134,7 +134,7 @@
                                 @endforelse
                             </div>
                         </td>
-                        <x-table.actions :item="$buyer" :route="route('buyers.edit', $buyer->id)" />
+                        <x-table.actions :item="$buyer" :route="route('buyers.edit', $buyer->id)" model="buyers" />
                     </tr>
                 @empty
                     <tr>

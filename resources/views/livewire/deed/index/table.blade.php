@@ -107,7 +107,7 @@
                         <x-table.td>
                             {{ str($deed->observations)->words(20) }}
                         </x-table.td>
-                        <x-table.actions :item="$deed" :route="route('deeds.edit', $deed->id)" />
+                        <x-table.actions :item="$deed" :route="route('deeds.edit', $deed->id)" model="deeds" />
                     </tr>
                 @empty
                     <tr>

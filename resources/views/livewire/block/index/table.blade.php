@@ -44,7 +44,7 @@
                                 {{ $block->category->name }}
                             </p>
                         </x-table.td>
-                        <x-table.actions :item="$block" />     
+                        <x-table.actions :item="$block" model="blocks" />     
                     </tr>
                 @empty
                     <tr>

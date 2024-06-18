@@ -28,7 +28,7 @@
                                 {{ $category->name }}
                             </p>
                         </x-table.td>
-                        <x-table.actions :item="$category" />
+                        <x-table.actions :item="$category" model="categories" />
                     </tr>
                 @empty
                     <tr>

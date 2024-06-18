@@ -59,7 +59,7 @@
                                 </div>
                             </x-table.td>
                         @else
-                            <x-table.actions :item="$user" />
+                            <x-table.actions :item="$user" model="users" />
                         @endif
                     </tr>
                 @empty
