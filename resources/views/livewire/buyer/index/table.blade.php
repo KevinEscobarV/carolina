@@ -75,7 +75,7 @@
                             {{ $buyer->document_type->label() }}
                         </x-table.td>
                         <x-table.td>
-                            {{ $buyer->document_number }}
+                            {{ $buyer->document_number_masked }}
                         </x-table.td>
                         <x-table.td>
                             {{ $buyer->civil_status->label() }}

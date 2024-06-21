@@ -75,6 +75,20 @@ class Buyer extends Model
     }
 
     /**
+     * Get the document_number masked attribute.
+     */
+    public function getDocumentNumberMaskedAttribute()
+    {
+        if (!$this->document_number) return '';
+        
+        if  (is_numeric($this->document_number)) {
+            return number_format($this->document_number, 0, '.', '.');
+        } else {
+            return $this->document_number;
+        }
+    }
+
+    /**
      * Get the promises for the buyer.
      */
     public function promises(): BelongsToMany
