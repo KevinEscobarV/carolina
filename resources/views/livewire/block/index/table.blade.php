@@ -19,6 +19,9 @@
                     <x-table.sortable column="category" :$sortCol :$sortAsc>
                         Campaña
                     </x-table.sortable>
+                    <x-table.sortable column="updated_at" :$sortCol :$sortAsc>
+                        Fecha actualización
+                    </x-table.sortable>
                     <x-table.th>
                     </x-table.th>
                 </tr>
@@ -42,6 +45,11 @@
                         <x-table.td>
                             <p class="font-medium text-lg">
                                 {{ $block->category->name }}
+                            </p>
+                        </x-table.td>
+                        <x-table.td>
+                            <p class="font-medium first-letter:uppercase text-sm text-gray-400">
+                                {{ $block->updated_at->translatedFormat('F j, Y') }}
                             </p>
                         </x-table.td>
                         <x-table.actions :item="$block" model="blocks" />     

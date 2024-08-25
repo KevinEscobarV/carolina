@@ -10,7 +10,7 @@
                         x-on:livewire-upload-error="uploading = false"
                         x-on:livewire-upload-progress="progress = $event.detail.progress">
                         <div class="w-full">
-                            <label for="cover-photo" class="block text-sm font-medium leading-6 text-gray-900">
+                            <label for="cover-photo" class="block text-sm font-medium leading-6 text-gray-900 dark:text-white">
                                 Archivo de Excel
                             </label>
                             <div class="mt-2 flex justify-center rounded-lg border border-dashed border-gray-900/25 px-6 py-10">
@@ -42,6 +42,7 @@
                                         @foreach ($importErrors as $error)
                                             <tr>
                                                 <td class="px-4 py-2">{{ $error }}</td>
+                                            </tr>
                                         @endforeach
                                     </tbody>
                                 </table>

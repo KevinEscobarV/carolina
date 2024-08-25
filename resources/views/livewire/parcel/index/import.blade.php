@@ -1,5 +1,5 @@
 <div>
-    <x-wireui-button class="h-full" icon="upload" label="Asignar Folios de Matricula N°" indigo wire:click="$toggle('openImport')" />
+    <x-wireui-button class="h-full" icon="upload" label="Importar Lotes" sky wire:click="$toggle('openImport')" />
 
     <x-modal wire:model="openImport">
         <div class="max-w-4xl">
@@ -11,7 +11,7 @@
                         x-on:livewire-upload-progress="progress = $event.detail.progress">
                         <div class="w-full">
                             <x-label for="file" value="Importar Lotes" />
-                            <p class="text-sm text-gray-500">Este proceso asignará los folios de matrícula a los lotes existentes.</p>
+                            <p class="text-sm text-gray-500">Las manzanas no existentes serán creadas automáticamente.</p>
                             <div class="mt-2 flex justify-center rounded-lg border border-dashed border-gray-900/25 dark:border-gray-600 px-6 py-10">
                                 <div class="flex items-center">
                                     <div class="shrink-0">
@@ -26,6 +26,11 @@
                                         <x-wireui-error name="file" />
                                     </label>
                                 </div>
+                            </div>
+                            <div class="col-span-2">
+                                <x-label for="update_existing" value="Actualizar lotes existentes" class="mt-2" />
+                                <p class="text-sm text-gray-500">Si marca esta opción, los lotes existentes se actualizarán con los datos del archivo.</p>
+                                <x-wireui-toggle wire:model="update_existing" lg />
                             </div>
                         </div>
 

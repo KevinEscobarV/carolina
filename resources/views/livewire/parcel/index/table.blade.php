@@ -3,6 +3,7 @@
         <x-table.header :$trash routeCreate="{{route('parcels.create')}}">
             <x-slot name="import">
                 <livewire:parcel.index.import-registration-number />
+                <livewire:parcel.index.import />
             </x-slot>
         </x-table.header>
         {{-- <x-parcel.index.bulk-actions /> --}}
@@ -25,6 +26,9 @@
                     </x-table.sortable>
                     <x-table.sortable column="value" :$sortCol :$sortAsc right>
                         Valor
+                    </x-table.sortable>
+                    <x-table.sortable column="position" :$sortCol :$sortAsc>
+                        Posición
                     </x-table.sortable>
                     <x-table.th>
                         Promesa
@@ -69,6 +73,11 @@
                         <x-table.td class="text-right">
                             <p class="font-light text-lg">
                                 <span class="text-gray-400">$</span> {{ $parcel->value_formatted }} <span class="text-gray-400 text-sm">COP</span>
+                            </p>
+                        </x-table.td>
+                        <x-table.td>
+                            <p class="font-medium">
+                                {{ $parcel->position->label() }}
                             </p>
                         </x-table.td>
                         <x-table.td>
