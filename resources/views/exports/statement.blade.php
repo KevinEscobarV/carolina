@@ -244,7 +244,7 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach ($promise->payments as $payment)
+                @foreach ($promise->payments->sortBy('payment_date') as $payment)
                     <tr>
                         <td class="no" style="text-align: left">{{ $payment->bill_number }}</td>
                         <td class="desc" style="text-align: center">

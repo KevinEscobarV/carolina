@@ -5,6 +5,7 @@ namespace App\Models\Scopes;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Scope;
+use Illuminate\Support\Facades\Auth;
 
 class CategoryScope implements Scope
 {
@@ -13,6 +14,10 @@ class CategoryScope implements Scope
      */
     public function apply(Builder $builder, Model $model): void
     {
-        $builder->where('category_id', auth()->user()->currentCategory->id);
+        if (!Auth::check()) {
+            return;
+        }
+
+        $builder->where('category_id', Auth::user()->currentCategory->id);
     }
 }
