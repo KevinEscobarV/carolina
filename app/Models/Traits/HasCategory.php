@@ -4,6 +4,7 @@ namespace App\Models\Traits;
 
 use App\Models\Category;
 use App\Models\Scopes\CategoryScope;
+use Illuminate\Support\Facades\Auth;
 
 trait HasCategory
 {
@@ -15,7 +16,7 @@ trait HasCategory
     public static function bootHasCategory(): void
     {
         static::creating(function ($model) {
-            $model->category_id = auth()->user()->currentCategory->id;
+            $model->category_id = Auth::user()->currentCategory->id;
         });
 
         static::addGlobalScope(new CategoryScope);
