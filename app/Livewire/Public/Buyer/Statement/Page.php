@@ -40,7 +40,7 @@ class Page extends Component
 
     public function download(Promise $promise)
     {
-        $pdf = Pdf::loadView('exports.statement', ['promise' => $promise, 'buyer' => $this->buyer])->setPaper('a4', 'landscape');
+        $pdf = Pdf::loadView('exports.statement', ['promise' => $promise, 'buyer' => $this->buyer])->setPaper('a4', 'landscape')->setOptions(['dpi' => 150, 'defaultFont' => 'sans-serif']);
         // return $pdf->download('estado-cuenta.pdf');
 
         return $pdf->stream();
