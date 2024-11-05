@@ -100,7 +100,6 @@
         }
 
         table th {
-            white-space: nowrap;
             font-weight: normal;
         }
 
@@ -129,16 +128,28 @@
         }
 
         table .qty {}
-
         table .total {
             background: #943f07;
             color: #FFFFFF;
         }
 
-        table td.unit,
+        table td.unit {
+            text-align: right;
+        }
         table td.qty,
+        table td.concept {
+            text-align: left;
+            font-size: 0.8em;
+            white-space: normal;
+        }
+        table td.no {
+            text-align: left;
+            font-size: 0.8em;
+            white-space: normal;
+        }
         table td.total {
             font-size: 1.2em;
+            color: #FFFFFF;
         }
 
         table tbody tr:last-child td {
@@ -240,6 +251,7 @@
                     <th class="desc" style="text-align: center">Fecha Pactada</th>
                     <th class="unit" style="text-align: right">Valor Acordado</th>
                     <th class="qty">Fecha Pago</th>
+                    <th class="concept">Concepto</th>
                     <th class="total" style="text-align: right">Valor Pagado</th>
                 </tr>
             </thead>
@@ -250,11 +262,12 @@
                         <td class="desc" style="text-align: center">
                             {{ $payment->agreement_date ? $payment->agreement_date->translatedFormat("d/m/Y") : 'Sin definir' }}
                         </td>
-                        <td class="unit">$ {{ $payment->agreement_amount_formatted }}</td>
+                        <td class="unit">${{ $payment->agreement_amount_formatted }}</td>
                         <td class="desc" style="text-align: center">
                             {{ $payment->payment_date ? $payment->payment_date->translatedFormat("d/m/Y") : 'Sin definir' }}
                         </td>
-                        <td class="total">$ {{ $payment->paid_amount_formatted }} COP</td>
+                        <td class="concept">{{ $payment->observations }}</td>
+                        <td class="total">${{ $payment->paid_amount_formatted }} COP</td>
                     </tr>
                 @endforeach
             </tbody>
