@@ -171,7 +171,7 @@
 
         table tfoot tr:last-child td {
             color: #77381b;
-            font-size: 1.4em;
+            font-size: 1.2em;
             border-top: 1px solid #803900;
 
         }
@@ -273,22 +273,22 @@
             </tbody>
             <tfoot>
                 <tr>
-                    <td colspan="2"></td>
+                    <td colspan="3"></td>
                     <td colspan="2">Total Valor Acordado</td>
                     <td>$ {{ $total_agreement_amount }} COP</td>
                 </tr>
                 <tr>
-                    <td colspan="2"></td>
+                    <td colspan="3"></td>
                     <td colspan="2">Cuotas Pagadas</td>
                     <td>{{ $promise->number_of_paid_fees }}</td>
                 </tr>
                 <tr>
-                    <td colspan="2"></td>
+                    <td colspan="3"></td>
                     <td colspan="2">Frecuencia de Pago</td>
                     <td>{{ $promise->payment_frequency->label() }}</td>
                 </tr>
                 <tr>
-                    <td colspan="2"></td>
+                    <td colspan="3"></td>
                     <td colspan="2">TOTAL PAGADO</td>
                     <td>$ {{ $total_paid_amount }} COP</td>
                 </tr>
