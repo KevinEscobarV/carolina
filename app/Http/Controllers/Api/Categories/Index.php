@@ -19,7 +19,7 @@ class Index extends Controller
             ->when(
                 $request->search,
                 fn (Builder $query) => $query
-                    ->where('name', 'like', "%{$request->search}%")
+                    ->where('name', config('database.operator'), "%{$request->search}%")
             )
             ->when(
                 $request->exists('selected'),

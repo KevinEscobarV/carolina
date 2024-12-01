@@ -39,7 +39,7 @@ class Category extends Model
     public function scopeSearch(Builder $query, string $search): void
     {
         if ($search) {
-            $query->where('name', 'like', '%' . $search . '%');
+            $query->where('name', config('database.operator'), '%' . $search . '%');
         }
     }
 

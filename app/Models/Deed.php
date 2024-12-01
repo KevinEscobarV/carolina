@@ -48,12 +48,13 @@ class Deed extends Model
      */
     public function scopeSearch(Builder $query, string $search): void
     {
+        $operator = config('database.operator');
         if ($search) {
-            $query->where('number', 'like', '%' . $search . '%')
-                ->orWhere('book', 'like', '%' . $search . '%')
-                ->orWhereHas('promise', function ($query) use ($search) {
-                    $query->whereHas('buyers', function ($query) use ($search) {
-                        $query->where('names', 'like', '%' . $search . '%');
+            $query->where('number', $operator, '%' . $search . '%')
+                ->orWhere('book', $operator, '%' . $search . '%')
+                ->orWhereHas('promise', function ($query) use ($search, $operator) {
+                    $query->whereHas('buyers', function ($query) use ($search, $operator) {
+                        $query->where('names', $operator, '%' . $search . '%');
                     });
                 });
         }

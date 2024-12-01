@@ -19,6 +19,18 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Database Operators
+    |--------------------------------------------------------------------------
+    |
+    | Here you may specify which of the database operators below you wish
+    | to use as your default operator for all database work. Of course
+    | you may use many operators at once using the Database library.
+    |
+    */
+    'operator' => env('DB_CONNECTION', 'mysql') == 'mysql' ? 'LIKE' : 'ILIKE',
+
+    /*
+    |--------------------------------------------------------------------------
     | Database Connections
     |--------------------------------------------------------------------------
     |

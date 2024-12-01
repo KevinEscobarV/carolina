@@ -95,9 +95,9 @@ class Parcel extends Model
     public function scopeSearch(Builder $query, string $search): void
     {
         if ($search) {
-            $query->where('number', 'like', '%' . $search . '%')
+            $query->where('number', config('database.operator'), '%' . $search . '%')
                 ->orWhereHas('block', function (Builder $query) use ($search) {
-                    $query->where('code', 'like', '%' . $search . '%');
+                    $query->where('code', config('database.operator'), '%' . $search . '%');
                 });
         }
     }

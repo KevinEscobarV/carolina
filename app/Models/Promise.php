@@ -200,13 +200,14 @@ class Promise extends Model
      */
     public function scopeSearch(Builder $query, string $search): void
     {
+        $operator = config('database.operator');
         if ($search)
-            $query->where('number', 'LIKE', "%$search%")
-                ->orWhereHas('buyers', function (Builder $query) use ($search) {
-                    $query->where('names', 'LIKE', "%$search%")
-                        ->orWhere('surnames', 'LIKE', "%$search%")
-                        ->orWhere('email', 'LIKE', "%$search%")
-                        ->orWhere('document_number', 'LIKE', "%$search%");
+            $query->where('number', $operator, "%$search%")
+                ->orWhereHas('buyers', function (Builder $query) use ($search, $operator) {
+                    $query->where('names', $operator, "%$search%")
+                        ->orWhere('surnames', $operator, "%$search%")
+                        ->orWhere('email', $operator, "%$search%")
+                        ->orWhere('document_number', $operator, "%$search%");
                 });
     }
 

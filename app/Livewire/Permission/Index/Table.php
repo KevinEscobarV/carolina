@@ -65,7 +65,7 @@ class Table extends Component
         $roles = Role::query();
 
         if ($this->search) {
-            $roles->where('name', 'like', "%{$this->search}%");
+            $roles->where('name', config('database.operator'), "%{$this->search}%");
         }
 
         if ($this->sortCol) {

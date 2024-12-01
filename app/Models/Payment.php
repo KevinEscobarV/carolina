@@ -77,18 +77,19 @@ class Payment extends Model
      */
     public function scopeSearch(Builder $query, string $search): void
     {
+        $operator = config('database.operator');
         if ($search)
-            $query->where('agreement_date', 'like', '%' . $search . '%')
-                ->orWhere('agreement_amount', 'like', '%' . $search . '%')
-                ->orWhere('payment_date', 'like', '%' . $search . '%')
-                ->orWhere('paid_amount', 'like', '%' . $search . '%')
-                ->orWhereHas('promise', function ($query) use ($search) {
-                    $query->where('number', 'like', '%' . $search . '%')
-                        ->orWhereHas('buyers', function ($query) use ($search) {
-                            $query->where('names', 'like', "%$search%")
-                                ->orWhere('surnames', 'like', "%$search%")
-                                ->orWhere('email', 'like', "%$search%")
-                                ->orWhere('document_number', 'like', "%$search%");
+            $query->where('agreement_date', $operator, '%' . $search . '%')
+                ->orWhere('agreement_amount', $operator, '%' . $search . '%')
+                ->orWhere('payment_date', $operator, '%' . $search . '%')
+                ->orWhere('paid_amount', $operator, '%' . $search . '%')
+                ->orWhereHas('promise', function ($query) use ($search, $operator) {
+                    $query->where('number', $operator, '%' . $search . '%')
+                        ->orWhereHas('buyers', function ($query) use ($search, $operator) {
+                            $query->where('names', $operator, "%$search%")
+                                ->orWhere('surnames', $operator, "%$search%")
+                                ->orWhere('email', $operator, "%$search%")
+                                ->orWhere('document_number', $operator, "%$search%");
                         });
                 });
     }
