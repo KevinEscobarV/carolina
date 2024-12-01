@@ -157,9 +157,10 @@ class User extends Authenticatable
      */
     public function scopeSearch(Builder $query, string $search): void
     {
+        $operator = config('database.operator');
         if ($search) {
-            $query->where('name', 'like', '%' . $search . '%')
-                ->orWhere('email', 'like', '%' . $search . '%');
+            $query->where('name', $operator, '%' . $search . '%')
+                ->orWhere('email', $operator, '%' . $search . '%');
         }
     }
 

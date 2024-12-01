@@ -52,9 +52,10 @@ class Block extends Model
      */
     public function scopeSearch(Builder $query, string $search): void
     {
+        $operator = config('database.operator');
         if ($search) {
-            $query->where('code', 'like', '%' . $search . '%')
-                ->orWhere('area_m2', 'like', '%' . $search . '%');
+            $query->where('code', $operator, '%' . $search . '%')
+                ->orWhere('area_m2', $operator, '%' . $search . '%');
         }
     }
 

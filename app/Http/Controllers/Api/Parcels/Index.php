@@ -23,7 +23,7 @@ class Index extends Controller
             )
             ->when(
                 $request->search,
-                fn (Builder $query) => $query->where('number', 'like', "%{$request->search}%"),
+                fn (Builder $query) => $query->where('number', config('database.operator'), "%{$request->search}%"),
             )
             ->when(
                 $request->exists('selected'),
@@ -54,7 +54,7 @@ class Index extends Controller
             ->orderBy('number')
             ->when(
                 $request->search,
-                fn (Builder $query) => $query->where('number', 'like', "%{$request->search}%"),
+                fn (Builder $query) => $query->where('number', config('database.operator'), "%{$request->search}%"),
             )
             ->when(
                 $request->exists('selected'),

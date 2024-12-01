@@ -12,16 +12,18 @@ class Index extends Controller
 {
     public function __invoke(Request $request): Collection
     {
+        $operator = config('database.operator');
+
         return Promise::query()
             ->select('id', 'number', 'status', 'category_id')
             ->with('buyers:id,names,surnames,document_number', 'parcels.block')
             ->when(
                 $request->search,
-                fn (Builder $query) => $query->where('number', 'like', "%{$request->search}%")
+                fn (Builder $query) => $query->where('number', $operator, "%{$request->search}%")
                     ->orWhereHas(
                         'buyers',
-                        fn (Builder $query) => $query->where('names', 'like', "%{$request->search}%")
-                            ->orWhere('document_number', 'like', "%{$request->search}%")
+                        fn (Builder $query) => $query->where('names', $operator, "%{$request->search}%")
+                            ->orWhere('document_number', $operator, "%{$request->search}%")
                     )
             )
             ->when(

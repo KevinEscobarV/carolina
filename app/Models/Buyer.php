@@ -129,11 +129,12 @@ class Buyer extends Model
      */
     public function scopeSearch(Builder $query, string $search): void
     {
+        $operator = config('database.operator');
         if ($search)
-            $query->where('names', 'like', "%$search%")
-                ->orWhere('surnames', 'like', "%$search%")
-                ->orWhere('email', 'like', "%$search%")
-                ->orWhere('document_number', 'like', "%$search%");
+            $query->where('names', $operator, "%$search%")
+                ->orWhere('surnames', $operator, "%$search%")
+                ->orWhere('email', $operator, "%$search%")
+                ->orWhere('document_number', $operator, "%$search%");
     }
 
     /**

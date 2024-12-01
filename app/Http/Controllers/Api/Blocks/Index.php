@@ -17,7 +17,7 @@ class Index extends Controller
             ->orderBy('code')
             ->when(
                 $request->search,
-                fn (Builder $query) => $query->where('code', 'like', "%{$request->search}%")
+                fn (Builder $query) => $query->where('code', config('database.operator'), "%{$request->search}%")
             )
             ->when(
                 $request->exists('selected'),

@@ -13,15 +13,17 @@ class Index extends Controller
 {
     public function __invoke(Request $request): Collection
     {
+        $operator = config('database.operator');
+
         return Buyer::query()
             ->select('id', 'names', 'surnames', 'document_type', 'document_number', 'email', 'category_id')
             ->orderBy('names')
             ->when(
                 $request->search,
-                fn (Builder $query) => $query->where('names', 'like', "%{$request->search}%")
-                    ->orWhere('surnames', 'like', "%{$request->search}%")
-                    ->orWhere('document_number', 'like', "%{$request->search}%")
-                    ->orWhere('email', 'like', "%{$request->search}%")
+                fn (Builder $query) => $query->where('names', $operator, "%{$request->search}%")
+                    ->orWhere('surnames', $operator, "%{$request->search}%")
+                    ->orWhere('document_number', $operator, "%{$request->search}%")
+                    ->orWhere('email', $operator, "%{$request->search}%")
             )
             ->when(
                 $request->exists('selected'),
