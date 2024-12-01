@@ -14,7 +14,6 @@ class Page extends Component
 {
     use Actions;
 
-
     #[Url('document')]
     public $document_number = '';
 
@@ -23,7 +22,7 @@ class Page extends Component
 
     public function explore()
     {
-        $buyer = Buyer::where('document_number', $this->document_number)->with('promises')->first();
+        $buyer = Buyer::where('document_number', config('database.operator'), "%$this->document_number%")->with('promises')->first();
 
         if (!$buyer) {
             $this->dialog()->error(
