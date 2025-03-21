@@ -10,7 +10,7 @@
             <form wire:submit.prevent="save">
                 <x-payment.form />
                 <div class="flex items-center justify-end gap-2 mt-6">
-                    <x-wireui-button lg rose label="Volver" href="{{ route('payments') }}" icon="rewind" wire:navigate />
+                    <x-wireui-button lg rose label="Volver" href="{{ route('payments') }}" icon="rewind" />
                     <x-wireui-button lg type="submit" spinner="save" lime label="Crear Pago" icon="save-as" />
                 </div>
             </form>

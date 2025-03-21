@@ -20,76 +20,76 @@
 
         <!-- Sidebar links -->
         <nav aria-label="Main" class="flex flex-col h-full py-3 mt-4 soft-scrollbar overflow-hidden hover:overflow-y-auto">
-            <x-side-link href="{{ route('dashboard') }}" :active="request()->routeIs('dashboard')" icon="chart-pie" wire:navigate>
+            <x-side-link href="{{ route('dashboard') }}" :active="request()->routeIs('dashboard')" icon="chart-pie">
                 <span x-show="open" x-transition.duration.500ms>Administración</span>
             </x-side-link>
             
-            {{-- <x-side-link href="#" icon="chart-pie" wire:navigate>
+            {{-- <x-side-link href="#" icon="chart-pie">
                 <span x-show="open" x-transition.duration.500ms>Reportes</span>
             </x-side-link> --}}
 
             @can('view.buyers')
-                <x-side-link href="{{ route('buyers') }}" :active="request()->routeIs(['buyers', 'buyers.*'])" icon="users" wire:navigate>
+                <x-side-link href="{{ route('buyers') }}" :active="request()->routeIs(['buyers', 'buyers.*'])" icon="users">
                     <span x-show="open" x-transition.duration.500ms>Clientes</span>
                 </x-side-link>
             @endcan
 
             @can('view.payments')
-                <x-side-link href="{{ route('payments') }}" :active="request()->routeIs(['payments', 'payments.*'])" icon="arrow-trending-up" wire:navigate>
+                <x-side-link href="{{ route('payments') }}" :active="request()->routeIs(['payments', 'payments.*'])" icon="arrow-trending-up">
                     <span x-show="open" x-transition.duration.500ms>Pagos</span>
                 </x-side-link>
             @endcan
 
             @can('view.promises')
-                <x-side-link href="{{ route('promises') }}" :active="request()->routeIs(['promises', 'promises.*'])" icon="hand-raised" wire:navigate>
+                <x-side-link href="{{ route('promises') }}" :active="request()->routeIs(['promises', 'promises.*'])" icon="hand-raised">
                     <span x-show="open" x-transition.duration.500ms>Promesas</span>
                 </x-side-link>
             @endcan
 
             @can('view.blocks')
-                <x-side-link href="{{ route('blocks') }}" :active="request()->routeIs(['blocks', 'blocks.*'])" icon="squares-plus" wire:navigate>
+                <x-side-link href="{{ route('blocks') }}" :active="request()->routeIs(['blocks', 'blocks.*'])" icon="squares-plus">
                     <span x-show="open" x-transition.duration.500ms>Manzanas</span>
                 </x-side-link>
             @endcan
 
             @can('view.parcels')
-                <x-side-link href="{{ route('parcels') }}" :active="request()->routeIs(['parcels', 'parcels.*'])" icon="map" wire:navigate>
+                <x-side-link href="{{ route('parcels') }}" :active="request()->routeIs(['parcels', 'parcels.*'])" icon="map">
                     <span x-show="open" x-transition.duration.500ms>Lotes</span>
                 </x-side-link>
             @endcan
 
             @can('view.deeds')
-                <x-side-link href="{{ route('deeds') }}" :active="request()->routeIs(['deeds', 'deeds.*'])" icon="scale" wire:navigate>
+                <x-side-link href="{{ route('deeds') }}" :active="request()->routeIs(['deeds', 'deeds.*'])" icon="scale">
                     <span x-show="open" x-transition.duration.500ms>Escrituras</span>
                 </x-side-link>
             @endcan
 
             @can('view.contegories')
-                <x-side-link href="{{ route('categories') }}" :active="request()->routeIs(['categories', 'categories.*'])" icon="megaphone" wire:navigate>
+                <x-side-link href="{{ route('categories') }}" :active="request()->routeIs(['categories', 'categories.*'])" icon="megaphone">
                     <span x-show="open" x-transition.duration.500ms>Campañas</span>
                 </x-side-link>
             @endcan
 
             @can('send.messages')
-                <x-side-link href="{{ route('notifications') }}" :active="request()->routeIs(['notifications', 'notifications.*'])" icon="bell" wire:navigate>
+                <x-side-link href="{{ route('notifications') }}" :active="request()->routeIs(['notifications', 'notifications.*'])" icon="bell">
                     <span x-show="open" x-transition.duration.500ms>Notificaciones</span>
                 </x-side-link>
             @endcan
 
             @can('edit.settings')
-                <x-side-link href="{{ route('settings') }}" :active="request()->routeIs(['settings', 'settings.*'])" icon="cog-6-tooth" wire:navigate>
+                <x-side-link href="{{ route('settings') }}" :active="request()->routeIs(['settings', 'settings.*'])" icon="cog-6-tooth">
                     <span x-show="open" x-transition.duration.500ms>Configuración</span>
                 </x-side-link>
             @endcan
                 
             @can('view.users')
-                <x-side-link href="{{ route('users') }}" :active="request()->routeIs(['users', 'settings.*'])" icon="user-group" wire:navigate>
+                <x-side-link href="{{ route('users') }}" :active="request()->routeIs(['users', 'settings.*'])" icon="user-group">
                     <span x-show="open" x-transition.duration.500ms>Usuarios</span>
                 </x-side-link>
             @endcan
 
             @can('view.roles')
-                <x-side-link href="{{ route('permissions') }}" :active="request()->routeIs(['permissions', 'permissions.*'])" icon="key" wire:navigate>
+                <x-side-link href="{{ route('permissions') }}" :active="request()->routeIs(['permissions', 'permissions.*'])" icon="key">
                     <span x-show="open" x-transition.duration.500ms>Roles</span>
                 </x-side-link>
             @endcan

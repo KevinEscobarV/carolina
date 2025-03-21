@@ -9,7 +9,7 @@
         <form wire:submit.prevent="save">
             <x-promise.form :$block :projection="$form->projection" :$isCreate :interest="$form->interest_rate" />
             <div class="flex items-center justify-end gap-2 mt-6">
-                <x-wireui-button lg rose label="Volver" href="{{ route('promises') }}" wire:navigate />
+                <x-wireui-button lg rose label="Volver" href="{{ route('promises') }}" />
                 <x-wireui-button lg type="submit" spinner="save" primary label="Actualizar Promesa" />
             </div>
         </form>

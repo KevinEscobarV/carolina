@@ -3,7 +3,7 @@
         
         @can('edit.' . $model)
             @if (isset($route))
-                <x-wireui-button.circle sm primary icon="pencil" href="{{ $route }}" wire:navigate />
+                <x-wireui-button.circle sm primary icon="pencil" href="{{ $route }}" />
             @else
                 <x-wireui-button.circle sm primary icon="pencil" wire:click="edit({{ $item->id }})" />
             @endif
