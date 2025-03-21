@@ -9,7 +9,7 @@
         <form wire:submit.prevent="save">
             <x-payment.form />
             <div class="flex items-center justify-end gap-2 mt-6">
-                <x-wireui-button rose outline label="Volver" href="{{ route('payments') }}" wire:navigate />
+                <x-wireui-button rose outline label="Volver" href="{{ route('payments') }}" />
                 <x-wireui-button type="submit" spinner="save" primary label="Actualizar Pago" />
             </div>
         </form>

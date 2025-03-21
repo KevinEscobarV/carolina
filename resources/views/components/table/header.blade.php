@@ -14,7 +14,7 @@
 </div>
 <div class="col-span-1">
     @if (isset($routeCreate))
-        <x-wireui-button href="{{ $routeCreate }}" class="h-full" icon="plus" label="Crear" lime wire:navigate />
+        <x-wireui-button href="{{ $routeCreate }}" class="h-full" icon="plus" label="Crear" lime />
     @else
         <x-wireui-button x-on:click="open = ! open" class="h-full" lime>
             <span class="mr-2" x-text="open ? 'Cerrar' : 'Crear'"></span>

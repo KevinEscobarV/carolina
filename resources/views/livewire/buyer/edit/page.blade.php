@@ -9,7 +9,7 @@
         <form wire:submit.prevent="save">
             <x-buyer.form />
             <div class="flex items-center justify-end gap-2 mt-6">
-                <x-wireui-button rose outline label="Volver" href="{{ route('buyers') }}" wire:navigate />
+                <x-wireui-button rose outline label="Volver" href="{{ route('buyers') }}" />
                 <x-wireui-button type="submit" spinner="save" primary label="Actualizar Usuario" />
             </div>
         </form>
