@@ -33,9 +33,17 @@ class WalletStatus implements FromQuery, WithHeadings, WithMapping, ShouldAutoSi
      */
     public function query()
     {
-        $raw = config('database.default') === 'pgsql'
-        ? "((projection->>(((SELECT COUNT(*) FROM payments WHERE payments.promise_id = promises.id and payments.is_initial_fee = '0') + 1)::int))::jsonb->>'due_date')::date < CURRENT_DATE"
-        : "JSON_UNQUOTE(JSON_EXTRACT(`projection`, CONCAT('$[', ((SELECT COUNT(*) FROM `payments` WHERE `payments`.`promise_id` = `promises`.`id` AND `payments`.`is_initial_fee` = '0') + 1), '].due_date'))) < CURDATE()";
+        $driver = config('database.default');
+
+        $raw = null;
+
+        if ($driver === 'sqlite') {
+            $raw = "json_extract(projection, '$[' || ((SELECT COUNT(*) FROM payments WHERE payments.promise_id = promises.id and payments.is_initial_fee = '0') + 1) || '].due_date') < date('now')";
+        } else if ($driver === 'mysql') {
+            $raw = "JSON_UNQUOTE(JSON_EXTRACT(`projection`, CONCAT('$[', ((SELECT COUNT(*) FROM `payments` WHERE `payments`.`promise_id` = `promises`.`id` AND `payments`.`is_initial_fee` = '0') + 1), '].due_date'))) < CURDATE()";
+        } else if ($driver === 'pgsql') {
+            $raw = "((projection->>(((SELECT COUNT(*) FROM payments WHERE payments.promise_id = promises.id and payments.is_initial_fee = '0') + 1)::int))::jsonb->>'due_date')::date < CURRENT_DATE";
+        }
 
         $query = Promise::query()->with('buyers', 'parcels.block', 'category', 'payments')
             ->when($this->onlyLate, fn ($query) => $query->whereRaw($raw))
