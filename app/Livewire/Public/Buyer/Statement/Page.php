@@ -18,8 +18,8 @@ class Page extends Component
     public $document_number = '';
 
     public $buyer;
-    public $buyerIds = [];
     public $promises = [];
+    public $statementUrls = [];
 
     public function explore()
     {
@@ -30,18 +30,28 @@ class Page extends Component
                 'Ups !!!',
                 'No se encontró ningún comprador con el número de documento ingresado.'
             );
-            $this->buyerIds = [];
             $this->promises = [];
+            $this->statementUrls = [];
             return;
         }
 
         $this->buyer = $buyers->first();
 
         // The same person can be registered once per category, so gather the promises of every record
-        $this->buyerIds = $buyers->modelKeys();
-        $this->promises = Promise::whereHas('buyers', fn ($query) => $query->whereKey($this->buyerIds))
+        $buyerIds = $buyers->modelKeys();
+        $this->promises = Promise::whereHas('buyers', fn ($query) => $query->whereKey($buyerIds))
             ->with('buyers:id')
             ->get();
+
+        // Signed links, so a statement cannot be downloaded by guessing ids
+        $this->statementUrls = $this->promises->mapWithKeys(fn (Promise $promise) => [
+            $promise->id => url(url()->temporarySignedRoute(
+                'statement-download',
+                now()->addMinutes(30),
+                [$promise->id, $promise->buyers->whereIn('id', $buyerIds)->first()->id],
+                false
+            )),
+        ])->all();
     }
 
     public function download(Promise $promise)

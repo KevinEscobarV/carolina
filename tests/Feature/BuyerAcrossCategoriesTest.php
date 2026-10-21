@@ -4,6 +4,8 @@ namespace Tests\Feature;
 
 use App\Enums\CivilStatus;
 use App\Enums\DocumentType;
+use App\Enums\PaymentFrequency;
+use App\Enums\PromisePaymentMethod;
 use App\Livewire\Buyer\Index\Create;
 use App\Livewire\Public\Buyer\Statement\Page as StatementPage;
 use App\Models\Buyer;
@@ -12,6 +14,7 @@ use App\Models\Promise;
 use App\Models\Scopes\CategoryScope;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Auth;
 use Livewire\Features\SupportTesting\Testable;
 use Livewire\Livewire;
 use Spatie\Permission\Models\Permission;
@@ -120,7 +123,7 @@ class BuyerAcrossCategoriesTest extends TestCase
         $promiseB = Promise::create(['number' => 'P-B', 'signature_date' => now()]);
         $promiseB->buyers()->attach($buyerB);
 
-        auth()->logout();
+        Auth::logout();
 
         Livewire::test(StatementPage::class)
             ->set('document_number', '1.115.918.673')
@@ -135,13 +138,44 @@ class BuyerAcrossCategoriesTest extends TestCase
         $promise = Promise::create(['number' => 'P-A', 'signature_date' => now()]);
         $promise->buyers()->attach($buyer);
 
-        auth()->logout();
+        Auth::logout();
 
         Livewire::test(StatementPage::class)
             ->set('document_number', '1115918')
             ->call('explore')
             ->assertSet('promises', [])
             ->assertDontSee(route('statement-download', [$promise->id, $buyer->id]));
+    }
+
+    public function test_statement_downloads_only_accept_the_signed_links_of_the_search(): void
+    {
+        $buyer = $this->createBuyerIn($this->campaignA, ['document_number' => '1115918673']);
+        $promise = Promise::create([
+            'number' => 'P-A',
+            'signature_date' => now(),
+            'payment_method' => PromisePaymentMethod::cases()[0],
+            'payment_frequency' => PaymentFrequency::cases()[0],
+        ]);
+        $promise->buyers()->attach($buyer);
+
+        Auth::logout();
+
+        $signedUrl = Livewire::test(StatementPage::class)
+            ->set('document_number', '1115918673')
+            ->call('explore')
+            ->get('statementUrls')[$promise->id];
+
+        $this->get($signedUrl)
+            ->assertOk()
+            ->assertHeader('content-type', 'application/pdf');
+
+        $this->get(route('statement-download', [$promise->id, $buyer->id]))
+            ->assertRedirect(route('personal-account-statement'));
+
+        $this->travel(31)->minutes();
+
+        $this->get($signedUrl)
+            ->assertRedirect(route('personal-account-statement'));
     }
 
     /**

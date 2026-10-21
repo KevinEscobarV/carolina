@@ -6,12 +6,18 @@ use App\Http\Controllers\Controller;
 use App\Models\Buyer;
 use App\Models\Promise;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class StatementController extends Controller
 {
-    public function download(Promise $promise, Buyer $buyer)
+    public function download(Request $request, Promise $promise, Buyer $buyer)
     {
+        // Solo se aceptan los enlaces firmados que genera la consulta pública
+        if (! $request->hasValidRelativeSignature()) {
+            return redirect()->route('personal-account-statement')->dangerBanner('El enlace no es válido o ya venció. Busca de nuevo tu número de documento.');
+        }
+
         // Si el usuario no es el dueño del promise, no puede descargar el reporte
         if ($promise->buyers->contains('id', $buyer->id) === false) {
             return redirect()->route('personal-account-statement')->dangerBanner('No puedes descargar el reporte de una promesa que no te pertenece.');
