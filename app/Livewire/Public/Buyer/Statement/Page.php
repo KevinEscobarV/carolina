@@ -18,26 +18,29 @@ class Page extends Component
     public $document_number = '';
 
     public $buyer;
+    public $buyerIds = [];
     public $promises = [];
 
     public function explore()
     {
-        $buyer = Buyer::where('document_number', config('database.operator'), "%$this->document_number%")->first();
+        $buyers = Buyer::byDocument($this->document_number)->get();
 
-        if (!$buyer) {
+        if ($buyers->isEmpty()) {
             $this->dialog()->error(
                 'Ups !!!',
                 'No se encontró ningún comprador con el número de documento ingresado.'
             );
+            $this->buyerIds = [];
             $this->promises = [];
             return;
         }
 
-        $this->buyer = $buyer;
+        $this->buyer = $buyers->first();
 
         // The same person can be registered once per category, so gather the promises of every record
-        $this->promises = Promise::whereHas('buyers', fn ($query) => $query->where('document_number', $buyer->document_number))
-            ->with('buyers:id,document_number')
+        $this->buyerIds = $buyers->modelKeys();
+        $this->promises = Promise::whereHas('buyers', fn ($query) => $query->whereKey($this->buyerIds))
+            ->with('buyers:id')
             ->get();
     }
 
