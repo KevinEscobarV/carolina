@@ -8,7 +8,6 @@ use Livewire\Attributes\Layout;
 use Livewire\Attributes\Url;
 use Livewire\Component;
 use WireUi\Traits\Actions;
-use Barryvdh\DomPDF\Facade\Pdf;
 
 class Page extends Component
 {
@@ -17,7 +16,6 @@ class Page extends Component
     #[Url('document')]
     public $document_number = '';
 
-    public $buyer;
     public $promises = [];
     public $statementUrls = [];
 
@@ -35,8 +33,6 @@ class Page extends Component
             return;
         }
 
-        $this->buyer = $buyers->first();
-
         // The same person can be registered once per category, so gather the promises of every record
         $buyerIds = $buyers->modelKeys();
         $this->promises = Promise::whereHas('buyers', fn ($query) => $query->whereKey($buyerIds))
@@ -52,18 +48,6 @@ class Page extends Component
                 false
             )),
         ])->all();
-    }
-
-    public function download(Promise $promise)
-    {
-        $pdf = Pdf::loadView('exports.statement', ['promise' => $promise, 'buyer' => $this->buyer])->setPaper('a4', 'landscape')->setOptions(['dpi' => 150, 'defaultFont' => 'sans-serif']);
-        // return $pdf->download('estado-cuenta.pdf');
-
-        return $pdf->stream();
-
-        // return response()->streamDownload(function () use ($pdf) {
-        //     echo $pdf->stream();
-        //     }, 'estado-cuenta.pdf');
     }
 
     #[Layout('layouts.guest')]
