@@ -27,7 +27,7 @@ return [
     | you may use many operators at once using the Database library.
     |
     */
-    'operator' => env('DB_CONNECTION', 'mysql') == 'mysql' ? 'LIKE' : 'ILIKE',
+    'operator' => env('DB_CONNECTION', 'mysql') == 'pgsql' ? 'ILIKE' : 'LIKE',
 
     /*
     |--------------------------------------------------------------------------

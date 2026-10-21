@@ -8,7 +8,6 @@ use Livewire\Attributes\Layout;
 use Livewire\Attributes\Url;
 use Livewire\Component;
 use WireUi\Traits\Actions;
-use Barryvdh\DomPDF\Facade\Pdf;
 
 class Page extends Component
 {
@@ -17,36 +16,38 @@ class Page extends Component
     #[Url('document')]
     public $document_number = '';
 
-    public $buyer;
     public $promises = [];
+    public $statementUrls = [];
 
     public function explore()
     {
-        $buyer = Buyer::where('document_number', config('database.operator'), "%$this->document_number%")->with('promises')->first();
+        $buyers = Buyer::byDocument($this->document_number)->get();
 
-        if (!$buyer) {
+        if ($buyers->isEmpty()) {
             $this->dialog()->error(
                 'Ups !!!',
                 'No se encontró ningún comprador con el número de documento ingresado.'
             );
             $this->promises = [];
+            $this->statementUrls = [];
             return;
         }
 
-        $this->buyer = $buyer;
-        $this->promises = $buyer->promises;
-    }
+        // The same person can be registered once per category, so gather the promises of every record
+        $buyerIds = $buyers->modelKeys();
+        $this->promises = Promise::whereHas('buyers', fn ($query) => $query->whereKey($buyerIds))
+            ->with('buyers:id')
+            ->get();
 
-    public function download(Promise $promise)
-    {
-        $pdf = Pdf::loadView('exports.statement', ['promise' => $promise, 'buyer' => $this->buyer])->setPaper('a4', 'landscape')->setOptions(['dpi' => 150, 'defaultFont' => 'sans-serif']);
-        // return $pdf->download('estado-cuenta.pdf');
-
-        return $pdf->stream();
-
-        // return response()->streamDownload(function () use ($pdf) {
-        //     echo $pdf->stream();
-        //     }, 'estado-cuenta.pdf');
+        // Signed links, so a statement cannot be downloaded by guessing ids
+        $this->statementUrls = $this->promises->mapWithKeys(fn (Promise $promise) => [
+            $promise->id => url(url()->temporarySignedRoute(
+                'statement-download',
+                now()->addMinutes(30),
+                [$promise->id, $promise->buyers->whereIn('id', $buyerIds)->first()->id],
+                false
+            )),
+        ])->all();
     }
 
     #[Layout('layouts.guest')]

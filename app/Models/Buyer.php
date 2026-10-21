@@ -138,6 +138,26 @@ class Buyer extends Model
     }
 
     /**
+     * Scope a query to only include buyers with exactly the given document,
+     * ignoring dots, spaces, hyphens and letter case on both sides.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @param  string|null  $document
+     * @return void
+     */
+    public function scopeByDocument(Builder $query, ?string $document): void
+    {
+        $document = strtoupper(preg_replace('/[\s.\-]/', '', (string) $document));
+
+        if ($document === '') {
+            $query->whereRaw('1 = 0');
+            return;
+        }
+
+        $query->whereRaw("UPPER(REPLACE(REPLACE(REPLACE(document_number, '.', ''), ' ', ''), '-', '')) = ?", [$document]);
+    }
+
+    /**
      * Scope a query to sort buyers by the specified column.
      * 
      * @param  \Illuminate\Database\Eloquent\Builder  $query
