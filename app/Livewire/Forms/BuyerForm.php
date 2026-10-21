@@ -5,6 +5,7 @@ namespace App\Livewire\Forms;
 use App\Enums\CivilStatus;
 use App\Enums\DocumentType;
 use App\Models\Buyer;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 use Livewire\Form;
 
@@ -27,12 +28,22 @@ class BuyerForm extends Form
         return [
             'names' => 'required|string|max:255',
             'surnames' => 'required|string|max:255',
-            'email' => 'required|email|max:255|unique:buyers,email',
+            'email' => [
+                'required',
+                'email',
+                'max:255',
+                Rule::unique('buyers', 'email')->where('category_id', Auth::user()->currentCategory->id)
+            ],
             'document_type' => [
                 'required',
                 Rule::enum(DocumentType::class)
             ],
-            'document_number' => 'required|string|max:255|unique:buyers,document_number',
+            'document_number' => [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('buyers', 'document_number')->where('category_id', Auth::user()->currentCategory->id)
+            ],
             'civil_status' => [
                 'required',
                 Rule::enum(CivilStatus::class)
@@ -48,12 +59,22 @@ class BuyerForm extends Form
         return [
             'names' => 'required|string|max:255',
             'surnames' => 'required|string|max:255',
-            'email' => 'required|email|max:255|unique:buyers,email,' . $this->buyer->id,
+            'email' => [
+                'required',
+                'email',
+                'max:255',
+                Rule::unique('buyers', 'email')->where('category_id', $this->buyer->category_id)->ignore($this->buyer->id)
+            ],
             'document_type' => [
                 'required',
                 Rule::enum(DocumentType::class)
             ],
-            'document_number' => 'required|string|max:255|unique:buyers,document_number,' . $this->buyer->id,
+            'document_number' => [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('buyers', 'document_number')->where('category_id', $this->buyer->category_id)->ignore($this->buyer->id)
+            ],
             'civil_status' => [
                 'required',
                 Rule::enum(CivilStatus::class)
@@ -81,6 +102,14 @@ class BuyerForm extends Form
     public function setBuyer(Buyer $buyer): void
     {
         $this->buyer = $buyer;
+        $this->fillFrom($buyer);
+    }
+
+    /**
+     * Fill the fields with the data of the given buyer, without binding the form to it.
+     */
+    public function fillFrom(Buyer $buyer): void
+    {
         $this->fill($buyer->only([
             'names',
             'surnames',

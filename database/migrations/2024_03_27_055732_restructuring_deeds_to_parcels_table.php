@@ -22,6 +22,9 @@ return new class extends Migration
             SET registration_number = d.number
             FROM deeds d
             WHERE parcels.id = d.parcel_id;');
+        } elseif (config('database.default') === 'sqlite') {
+            DB::select('UPDATE parcels
+            SET registration_number = (SELECT d.number FROM deeds d WHERE parcels.id = d.parcel_id)');
         } else {
             DB::select('UPDATE parcels p
             JOIN deeds d ON p.id = d.parcel_id
