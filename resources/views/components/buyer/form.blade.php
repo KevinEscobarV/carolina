@@ -9,6 +9,7 @@
             </h2>
         </div>
     </div>
+    {{ $slot }}
     <div class="col-span-6 sm:col-span-3">
         <x-wireui-input label="Nombres" placeholder="Nombres del Usuario" wire:model="form.names" />
     </div>
