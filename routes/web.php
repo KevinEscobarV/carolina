@@ -84,6 +84,7 @@ Route::middleware([
     |--------------------------------------------------------------------------
     */
     Route::get('/select/buyers', \App\Http\Controllers\Api\Buyers\Index::class)->name('api.buyers.index');
+    Route::get('/select/buyers/other-categories', [\App\Http\Controllers\Api\Buyers\Index::class, 'otherCategories'])->middleware('can:change.category')->name('api.buyers.other-categories');
     Route::get('/select/promises', \App\Http\Controllers\Api\Promises\Index::class)->name('api.promises.index');
     Route::get('/select/categories', \App\Http\Controllers\Api\Categories\Index::class)->name('api.categories.index');
     Route::get('/select/blocks', \App\Http\Controllers\Api\Blocks\Index::class)->name('api.blocks.index');

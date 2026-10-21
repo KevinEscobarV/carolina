@@ -22,7 +22,7 @@ class Page extends Component
 
     public function explore()
     {
-        $buyer = Buyer::where('document_number', config('database.operator'), "%$this->document_number%")->with('promises')->first();
+        $buyer = Buyer::where('document_number', config('database.operator'), "%$this->document_number%")->first();
 
         if (!$buyer) {
             $this->dialog()->error(
@@ -34,7 +34,11 @@ class Page extends Component
         }
 
         $this->buyer = $buyer;
-        $this->promises = $buyer->promises;
+
+        // The same person can be registered once per category, so gather the promises of every record
+        $this->promises = Promise::whereHas('buyers', fn ($query) => $query->where('document_number', $buyer->document_number))
+            ->with('buyers:id,document_number')
+            ->get();
     }
 
     public function download(Promise $promise)
