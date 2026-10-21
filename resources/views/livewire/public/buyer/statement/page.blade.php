@@ -59,7 +59,7 @@
                                         <span class="text-gray-400">$</span> {{ $promise->value_formatted }} <span class="text-gray-400 text-sm">COP</span>
                                     </td>
                                     <td class="px-6 py-4">
-                                        <x-wireui-button icon="eye" label="Ver" primary target="_blank" href="{{ route('statement-download', [$promise->id, $promise->buyers->firstWhere('document_number', $buyer->document_number)->id]) }}" />
+                                        <x-wireui-button icon="eye" label="Ver" primary target="_blank" href="{{ route('statement-download', [$promise->id, $promise->buyers->whereIn('id', $buyerIds)->first()->id]) }}" />
                                     </td>
                                 </tr>
                             @endforeach

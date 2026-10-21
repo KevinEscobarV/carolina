@@ -123,10 +123,25 @@ class BuyerAcrossCategoriesTest extends TestCase
         auth()->logout();
 
         Livewire::test(StatementPage::class)
-            ->set('document_number', '1115918673')
+            ->set('document_number', '1.115.918.673')
             ->call('explore')
             ->assertSee(route('statement-download', [$promiseA->id, $buyerA->id]))
             ->assertSee(route('statement-download', [$promiseB->id, $buyerB->id]));
+    }
+
+    public function test_public_statement_needs_the_whole_document(): void
+    {
+        $buyer = $this->createBuyerIn($this->campaignA, ['document_number' => '1115918673']);
+        $promise = Promise::create(['number' => 'P-A', 'signature_date' => now()]);
+        $promise->buyers()->attach($buyer);
+
+        auth()->logout();
+
+        Livewire::test(StatementPage::class)
+            ->set('document_number', '1115918')
+            ->call('explore')
+            ->assertSet('promises', [])
+            ->assertDontSee(route('statement-download', [$promise->id, $buyer->id]));
     }
 
     /**
