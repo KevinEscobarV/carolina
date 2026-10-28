@@ -9,7 +9,7 @@
         <x-card>
             <form wire:submit.prevent="save">
                 <x-parcel.form />
-                <div class="flex items center justify-end gap-2 mt-6">
+                <div class="flex items-center justify-end gap-2 mt-6">
                     <x-wireui-button type="submit" spinner="save" lime label="Actualizar Lote" />
                 </div>
             </form>
@@ -24,7 +24,7 @@
 
 @assets
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
-    <link rel="stylesheet" href="https://unpkg.com/@geoman-io/leaflet-geoman-free@latest/dist/leaflet-geoman.css" />
+    <link rel="stylesheet" href="https://unpkg.com/@geoman-io/leaflet-geoman-free@2.20.2/dist/leaflet-geoman.css" integrity="sha384-++juJE6hRzkkV4Ri9H2C+3yjCTdEk4PaZxptm3cpgKKjuMcAHErn35Q/0sGitZCR" crossorigin="" />
 
     <style>
         :is(.dark) {
@@ -39,13 +39,16 @@
     </style>
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-    <script src="https://unpkg.com/@geoman-io/leaflet-geoman-free@latest/dist/leaflet-geoman.js"></script>
+    <script src="https://unpkg.com/@geoman-io/leaflet-geoman-free@2.20.2/dist/leaflet-geoman.js" integrity="sha384-smcfdVnOMup31VRg3qwcAAOj5JHZs5+Q1IX3dUWwtjU2VvQWRaDr6JYC1o0OIgsl" crossorigin=""></script>
 @endassets
 
 @script
     <script>
         Alpine.data('map', () => {
             return {
+                map: null,
+                resizeObserver: null,
+
                 init() {
                     this.initMap()
                 },
@@ -54,14 +57,14 @@
 
                     let el = this.$wire.$el.querySelector('#map');
 
-                    let map = L.map(el).setView([5.3174118648923745, -72.40578830189148], 15);
+                    this.map = L.map(el).setView([5.3174118648923745, -72.40578830189148], 15);
 
                     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                         maxZoom: 19,
-                    }).addTo(map);
+                    }).addTo(this.map);
 
                     // add Leaflet-Geoman controls with some options to the map
-                    map.pm.addControls({
+                    this.map.pm.addControls({
                         position: 'topright',
                         drawPolyline: false,
                         drawRectangle: false,
@@ -76,23 +79,32 @@
 
                     // add a marker to the map
                     if ($wire.marker) {
-                        L.geoJSON(JSON.parse($wire.marker)).addTo(map);
+                        L.geoJSON(JSON.parse($wire.marker)).addTo(this.map);
 
                         // fit the marker to the map
-                        map.setView(L.geoJSON(JSON.parse($wire.marker)).getBounds().getCenter());
+                        this.map.setView(L.geoJSON(JSON.parse($wire.marker)).getBounds().getCenter());
                     }
 
                     // // add a polygon to the map
                     if ($wire.polygon) {
-                        L.geoJSON(JSON.parse($wire.polygon)).addTo(map);
+                        L.geoJSON(JSON.parse($wire.polygon)).addTo(this.map);
 
                         // fit the polygon to the map
-                        map.fitBounds(L.geoJSON(JSON.parse($wire.polygon)).getBounds());
+                        this.map.fitBounds(L.geoJSON(JSON.parse($wire.polygon)).getBounds());
                     }
 
-                    map.on("pm:create", (e) => {
-                        this.$wire.setCoordinates(e.shape, e.shape == 'Marker' ? e.layer._latlng : e.layer._latlngs);
+                    this.map.on("pm:create", (e) => {
+                        this.$wire.setCoordinates(e.shape, e.shape == 'Marker' ? e.layer.getLatLng() : e.layer.getLatLngs());
                     });
+
+                    this.resizeObserver = new ResizeObserver(() => this.map.invalidateSize());
+                    this.resizeObserver.observe(el);
+                    requestAnimationFrame(() => this.map.invalidateSize());
+                },
+
+                destroy() {
+                    this.resizeObserver?.disconnect();
+                    this.map?.remove();
                 }
             }
         })

@@ -24,7 +24,7 @@
 
 @assets
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
-    <link rel="stylesheet" href="https://unpkg.com/@geoman-io/leaflet-geoman-free@latest/dist/leaflet-geoman.css" />
+    <link rel="stylesheet" href="https://unpkg.com/@geoman-io/leaflet-geoman-free@2.20.2/dist/leaflet-geoman.css" integrity="sha384-++juJE6hRzkkV4Ri9H2C+3yjCTdEk4PaZxptm3cpgKKjuMcAHErn35Q/0sGitZCR" crossorigin="" />
 
     <style>
         :is(.dark){
@@ -38,22 +38,25 @@
     </style>
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-    <script src="https://unpkg.com/@geoman-io/leaflet-geoman-free@latest/dist/leaflet-geoman.js"></script>
+    <script src="https://unpkg.com/@geoman-io/leaflet-geoman-free@2.20.2/dist/leaflet-geoman.js" integrity="sha384-smcfdVnOMup31VRg3qwcAAOj5JHZs5+Q1IX3dUWwtjU2VvQWRaDr6JYC1o0OIgsl" crossorigin=""></script>
 @endassets
 
 @script
     <script>
         Alpine.data('map', () => ({
-            initMap() {
+            map: null,
+            resizeObserver: null,
 
-                let map = L.map('map').setView([5.3174118648923745, -72.40578830189148], 15);
+            initMap() {
+                const mapElement = this.$el.querySelector('#map');
+                this.map = L.map(mapElement).setView([5.3174118648923745, -72.40578830189148], 15);
 
                 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                    maxZoom: 20,
-                }).addTo(map);
+                    maxZoom: 19,
+                }).addTo(this.map);
 
                 // add Leaflet-Geoman controls with some options to the map  
-                map.pm.addControls({
+                this.map.pm.addControls({
                     position: 'topright',
                     drawPolyline: false,
                     drawRectangle: false,
@@ -66,9 +69,18 @@
                     editMode: false,
                 });
 
-                map.on("pm:create", (e) => {
-                    this.$wire.setCoordinates(e.shape, e.shape == 'Marker' ? e.layer._latlng : e.layer._latlngs);
+                this.map.on("pm:create", (e) => {
+                    this.$wire.setCoordinates(e.shape, e.shape == 'Marker' ? e.layer.getLatLng() : e.layer.getLatLngs());
                 });
+
+                this.resizeObserver = new ResizeObserver(() => this.map.invalidateSize());
+                this.resizeObserver.observe(mapElement);
+                requestAnimationFrame(() => this.map.invalidateSize());
+            },
+
+            destroy() {
+                this.resizeObserver?.disconnect();
+                this.map?.remove();
             }
         }))
     </script>
