@@ -16,15 +16,15 @@ use WireUi\Traits\Actions;
 class Table extends Component
 {
     use Actions;
-    use WithPagination;
     use SoftDeletes;
     use Sortable;
+    use WithPagination;
 
     public $model = null;
 
     public function mount()
     {
-        $this->model = new Parcel(); // This is used for the SoftDeletes trait
+        $this->model = new Parcel; // This is used for the SoftDeletes trait
     }
 
     #[Renderless]
@@ -46,7 +46,7 @@ class Table extends Component
         return ['id', 'number', 'block', 'position', 'value', 'registration_number', 'promise_id', 'updated_at'];
     }
 
-    #[On('refresh-parcel-table')] 
+    #[On('refresh-parcel-table')]
     public function render()
     {
         return view('livewire.parcel.index.table', [

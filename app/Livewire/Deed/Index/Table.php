@@ -16,15 +16,15 @@ use WireUi\Traits\Actions;
 class Table extends Component
 {
     use Actions;
-    use WithPagination;
     use SoftDeletes;
     use Sortable;
+    use WithPagination;
 
     public $model = null;
 
     public function mount()
     {
-        $this->model = new Deed(); // This is used for the SoftDeletes trait
+        $this->model = new Deed; // This is used for the SoftDeletes trait
     }
 
     #[Renderless]
@@ -38,7 +38,6 @@ class Table extends Component
         return view('components.table.placeholder');
     }
 
-
     /**
      * @return array<int, string>
      */
@@ -47,7 +46,7 @@ class Table extends Component
         return ['id', 'number', 'book', 'signature_date', 'value', 'status', 'observations'];
     }
 
-    #[On('refresh-deed-table')] 
+    #[On('refresh-deed-table')]
     public function render()
     {
         return view('livewire.deed.index.table', [

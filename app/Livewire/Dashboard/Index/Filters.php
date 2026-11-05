@@ -4,9 +4,9 @@ namespace App\Livewire\Dashboard\Index;
 
 use App\Enums\Range;
 use App\Models\Payment;
-use Livewire\Form;
-use Livewire\Attributes\Url;
 use Illuminate\Support\Carbon;
+use Livewire\Attributes\Url;
+use Livewire\Form;
 
 class Filters extends Form
 {
@@ -39,11 +39,11 @@ class Filters extends Form
     {
         return collect(FilterStatus::cases())->map(function ($status) {
             $count = $this->applyRange(
-                    $this->applyStatus(
-                        Payment::query(),
-                        $status,
-                    )
-                )->count();
+                $this->applyStatus(
+                    Payment::query(),
+                    $status,
+                )
+            )->count();
 
             return [
                 'value' => $status->value,
@@ -55,10 +55,10 @@ class Filters extends Form
 
     public function apply($query)
     {
-       $query = $this->applyStatus($query);
-       $query = $this->applyRange($query);
+        $query = $this->applyStatus($query);
+        $query = $this->applyRange($query);
 
-       return $query;
+        return $query;
     }
 
     public function applyStatus($query, $status = null)

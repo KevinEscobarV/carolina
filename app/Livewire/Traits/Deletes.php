@@ -7,7 +7,7 @@ trait Deletes
     public $selectedIds = [];
 
     public $idsOnPage = [];
-    
+
     public function deleteSelected()
     {
         $this->authorizeDeleting();
@@ -19,17 +19,16 @@ trait Deletes
         }
     }
 
-
     public function destroy($id)
     {
         $this->dialog()->confirm([
-            'icon'        => 'error',
-            'title'       => '¿Estás seguro?',
+            'icon' => 'error',
+            'title' => '¿Estás seguro?',
             'description' => 'El registro se eliminara permanentemente',
             'acceptLabel' => 'ELIMINAR PERMANENTEMENTE',
             'rejectLabel' => 'No, cancelar',
-            'method'      => 'delete',
-            'params'      => $id,
+            'method' => 'delete',
+            'params' => $id,
         ]);
     }
 

@@ -7,7 +7,6 @@ use App\Enums\PromisePaymentMethod;
 use App\Models\Promise;
 use App\Models\Scopes\CategoryScope;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
 
 class UpdatePromises extends Seeder
 {
@@ -36,6 +35,7 @@ class UpdatePromises extends Seeder
 
                 if ($numCuotas > 100) {
                     $this->command->error("Promise {$promise->id} has more than 100 quotas");
+
                     continue;
                 }
 
@@ -103,11 +103,10 @@ class UpdatePromises extends Seeder
 
             } catch (\Throwable $th) {
                 $this->command->error($th->getMessage());
+
                 continue;
             }
         }
-
-
 
         echo 'Done updating promises';
     }

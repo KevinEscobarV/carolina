@@ -25,6 +25,7 @@ class CategoryForm extends Form
 
         if (Category::where('name', $this->name)->exists()) {
             $this->addError('name', 'Ya existe una categoría con este nombre');
+
             return;
         }
 
@@ -43,6 +44,7 @@ class CategoryForm extends Form
 
         if (Category::where('name', $this->name)->where('id', '!=', $this->category->id)->exists()) {
             $this->addError('name', 'Ya existe una categoría con este nombre');
+
             return;
         }
 

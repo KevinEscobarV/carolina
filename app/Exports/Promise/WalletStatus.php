@@ -4,6 +4,7 @@ namespace App\Exports\Promise;
 
 use App\Models\Promise;
 use Carbon\Carbon;
+use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\Exportable;
 use Maatwebsite\Excel\Concerns\FromQuery;
 use Maatwebsite\Excel\Concerns\RegistersEventListeners;
@@ -15,10 +16,11 @@ use Maatwebsite\Excel\Concerns\WithMapping;
 use Maatwebsite\Excel\Concerns\WithStyles;
 use Maatwebsite\Excel\Events\AfterSheet;
 use PhpOffice\PhpSpreadsheet\Shared\Date;
+use PhpOffice\PhpSpreadsheet\Style\Fill;
 use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
-class WalletStatus implements FromQuery, WithHeadings, WithMapping, ShouldAutoSize, WithColumnFormatting, WithStyles, WithEvents
+class WalletStatus implements FromQuery, ShouldAutoSize, WithColumnFormatting, WithEvents, WithHeadings, WithMapping, WithStyles
 {
     use Exportable, RegistersEventListeners;
 
@@ -26,10 +28,10 @@ class WalletStatus implements FromQuery, WithHeadings, WithMapping, ShouldAutoSi
         public $fromDate = null,
         public $toDate = null,
         public $onlyLate = false,
-    ) {
-    }
+    ) {}
+
     /**
-     * @return \Illuminate\Support\Collection
+     * @return Collection
      */
     public function query()
     {
@@ -39,9 +41,9 @@ class WalletStatus implements FromQuery, WithHeadings, WithMapping, ShouldAutoSi
 
         if ($driver === 'sqlite') {
             $raw = "json_extract(projection, '$[' || ((SELECT COUNT(*) FROM payments WHERE payments.promise_id = promises.id and payments.is_initial_fee = '0') + 1) || '].due_date') < date('now')";
-        } else if ($driver === 'mysql') {
+        } elseif ($driver === 'mysql') {
             $raw = "JSON_UNQUOTE(JSON_EXTRACT(`projection`, CONCAT('$[', ((SELECT COUNT(*) FROM `payments` WHERE `payments`.`promise_id` = `promises`.`id` AND `payments`.`is_initial_fee` = '0') + 1), '].due_date'))) < CURDATE()";
-        } else if ($driver === 'pgsql') {
+        } elseif ($driver === 'pgsql') {
             $raw = "((projection->>(((SELECT COUNT(*) FROM payments WHERE payments.promise_id = promises.id and payments.is_initial_fee = '0') + 1)::int))::jsonb->>'due_date')::date < CURRENT_DATE";
         }
 
@@ -50,11 +52,12 @@ class WalletStatus implements FromQuery, WithHeadings, WithMapping, ShouldAutoSi
             ->when($this->fromDate, fn ($query) => $query->whereDate('signature_date', '>=', $this->fromDate))
             ->when($this->toDate, fn ($query) => $query->whereDate('signature_date', '<=', $this->toDate))
             ->orderBy('signature_date', 'asc');
+
         return $query;
     }
 
     /**
-     * @param Promise $promise
+     * @param  Promise  $promise
      */
     public function map($promise): array
     {
@@ -69,12 +72,11 @@ class WalletStatus implements FromQuery, WithHeadings, WithMapping, ShouldAutoSi
         if (isset($promise->current_quota['due_date'])) {
             $current_quota = Date::dateTimeToExcel(Carbon::parse($promise->current_quota['due_date']));
         }
-        
 
         return [
             $promise->number,
             $promise->buyers ? $promise->buyers->map(fn ($buyer) => $buyer->document_number)->implode(', ') : 'N/A',
-            $promise->buyers ? $promise->buyers->map(fn ($buyer) => $buyer->names . ' ' . $buyer->surnames)->implode(', ') : 'N/A',
+            $promise->buyers ? $promise->buyers->map(fn ($buyer) => $buyer->names.' '.$buyer->surnames)->implode(', ') : 'N/A',
             $promise->status->text(),
             $promise->signature_date ? Date::dateTimeToExcel($promise->signature_date) : 'Sin fecha',
             $promise->value,
@@ -88,9 +90,9 @@ class WalletStatus implements FromQuery, WithHeadings, WithMapping, ShouldAutoSi
             $current_quota ? $current_quota : 'Sin fecha',
             $mora,
             $promise->total_paid,
-            $promise->parcels->map(fn ($parcel) => $parcel->block->code . ':' . $parcel->number)->implode(', '),
+            $promise->parcels->map(fn ($parcel) => $parcel->block->code.':'.$parcel->number)->implode(', '),
             $promise->category ? $promise->category->name : 'Sin campaña',
-            $promise->observations, 
+            $promise->observations,
         ];
     }
 
@@ -141,10 +143,10 @@ class WalletStatus implements FromQuery, WithHeadings, WithMapping, ShouldAutoSi
         $sheet->setAutoFilter('A1:S1');
 
         return [
-            1    => [
+            1 => [
                 'font' => ['bold' => true],
                 'fill' => [
-                    'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_GRADIENT_LINEAR,
+                    'fillType' => Fill::FILL_GRADIENT_LINEAR,
                     'rotation' => 90,
                     'startColor' => [
                         'argb' => 'F97316',
@@ -181,17 +183,17 @@ class WalletStatus implements FromQuery, WithHeadings, WithMapping, ShouldAutoSi
     {
         $highestRow = $event->sheet->getDelegate()->getHighestRow();
 
-        $agreement_amount = '=SUM(F2:F' . $highestRow . ')';
-        $paid_amount = '=SUM(P2:P' . $highestRow . ')';
+        $agreement_amount = '=SUM(F2:F'.$highestRow.')';
+        $paid_amount = '=SUM(P2:P'.$highestRow.')';
 
-        $event->sheet->setCellValue('E' . ($highestRow + 2), 'Total');
-        $event->sheet->setCellValue('F' . ($highestRow + 2), $agreement_amount);
-        $event->sheet->setCellValue('P' . ($highestRow + 2), $paid_amount);
+        $event->sheet->setCellValue('E'.($highestRow + 2), 'Total');
+        $event->sheet->setCellValue('F'.($highestRow + 2), $agreement_amount);
+        $event->sheet->setCellValue('P'.($highestRow + 2), $paid_amount);
 
-        $event->sheet->getStyle('A' . ($highestRow + 2) . ':S' . ($highestRow + 2))->applyFromArray([
+        $event->sheet->getStyle('A'.($highestRow + 2).':S'.($highestRow + 2))->applyFromArray([
             'font' => ['bold' => true, 'size' => 12],
             'fill' => [
-                'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_GRADIENT_LINEAR,
+                'fillType' => Fill::FILL_GRADIENT_LINEAR,
                 'rotation' => 90,
                 'startColor' => [
                     'argb' => 'F97316',

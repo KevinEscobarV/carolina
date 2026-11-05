@@ -11,11 +11,11 @@ use WireUi\Traits\Actions;
 
 #[Title('Editar promesa')]
 class Page extends Component
-{    
+{
     use Actions;
 
     public $block = null;
-    
+
     public Promise $promise;
 
     public PromiseForm $form;
@@ -47,10 +47,10 @@ class Page extends Component
 
         if ($save) {
             $this->notification()->confirm([
-                'icon'        => 'success',
-                'title'       => 'Promesa actualizada exitosamente',
+                'icon' => 'success',
+                'title' => 'Promesa actualizada exitosamente',
                 'description' => 'La promesa se ha actualizado correctamente',
-                'accept'      => [
+                'accept' => [
                     'label' => 'Volver a promesas',
                     'url' => route('promises'),
                 ],
@@ -58,6 +58,7 @@ class Page extends Component
             ]);
         }
     }
+
     public function render()
     {
         return view('livewire.promise.edit.page');

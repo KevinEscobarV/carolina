@@ -17,7 +17,7 @@ use MatanYadaev\EloquentSpatial\Traits\HasSpatial;
 
 class Parcel extends Model
 {
-    use HasFactory, SoftDeletes, HasCategory, HasSpatial;
+    use HasCategory, HasFactory, HasSpatial, SoftDeletes;
 
     /**
      * The attributes that are mass assignable.
@@ -87,27 +87,21 @@ class Parcel extends Model
 
     /**
      * Scope a query to only include buyers that match the search.
-     * 
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
-     * @param  string  $search
-     * @return void
      */
     public function scopeSearch(Builder $query, string $search): void
     {
         if ($search) {
-            $query->where('number', config('database.operator'), '%' . $search . '%')
+            $query->where('number', config('database.operator'), '%'.$search.'%')
                 ->orWhereHas('block', function (Builder $query) use ($search) {
-                    $query->where('code', config('database.operator'), '%' . $search . '%');
+                    $query->where('code', config('database.operator'), '%'.$search.'%');
                 });
         }
     }
 
     /**
      * Scope a query to only include buyers that match the search.
-     * 
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     *
      * @param  string  $search
-     * @return void
      */
     public function scopeSort(Builder $query, ?string $column, bool $asc): void
     {
@@ -116,7 +110,7 @@ class Parcel extends Model
                 $query->join('blocks', 'parcels.block_id', '=', 'blocks.id')
                     ->orderBy('blocks.code', $asc ? 'asc' : 'desc')
                     ->select('parcels.*');
-            } else if ($column == 'promise') {
+            } elseif ($column == 'promise') {
                 $query->join('promises', 'parcels.promise_id', '=', 'promises.id')
                     ->orderBy('promises.deed_number', $asc ? 'asc' : 'desc')
                     ->select('parcels.*');
@@ -128,13 +122,11 @@ class Parcel extends Model
 
     /**
      * Scope a query to only include buyers that are trashed.
-     * 
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
-     * @param  bool  $onlyTrash
-     * @return void
      */
     public function scopeTrash(Builder $query, bool $onlyTrash): void
     {
-        if ($onlyTrash) $query->onlyTrashed();
+        if ($onlyTrash) {
+            $query->onlyTrashed();
+        }
     }
 }

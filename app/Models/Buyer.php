@@ -13,9 +13,9 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Buyer extends Model
 {
+    use HasCategory;
     use HasFactory;
     use SoftDeletes;
-    use HasCategory;
 
     /**
      * The attributes that are mass assignable.
@@ -64,7 +64,10 @@ class Buyer extends Model
      */
     public function getPhoneTwoMaskedAttribute(): string
     {
-        if (!$this->phone_two) return '';
+        if (! $this->phone_two) {
+            return '';
+        }
+
         return sprintf(
             '+%s %s %s %s',
             substr($this->phone_two, 0, 2),
@@ -79,9 +82,11 @@ class Buyer extends Model
      */
     public function getDocumentNumberMaskedAttribute()
     {
-        if (!$this->document_number) return '';
-        
-        if  (is_numeric($this->document_number)) {
+        if (! $this->document_number) {
+            return '';
+        }
+
+        if (is_numeric($this->document_number)) {
             return number_format($this->document_number, 0, '.', '.');
         } else {
             return $this->document_number;
@@ -103,13 +108,11 @@ class Buyer extends Model
     {
         return $this->promises->map(function ($promise) {
             return $promise->payments->last();
-        })->last();  
+        })->last();
     }
 
     /**
      * Get the default profile photo URL if no profile photo has been uploaded.
-     *
-     * @return string
      */
     protected function getProfilePhotoUrlAttribute(): string
     {
@@ -117,33 +120,26 @@ class Buyer extends Model
             return mb_substr($segment, 0, 1);
         })->join(' '));
 
-        return 'https://ui-avatars.com/api/?name=' . urlencode($names) . '&color=FFFFFF&background=F59E0B';
+        return 'https://ui-avatars.com/api/?name='.urlencode($names).'&color=FFFFFF&background=F59E0B';
     }
 
     /**
      * Scope a query to only include buyers that match the search.
-     * 
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
-     * @param  string  $search
-     * @return void
      */
     public function scopeSearch(Builder $query, string $search): void
     {
         $operator = config('database.operator');
-        if ($search)
+        if ($search) {
             $query->where('names', $operator, "%$search%")
                 ->orWhere('surnames', $operator, "%$search%")
                 ->orWhere('email', $operator, "%$search%")
                 ->orWhere(fn (Builder $query) => $query->documentContains($search));
+        }
     }
 
     /**
      * Scope a query to only include buyers with exactly the given document,
      * ignoring dots, spaces, hyphens and letter case on both sides.
-     *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
-     * @param  string|null  $document
-     * @return void
      */
     public function scopeByDocument(Builder $query, ?string $document): void
     {
@@ -151,6 +147,7 @@ class Buyer extends Model
 
         if ($document === '') {
             $query->whereRaw('1 = 0');
+
             return;
         }
 
@@ -160,10 +157,6 @@ class Buyer extends Model
     /**
      * Scope a query to buyers whose document contains the given text, so "1.115.918" and "1115918"
      * find the same buyer whether the document was saved with dots or without them.
-     *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
-     * @param  string|null  $search
-     * @return void
      */
     public function scopeDocumentContains(Builder $query, ?string $search): void
     {
@@ -171,6 +164,7 @@ class Buyer extends Model
 
         if ($search === '') {
             $query->whereRaw('1 = 0');
+
             return;
         }
 
@@ -200,26 +194,21 @@ class Buyer extends Model
 
     /**
      * Scope a query to sort buyers by the specified column.
-     * 
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
-     * @param  string  $column
-     * @param  bool  $asc
-     * @return void
      */
     public function scopeSort(Builder $query, ?string $column, bool $asc): void
     {
-        if ($column) $query->orderBy($column, $asc ? 'asc' : 'desc');
+        if ($column) {
+            $query->orderBy($column, $asc ? 'asc' : 'desc');
+        }
     }
 
     /**
      * Scope a query to only include buyers that are trashed.
-     * 
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
-     * @param  bool  $onlyTrash
-     * @return void
      */
     public function scopeTrash(Builder $query, bool $onlyTrash): void
     {
-        if ($onlyTrash) $query->onlyTrashed();
+        if ($onlyTrash) {
+            $query->onlyTrashed();
+        }
     }
 }

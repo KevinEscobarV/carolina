@@ -41,7 +41,7 @@ trait Sortable
         }
 
         if ($this->sortCol === $column) {
-            $this->sortAsc = !$this->sortAsc;
+            $this->sortAsc = ! $this->sortAsc;
         } else {
             $this->sortCol = $column;
             $this->sortAsc = false;

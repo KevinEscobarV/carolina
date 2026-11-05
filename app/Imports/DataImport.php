@@ -8,14 +8,9 @@ use Maatwebsite\Excel\Concerns\WithBatchInserts;
 use Maatwebsite\Excel\Concerns\WithChunkReading;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 
-class DataImport implements ToCollection, WithHeadingRow, WithBatchInserts, WithChunkReading
+class DataImport implements ToCollection, WithBatchInserts, WithChunkReading, WithHeadingRow
 {
-    /**
-    * @param Collection $collection
-    */
-    public function collection(Collection $collection)
-    {
-    }
+    public function collection(Collection $collection) {}
 
     public function headingRow(): int
     {

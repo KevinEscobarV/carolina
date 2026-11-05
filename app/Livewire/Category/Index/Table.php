@@ -17,17 +17,19 @@ use WireUi\Traits\Actions;
 class Table extends Component
 {
     use Actions;
-    use WithPagination;
     use SoftDeletes;
     use Sortable;
+    use WithPagination;
 
     public $model = null;
+
     public $modal = false;
+
     public CategoryForm $form;
 
     public function mount()
     {
-        $this->model = new Category(); // This is used for the SoftDeletes trait
+        $this->model = new Category; // This is used for the SoftDeletes trait
     }
 
     public function edit(Category $category)
@@ -73,7 +75,7 @@ class Table extends Component
         return ['id', 'name'];
     }
 
-    #[On('refresh-category-table')] 
+    #[On('refresh-category-table')]
     public function render()
     {
         return view('livewire.category.index.table', [

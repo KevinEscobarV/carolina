@@ -4,8 +4,8 @@ namespace App\View\Components;
 
 use Closure;
 use Illuminate\Contracts\View\View;
+use Illuminate\Support\Str;
 use Illuminate\View\Component;
-use Illuminate\Support\{Str, Stringable};
 
 class Card extends Component
 {
@@ -23,15 +23,15 @@ class Card extends Component
         public ?string $footerClasses = '',
     ) {
         $padding ??= config('wireui.card.padding');
-        $shadow  ??= config('wireui.card.shadow');
+        $shadow ??= config('wireui.card.shadow');
         $rounded ??= config('wireui.card.rounded');
-        $color   ??= config('wireui.card.color');
+        $color ??= config('wireui.card.color');
 
-        $this->padding       = $padding;
-        $this->shadow        = $shadow;
-        $this->rounded       = $rounded;
-        $this->color         = $color;
-        $this->cardClasses   = $this->setCardClasses($cardClasses);
+        $this->padding = $padding;
+        $this->shadow = $shadow;
+        $this->rounded = $rounded;
+        $this->color = $color;
+        $this->cardClasses = $this->setCardClasses($cardClasses);
         $this->headerClasses = $this->setHeaderClasses($headerClasses);
         $this->footerClasses = $this->setFooterClasses($footerClasses);
     }

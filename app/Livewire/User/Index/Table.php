@@ -18,20 +18,23 @@ use WireUi\Traits\Actions;
 class Table extends Component
 {
     use Actions;
-    use WithPagination;
     use SoftDeletes;
     use Sortable;
+    use WithPagination;
 
     public $model = null;
+
     public $modal = false;
+
     public $roles = [];
+
     public $categories = [];
 
     public UserForm $form;
 
     public function mount()
     {
-        $this->model = new User(); // This is used for the SoftDeletes trait
+        $this->model = new User; // This is used for the SoftDeletes trait
         $this->roles = Role::select('id', 'name')->get();
         $this->categories = Category::select('id', 'name')->get();
     }
@@ -73,12 +76,12 @@ class Table extends Component
         return ['id', 'name', 'email', 'updated_at'];
     }
 
-    #[On('refresh-user-table')] 
+    #[On('refresh-user-table')]
     public function render()
     {
         return view('livewire.user.index.table', [
             'users' => User::with('roles', 'currentCategory')
-            ->search($this->search)->sort($this->sortColumn(), $this->sortAsc)->trash($this->trash)->paginate($this->perPage),
+                ->search($this->search)->sort($this->sortColumn(), $this->sortAsc)->trash($this->trash)->paginate($this->perPage),
         ]);
     }
 }

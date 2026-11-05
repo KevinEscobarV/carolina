@@ -12,6 +12,7 @@ class SMS extends Component
     use Actions;
 
     public $message = '';
+
     public $buyers = [];
 
     public function sendSMS()
@@ -20,7 +21,7 @@ class SMS extends Component
 
         $this->validate([
             'message' => 'required|min:10|max:160',
-            'buyers' => 'required'
+            'buyers' => 'required',
         ]);
 
         $to = Buyer::whereIn('id', $this->buyers)->pluck('phone_one')->toArray();

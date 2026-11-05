@@ -17,15 +17,15 @@ use WireUi\Traits\Actions;
 class Table extends Component
 {
     use Actions;
-    use WithPagination;
     use SoftDeletes;
     use Sortable;
+    use WithPagination;
 
     public $model = null;
 
     public function mount()
     {
-        $this->model = new Promise(); // This is used for the SoftDeletes trait
+        $this->model = new Promise; // This is used for the SoftDeletes trait
     }
 
     #[Renderless]
@@ -47,7 +47,7 @@ class Table extends Component
         return ['id', 'number', 'buyer', 'signature_date', 'signature_deed_date', 'value', 'initial_fee', 'quota_amount', 'interest_rate', 'payment_frequency', 'payment_method', 'status', 'observations'];
     }
 
-    #[On('refresh-promise-table')] 
+    #[On('refresh-promise-table')]
     public function render()
     {
         return view('livewire.promise.index.table', [

@@ -3,6 +3,7 @@
 namespace App\Exports\Payment;
 
 use App\Models\Payment;
+use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\Exportable;
 use Maatwebsite\Excel\Concerns\FromQuery;
 use Maatwebsite\Excel\Concerns\RegistersEventListeners;
@@ -13,11 +14,12 @@ use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
 use Maatwebsite\Excel\Concerns\WithStyles;
 use Maatwebsite\Excel\Events\AfterSheet;
-use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 use PhpOffice\PhpSpreadsheet\Shared\Date;
+use PhpOffice\PhpSpreadsheet\Style\Fill;
+use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
-class General implements FromQuery, WithHeadings, WithMapping, ShouldAutoSize, WithColumnFormatting, WithStyles, WithEvents
+class General implements FromQuery, ShouldAutoSize, WithColumnFormatting, WithEvents, WithHeadings, WithMapping, WithStyles
 {
     use Exportable, RegistersEventListeners;
 
@@ -28,7 +30,7 @@ class General implements FromQuery, WithHeadings, WithMapping, ShouldAutoSize, W
     ) {}
 
     /**
-     * @return \Illuminate\Support\Collection
+     * @return Collection
      */
     public function query()
     {
@@ -36,11 +38,12 @@ class General implements FromQuery, WithHeadings, WithMapping, ShouldAutoSize, W
             ->whereDate('payment_date', '>=', $this->fromDate)->whereDate('payment_date', '<=', $this->toDate)
             ->when($this->paymentMethods, fn ($query) => $query->whereIn('payment_method', $this->paymentMethods))
             ->orderBy('payment_date', 'asc');
+
         return $query;
     }
 
     /**
-     * @param Payment $payment
+     * @param  Payment  $payment
      */
     public function map($payment): array
     {
@@ -54,8 +57,8 @@ class General implements FromQuery, WithHeadings, WithMapping, ShouldAutoSize, W
             $payment->payment_method->label(),
             $payment->promise ? $payment->promise->number : 'Sin promesa',
             $payment->promise ? $payment->promise->buyers->map(fn ($buyer) => $buyer->document_number)->implode(', ') : 'N/A',
-            $payment->promise ? $payment->promise->buyers->map(fn ($buyer) => $buyer->names . ' ' . $buyer->surnames)->implode(', ') : 'N/A',
-            $payment->promise ? $payment->promise->parcels->map(fn ($parcel) => $parcel->block->code . ':' . $parcel->number)->implode(', ') : 'N/A',
+            $payment->promise ? $payment->promise->buyers->map(fn ($buyer) => $buyer->names.' '.$buyer->surnames)->implode(', ') : 'N/A',
+            $payment->promise ? $payment->promise->parcels->map(fn ($parcel) => $parcel->block->code.':'.$parcel->number)->implode(', ') : 'N/A',
             $payment->observations,
         ];
     }
@@ -94,10 +97,10 @@ class General implements FromQuery, WithHeadings, WithMapping, ShouldAutoSize, W
         $sheet->setAutoFilter('A1:L1');
 
         return [
-            1    => [
+            1 => [
                 'font' => ['bold' => true],
                 'fill' => [
-                    'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_GRADIENT_LINEAR,
+                    'fillType' => Fill::FILL_GRADIENT_LINEAR,
                     'rotation' => 90,
                     'startColor' => [
                         'argb' => 'FF9C86',
@@ -128,16 +131,16 @@ class General implements FromQuery, WithHeadings, WithMapping, ShouldAutoSize, W
     {
         $highestRow = $event->sheet->getDelegate()->getHighestRow();
 
-        $agreement_amount = '=SUM(C2:C' . $highestRow . ')';
-        $paid_amount = '=SUM(E2:E' . $highestRow . ')';
+        $agreement_amount = '=SUM(C2:C'.$highestRow.')';
+        $paid_amount = '=SUM(E2:E'.$highestRow.')';
 
-        $event->sheet->setCellValue('C' . ($highestRow + 2), $agreement_amount);
-        $event->sheet->setCellValue('E' . ($highestRow + 2), $paid_amount);
+        $event->sheet->setCellValue('C'.($highestRow + 2), $agreement_amount);
+        $event->sheet->setCellValue('E'.($highestRow + 2), $paid_amount);
 
-        $event->sheet->getStyle('A' . ($highestRow + 2) . ':E' . ($highestRow + 2))->applyFromArray([
+        $event->sheet->getStyle('A'.($highestRow + 2).':E'.($highestRow + 2))->applyFromArray([
             'font' => ['bold' => true, 'size' => 12],
             'fill' => [
-                'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_GRADIENT_LINEAR,
+                'fillType' => Fill::FILL_GRADIENT_LINEAR,
                 'rotation' => 90,
                 'startColor' => [
                     'argb' => 'FF9C86',

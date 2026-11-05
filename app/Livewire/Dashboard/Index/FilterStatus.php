@@ -3,7 +3,6 @@
 namespace App\Livewire\Dashboard\Index;
 
 use App\Enums\PaymentMethod;
-use App\Enums\Status;
 
 enum FilterStatus: string
 {
@@ -18,13 +17,13 @@ enum FilterStatus: string
     public function label()
     {
         return match ($this) {
-            static::All => 'Todos',
-            static::Cash => PaymentMethod::CASH->label(),
-            static::Card => PaymentMethod::CREDIT_CARD->label(),
-            static::Check => PaymentMethod::CHECK->label(),
-            static::Transfer => PaymentMethod::BANK_TRANSFER->label(),
-            static::Deposit => PaymentMethod::DEPOSIT->label(),
-            static::Other => PaymentMethod::OTHER->label(),
+            self::All => 'Todos',
+            self::Cash => PaymentMethod::CASH->label(),
+            self::Card => PaymentMethod::CREDIT_CARD->label(),
+            self::Check => PaymentMethod::CHECK->label(),
+            self::Transfer => PaymentMethod::BANK_TRANSFER->label(),
+            self::Deposit => PaymentMethod::DEPOSIT->label(),
+            self::Other => PaymentMethod::OTHER->label(),
         };
     }
 }

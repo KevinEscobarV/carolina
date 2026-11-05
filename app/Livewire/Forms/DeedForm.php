@@ -42,7 +42,7 @@ class DeedForm extends Form
             'book',
             'status',
             'observations',
-            'promise_id'
+            'promise_id',
         ]));
     }
 
@@ -52,6 +52,7 @@ class DeedForm extends Form
 
         if (Deed::where('number', $this->number)->exists()) {
             $this->addError('number', 'Ya existe una escritura con este número');
+
             return;
         }
 
@@ -68,6 +69,7 @@ class DeedForm extends Form
 
         if (Deed::where('number', $this->number)->where('id', '!=', $this->model->id)->exists()) {
             $this->addError('number', 'Ya existe una escritura con este número');
+
             return;
         }
 

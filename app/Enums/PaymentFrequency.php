@@ -30,7 +30,7 @@ enum PaymentFrequency: string
         return collect(self::cases())->map(function ($case) {
             return [
                 'value' => $case,
-                'label'=> $case->label(),
+                'label' => $case->label(),
             ];
         })->toArray();
     }
@@ -51,7 +51,7 @@ enum PaymentFrequency: string
     public static function implode(): string
     {
         return collect(self::cases())->map(function ($case) {
-            return '\'' . $case->value . '\''; // Add quotes to the value
+            return '\''.$case->value.'\''; // Add quotes to the value
         })->implode(',');
     }
 }

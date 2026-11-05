@@ -17,6 +17,7 @@ class Page extends Component
     public $document_number = '';
 
     public $promises = [];
+
     public $statementUrls = [];
 
     public function explore()
@@ -30,6 +31,7 @@ class Page extends Component
             );
             $this->promises = [];
             $this->statementUrls = [];
+
             return;
         }
 

@@ -11,7 +11,9 @@ use Livewire\Component;
 class Indicators extends Component
 {
     public $balance = 0;
+
     public $price = 0;
+
     public $count = 0;
 
     public function mount()
@@ -22,7 +24,7 @@ class Indicators extends Component
             ['key' => 'sms_count'],
             [
                 'value' => 0,
-                'description' => 'Cantidad de mensajes enviados'
+                'description' => 'Cantidad de mensajes enviados',
             ]
         )->value;
     }

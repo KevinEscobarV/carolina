@@ -11,8 +11,9 @@ use WireUi\Traits\Actions;
 class Create extends Component
 {
     use Actions;
-    
+
     public $roles = [];
+
     public $categories = [];
 
     public UserForm $form;

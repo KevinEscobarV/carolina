@@ -27,7 +27,7 @@ class Create extends Component
             $this->dispatch('refresh-category-table');
         }
     }
-    
+
     public function render()
     {
         return view('livewire.category.index.create');

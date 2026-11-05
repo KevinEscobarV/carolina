@@ -14,7 +14,7 @@ class CategoryScope implements Scope
      */
     public function apply(Builder $builder, Model $model): void
     {
-        if (!Auth::check()) {
+        if (! Auth::check()) {
             return;
         }
 

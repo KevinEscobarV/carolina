@@ -14,13 +14,21 @@ class BuyerForm extends Form
     public ?Buyer $buyer;
 
     public $names;
+
     public $surnames;
+
     public $email;
+
     public $document_type = DocumentType::CC;
+
     public $document_number;
+
     public $civil_status = CivilStatus::SINGLE;
+
     public $phone_one;
+
     public $phone_two;
+
     public $address;
 
     public function rules()
@@ -32,21 +40,21 @@ class BuyerForm extends Form
                 'required',
                 'email',
                 'max:255',
-                Rule::unique('buyers', 'email')->where('category_id', Auth::user()->currentCategory->id)
+                Rule::unique('buyers', 'email')->where('category_id', Auth::user()->currentCategory->id),
             ],
             'document_type' => [
                 'required',
-                Rule::enum(DocumentType::class)
+                Rule::enum(DocumentType::class),
             ],
             'document_number' => [
                 'required',
                 'string',
                 'max:255',
-                Rule::unique('buyers', 'document_number')->where('category_id', Auth::user()->currentCategory->id)
+                Rule::unique('buyers', 'document_number')->where('category_id', Auth::user()->currentCategory->id),
             ],
             'civil_status' => [
                 'required',
-                Rule::enum(CivilStatus::class)
+                Rule::enum(CivilStatus::class),
             ],
             'phone_one' => 'required|string|max:255',
             'phone_two' => 'nullable|string|max:255',
@@ -63,21 +71,21 @@ class BuyerForm extends Form
                 'required',
                 'email',
                 'max:255',
-                Rule::unique('buyers', 'email')->where('category_id', $this->buyer->category_id)->ignore($this->buyer->id)
+                Rule::unique('buyers', 'email')->where('category_id', $this->buyer->category_id)->ignore($this->buyer->id),
             ],
             'document_type' => [
                 'required',
-                Rule::enum(DocumentType::class)
+                Rule::enum(DocumentType::class),
             ],
             'document_number' => [
                 'required',
                 'string',
                 'max:255',
-                Rule::unique('buyers', 'document_number')->where('category_id', $this->buyer->category_id)->ignore($this->buyer->id)
+                Rule::unique('buyers', 'document_number')->where('category_id', $this->buyer->category_id)->ignore($this->buyer->id),
             ],
             'civil_status' => [
                 'required',
-                Rule::enum(CivilStatus::class)
+                Rule::enum(CivilStatus::class),
             ],
             'phone_one' => 'required|string|max:255',
             'phone_two' => 'nullable|string|max:255',
@@ -85,7 +93,7 @@ class BuyerForm extends Form
         ];
     }
 
-    public function validationAttributes() 
+    public function validationAttributes()
     {
         return [
             'names' => 'nombres',

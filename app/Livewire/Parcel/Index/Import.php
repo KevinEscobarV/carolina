@@ -14,7 +14,9 @@ class Import extends Component
     use WithFileUploads;
 
     public $openImport = false;
+
     public $update_existing = false;
+
     public string $importErrors = 'Errores en la importación: <br>';
 
     #[Validate('required|file|mimes:xlsx', as: 'archivo')]
@@ -32,16 +34,16 @@ class Import extends Component
 
             foreach ($import->failures() as $failure) {
                 foreach ($failure->errors() as $error) {
-                    $this->importErrors .= 'Fila ' . $failure->row() . ': ' . $error . '<br>';
+                    $this->importErrors .= 'Fila '.$failure->row().': '.$error.'<br>';
                 }
             }
 
             if ($this->importErrors != 'Errores en la importación: <br>') {
                 $this->dialog([
-                    'title'       => 'La importación se realizó con errores !!!',
+                    'title' => 'La importación se realizó con errores !!!',
                     'description' => $this->importErrors,
-                    'icon'        => 'warning',
-                    'style'       => 'inline',
+                    'icon' => 'warning',
+                    'style' => 'inline',
                 ]);
             } else {
                 $this->dialog()->success(
@@ -59,7 +61,7 @@ class Import extends Component
 
             $this->dialog()->error(
                 'Error !!!',
-                'Ocurrió un error al importar los datos, por favor intente de nuevo: ' . $th->getMessage()
+                'Ocurrió un error al importar los datos, por favor intente de nuevo: '.$th->getMessage()
             );
         }
     }

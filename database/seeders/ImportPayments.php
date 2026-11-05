@@ -20,14 +20,13 @@ class ImportPayments extends Seeder
     {
         $collection = Excel::toCollection(new DataImport, public_path('imports/pagos.xlsx'));
 
-
         try {
 
             DB::beginTransaction();
 
             foreach ($collection->first() as $row) {
                 if ($row['recibo_no']) {
-                    
+
                     if ($row['mz'] && $row['lote']) {
                         $parcel = Parcel::where('number', strval($row['lote']))->whereHas('block', function ($query) use ($row) {
                             $query->where('code', strval($row['mz']));
@@ -46,10 +45,10 @@ class ImportPayments extends Seeder
                                 'promise_id' => $parcel->promise->id,
                             ]);
                         } else {
-                            $this->command->info('Parcel not found: ' . $row['mz'] . ' - ' . $row['lote'] . ' Recibo:' . $row['recibo_no']);
+                            $this->command->info('Parcel not found: '.$row['mz'].' - '.$row['lote'].' Recibo:'.$row['recibo_no']);
                         }
                     } else {
-                        $this->command->info('Parcel not defined: ' . $row['mz'] . ' - ' . $row['lote'] . ' Recibo:' . $row['recibo_no']);
+                        $this->command->info('Parcel not defined: '.$row['mz'].' - '.$row['lote'].' Recibo:'.$row['recibo_no']);
                     }
                 }
             }

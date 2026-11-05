@@ -12,7 +12,7 @@ use MatanYadaev\EloquentSpatial\Objects\Polygon;
 
 class Block extends Model
 {
-    use HasFactory, SoftDeletes, HasCategory;
+    use HasCategory, HasFactory, SoftDeletes;
 
     /**
      * The attributes that are mass assignable.
@@ -45,26 +45,20 @@ class Block extends Model
 
     /**
      * Scope a query to only include buyers that match the search.
-     * 
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
-     * @param  string  $search
-     * @return void
      */
     public function scopeSearch(Builder $query, string $search): void
     {
         $operator = config('database.operator');
         if ($search) {
-            $query->where('code', $operator, '%' . $search . '%')
-                ->orWhere('area_m2', $operator, '%' . $search . '%');
+            $query->where('code', $operator, '%'.$search.'%')
+                ->orWhere('area_m2', $operator, '%'.$search.'%');
         }
     }
 
     /**
      * Scope a query to only include buyers that match the search.
-     * 
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     *
      * @param  string  $search
-     * @return void
      */
     public function scopeSort(Builder $query, ?string $column, bool $asc): void
     {
@@ -78,16 +72,14 @@ class Block extends Model
             }
         }
     }
-        
+
     /**
      * Scope a query to only include buyers that are trashed.
-     * 
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
-     * @param  bool  $onlyTrash
-     * @return void
      */
     public function scopeTrash(Builder $query, bool $onlyTrash): void
     {
-        if ($onlyTrash) $query->onlyTrashed();
+        if ($onlyTrash) {
+            $query->onlyTrashed();
+        }
     }
 }

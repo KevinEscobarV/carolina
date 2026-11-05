@@ -22,7 +22,7 @@ class Page extends Component
             ['key' => 'message_header'],
             [
                 'value' => config('sms.message_header'),
-                'description' => 'Mensaje de cabecera para los SMS'
+                'description' => 'Mensaje de cabecera para los SMS',
             ]
         )->value;
 
@@ -30,7 +30,7 @@ class Page extends Component
             ['key' => 'message_footer'],
             [
                 'value' => config('sms.message_footer'),
-                'description' => 'Mensaje de pie para los SMS'
+                'description' => 'Mensaje de pie para los SMS',
             ]
         )->value;
     }
@@ -46,8 +46,8 @@ class Page extends Component
         Setting::where('key', 'message_footer')->update(['value' => $this->message_footer]);
 
         $this->notification()->success(
-            "Configuración guardada correctamente",
-            "Los mensajes de cabecera y pie para los SMS han sido guardados correctamente"
+            'Configuración guardada correctamente',
+            'Los mensajes de cabecera y pie para los SMS han sido guardados correctamente'
         );
     }
 

@@ -5,11 +5,10 @@ namespace App\Http\Controllers\Api\Buyers;
 use App\Http\Controllers\Controller;
 use App\Models\Buyer;
 use App\Models\Scopes\CategoryScope;
-use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Query\Builder as QueryBuilder;
-
+use Illuminate\Http\Request;
 
 class Index extends Controller
 {
@@ -33,9 +32,10 @@ class Index extends Controller
                 fn (Builder $query) => $query->limit(30)
             )
             ->get()->map(function (Buyer $buyer) {
-                $buyer->names = $buyer->names . ' ' . $buyer->surnames;
-                $buyer->description = 'Documento: ' . strtoupper($buyer->document_type->value) . '. ' . $buyer->document_number
-                    . '<br>Correo: ' . $buyer->email;
+                $buyer->names = $buyer->names.' '.$buyer->surnames;
+                $buyer->description = 'Documento: '.strtoupper($buyer->document_type->value).'. '.$buyer->document_number
+                    .'<br>Correo: '.$buyer->email;
+
                 return $buyer;
             });
     }
@@ -76,9 +76,10 @@ class Index extends Controller
                 fn (Builder $query) => $query->limit(30)
             )
             ->get()->map(function (Buyer $buyer) {
-                $buyer->names = $buyer->names . ' ' . $buyer->surnames;
-                $buyer->description = 'Campaña: ' . $buyer->category->name
-                    . '<br>Documento: ' . strtoupper($buyer->document_type?->value ?? '') . '. ' . $buyer->document_number;
+                $buyer->names = $buyer->names.' '.$buyer->surnames;
+                $buyer->description = 'Campaña: '.$buyer->category->name
+                    .'<br>Documento: '.strtoupper($buyer->document_type?->value ?? '').'. '.$buyer->document_number;
+
                 return $buyer;
             });
     }

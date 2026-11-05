@@ -12,7 +12,7 @@ use Maatwebsite\Excel\Concerns\ToCollection;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\WithValidation;
 
-class General implements ToCollection, WithHeadingRow, WithValidation, SkipsOnFailure
+class General implements SkipsOnFailure, ToCollection, WithHeadingRow, WithValidation
 {
     use Importable, SkipsFailures;
 
@@ -21,8 +21,7 @@ class General implements ToCollection, WithHeadingRow, WithValidation, SkipsOnFa
     ) {}
 
     /**
-     * @param array $row
-     *
+     * @param  array  $row
      * @return Deed|null
      */
     public function collection(Collection $rows)

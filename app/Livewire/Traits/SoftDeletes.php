@@ -9,7 +9,7 @@ trait SoftDeletes
     public $idsOnPage = [];
 
     public $trash = false;
-    
+
     public function deleteSelected()
     {
         $this->authorizeDeleting();
@@ -24,39 +24,39 @@ trait SoftDeletes
     public function archive($id)
     {
         $this->dialog()->confirm([
-            'icon'        => 'warning',
-            'title'       => '¿Estás seguro?',
+            'icon' => 'warning',
+            'title' => '¿Estás seguro?',
             'description' => 'El registro quedara en la papelera',
             'acceptLabel' => 'Si, archivar',
             'rejectLabel' => 'No, cancelar',
-            'method'      => 'delete',
-            'params'      => $id,
+            'method' => 'delete',
+            'params' => $id,
         ]);
     }
 
     public function destroy($id)
     {
         $this->dialog()->confirm([
-            'icon'        => 'error',
-            'title'       => '¿Estás seguro?',
+            'icon' => 'error',
+            'title' => '¿Estás seguro?',
             'description' => 'El registro se eliminara permanentemente',
             'acceptLabel' => 'ELIMINAR PERMANENTEMENTE',
             'rejectLabel' => 'No, cancelar',
-            'method'      => 'delete',
-            'params'      => $id,
+            'method' => 'delete',
+            'params' => $id,
         ]);
     }
 
     public function revert($id)
     {
         $this->dialog()->confirm([
-            'icon'        => 'info',
-            'title'       => '¿Estás seguro?',
+            'icon' => 'info',
+            'title' => '¿Estás seguro?',
             'description' => 'El registro se restaurara',
             'acceptLabel' => 'Si, restaurar',
             'rejectLabel' => 'No, cancelar',
-            'method'      => 'restore',
-            'params'      => $id,
+            'method' => 'restore',
+            'params' => $id,
         ]);
     }
 
@@ -90,7 +90,7 @@ trait SoftDeletes
 
     public function onlyTrash()
     {
-        $this->trash = !$this->trash;
+        $this->trash = ! $this->trash;
         $this->resetPage();
     }
 }

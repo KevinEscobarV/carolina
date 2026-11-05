@@ -16,9 +16,9 @@ use WireUi\Traits\Actions;
 class Table extends Component
 {
     use Actions;
-    use WithPagination;
     use SoftDeletes;
     use Sortable;
+    use WithPagination;
 
     public $model = null;
 
@@ -26,7 +26,7 @@ class Table extends Component
 
     public function mount()
     {
-        $this->model = new Payment(); // This is used for the SoftDeletes trait
+        $this->model = new Payment; // This is used for the SoftDeletes trait
         $this->sortCol = 'payment_date';
     }
 
@@ -51,7 +51,7 @@ class Table extends Component
 
     public function render()
     {
-        $total = Payment::select( DB::raw('SUM(agreement_amount) as total_agreement_amount'), DB::raw('SUM(paid_amount) as total_paid_amount') )->promiseFilter($this->promiseIds)->trash($this->trash)->first();
+        $total = Payment::select(DB::raw('SUM(agreement_amount) as total_agreement_amount'), DB::raw('SUM(paid_amount) as total_paid_amount'))->promiseFilter($this->promiseIds)->trash($this->trash)->first();
 
         return view('livewire.payment.index.table', [
             'payments' => Payment::search($this->search)->sort($this->sortColumn(), $this->sortAsc)->promiseFilter($this->promiseIds)->trash($this->trash)->with('promise.buyers', 'promise.parcels.block')->paginate($this->perPage),

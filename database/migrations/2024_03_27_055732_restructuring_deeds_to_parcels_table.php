@@ -1,6 +1,5 @@
 <?php
 
-use App\Models\Scopes\CategoryScope;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
@@ -61,7 +60,6 @@ return new class extends Migration
             $table->dropForeign(['promise_id']);
             $table->dropUnique(['promise_id']);
             $table->dropColumn('promise_id');
-
 
             $table->foreignId('parcel_id')
                 ->nullable()

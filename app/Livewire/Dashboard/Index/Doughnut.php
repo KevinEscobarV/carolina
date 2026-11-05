@@ -2,7 +2,6 @@
 
 namespace App\Livewire\Dashboard\Index;
 
-use App\Enums\Range;
 use App\Models\Payment;
 use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\Reactive;
@@ -39,6 +38,7 @@ class Doughnut extends Component
     public function render()
     {
         $this->fillDataset();
+
         return view('livewire.dashboard.index.doughnut');
     }
 }

@@ -13,6 +13,7 @@ class Page extends Component
     public Filters $filters;
 
     public $projection;
+
     public $total;
 
     public function mount()

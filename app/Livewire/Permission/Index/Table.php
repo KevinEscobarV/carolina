@@ -17,19 +17,21 @@ use WireUi\Traits\Actions;
 class Table extends Component
 {
     use Actions;
-    use WithPagination;
     use Deletes;
     use Sortable;
+    use WithPagination;
 
     public $model = null;
+
     public $modal = false;
+
     public $permissions = [];
 
     public RoleForm $form;
 
     public function mount()
     {
-        $this->model = new Role(); // This is used for the SoftDeletes trait
+        $this->model = new Role; // This is used for the SoftDeletes trait
         $this->permissions = Permission::select('id', 'name', 'description')->get();
     }
 
@@ -62,7 +64,6 @@ class Table extends Component
         return view('components.table.placeholder');
     }
 
-
     /**
      * @return array<int, string>
      */
@@ -71,7 +72,7 @@ class Table extends Component
         return ['id', 'name', 'updated_at'];
     }
 
-    #[On('refresh-role-table')] 
+    #[On('refresh-role-table')]
     public function render()
     {
         $roles = Role::query();

@@ -4,7 +4,6 @@ namespace App\Livewire\Forms;
 
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
-use Livewire\Attributes\Validate;
 use Livewire\Form;
 
 class UserForm extends Form
@@ -12,10 +11,15 @@ class UserForm extends Form
     public ?User $user;
 
     public $name;
+
     public $email;
+
     public $password;
+
     public $password_confirmation;
+
     public $current_category_id;
+
     public $roles = [];
 
     public function setUser(User $user)
@@ -45,7 +49,7 @@ class UserForm extends Form
     {
         return [
             'name' => 'required|string|max:255',
-            'email' => 'required|email|max:255|unique:users,email,' . $this->user->id,
+            'email' => 'required|email|max:255|unique:users,email,'.$this->user->id,
             'roles' => 'required|array|min:1',
             'password' => 'nullable|string|min:8|confirmed',
             'current_category_id' => 'required|integer',
@@ -79,7 +83,7 @@ class UserForm extends Form
         ]);
 
         // If the password is not empty, update it
-        if (!empty($this->password)) {
+        if (! empty($this->password)) {
             $this->user->update([
                 'password' => Hash::make($this->password),
             ]);

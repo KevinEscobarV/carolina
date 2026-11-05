@@ -10,7 +10,7 @@ use WireUi\Traits\Actions;
 class Create extends Component
 {
     use Actions;
-    
+
     public $permissions = [];
 
     public RoleForm $form;

@@ -17,17 +17,19 @@ use WireUi\Traits\Actions;
 class Table extends Component
 {
     use Actions;
-    use WithPagination;
     use SoftDeletes;
     use Sortable;
+    use WithPagination;
 
     public $model = null;
+
     public $modal = false;
+
     public BlockForm $form;
 
     public function mount()
     {
-        $this->model = new Block(); // This is used for the SoftDeletes trait
+        $this->model = new Block; // This is used for the SoftDeletes trait
     }
 
     public function edit(Block $block)
@@ -73,7 +75,7 @@ class Table extends Component
         return ['id', 'code', 'category', 'updated_at'];
     }
 
-    #[On('refresh-block-table')] 
+    #[On('refresh-block-table')]
     public function render()
     {
         return view('livewire.block.index.table', [

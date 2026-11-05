@@ -9,6 +9,7 @@ use WireUi\Traits\Actions;
 class Create extends Component
 {
     use Actions;
+
     public ParcelForm $form;
 
     public function save(): void

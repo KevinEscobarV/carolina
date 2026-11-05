@@ -40,7 +40,7 @@ enum DeedStatus: string
         return collect(self::cases())->map(function ($case) {
             return [
                 'value' => $case,
-                'label'=> $case->label(),
+                'label' => $case->label(),
             ];
         })->toArray();
     }

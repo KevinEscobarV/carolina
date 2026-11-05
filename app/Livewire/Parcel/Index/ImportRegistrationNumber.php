@@ -17,6 +17,7 @@ class ImportRegistrationNumber extends Component
     use WithFileUploads;
 
     public $openImport = false;
+
     public string $importErrors = 'Errores en la importación: <br>';
 
     #[Validate('required|file|mimes:xlsx', as: 'archivo')]
@@ -33,7 +34,7 @@ class ImportRegistrationNumber extends Component
         // Verificar primero si tiene el encabezado correcto
         $header = $collection->first()->first();
 
-        if (!isset($header['lote']) || !isset($header['manzana']) || !isset($header['numero_matricula'])) {
+        if (! isset($header['lote']) || ! isset($header['manzana']) || ! isset($header['numero_matricula'])) {
             $this->dialog()->error(
                 'Error !!!',
                 'El archivo no tiene el formato correcto, por favor descargue la plantilla e intente de nuevo.'
@@ -53,8 +54,9 @@ class ImportRegistrationNumber extends Component
 
                 $fila++;
 
-                if (!isset($row['lote']) || !isset($row['manzana']) || !isset($row['numero_matricula'])) {
-                    $this->importErrors .= 'Fila ' . $fila . ': No tiene todos los campos requeridos. <br>';
+                if (! isset($row['lote']) || ! isset($row['manzana']) || ! isset($row['numero_matricula'])) {
+                    $this->importErrors .= 'Fila '.$fila.': No tiene todos los campos requeridos. <br>';
+
                     continue;
                 }
 
@@ -64,10 +66,10 @@ class ImportRegistrationNumber extends Component
 
                 if ($parcel) {
                     $parcel->update([
-                        'registration_number' => trim($row['numero_matricula'])
+                        'registration_number' => trim($row['numero_matricula']),
                     ]);
                 } else {
-                    $this->importErrors .= 'Fila ' . $fila . ': No se encontró el lote y manzana. <br>';
+                    $this->importErrors .= 'Fila '.$fila.': No se encontró el lote y manzana. <br>';
                 }
             }
 
@@ -75,10 +77,10 @@ class ImportRegistrationNumber extends Component
 
             if ($this->importErrors != 'Errores en la importación: <br>') {
                 $this->dialog([
-                    'title'       => 'La importación se realizó con errores !!!',
+                    'title' => 'La importación se realizó con errores !!!',
                     'description' => $this->importErrors,
-                    'icon'        => 'warning',
-                    'style'       => 'inline',
+                    'icon' => 'warning',
+                    'style' => 'inline',
                 ]);
             } else {
                 $this->dialog()->success(
@@ -98,7 +100,7 @@ class ImportRegistrationNumber extends Component
 
             $this->dialog()->error(
                 'Error !!!',
-                'Ocurrió un error al importar los datos, por favor intente de nuevo: ' . $th->getMessage()
+                'Ocurrió un error al importar los datos, por favor intente de nuevo: '.$th->getMessage()
             );
         }
     }

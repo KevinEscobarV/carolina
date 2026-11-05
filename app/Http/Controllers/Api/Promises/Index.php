@@ -4,9 +4,9 @@ namespace App\Http\Controllers\Api\Promises;
 
 use App\Http\Controllers\Controller;
 use App\Models\Promise;
-use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Http\Request;
 
 class Index extends Controller
 {
@@ -33,10 +33,11 @@ class Index extends Controller
             )
             ->get()
             ->map(function (Promise $promise) {
-                $promise->description = 'Compradores: ' . $promise->buyers->pluck('names')->join(', ')
-                    . '<br>Codigo Lotes: ' . $promise->parcels->groupBy('block_id')->map(function ($parcels) {
-                        return $parcels->first()->block->code . ': (' . $parcels->pluck('number')->join(', ') . ')';
+                $promise->description = 'Compradores: '.$promise->buyers->pluck('names')->join(', ')
+                    .'<br>Codigo Lotes: '.$promise->parcels->groupBy('block_id')->map(function ($parcels) {
+                        return $parcels->first()->block->code.': ('.$parcels->pluck('number')->join(', ').')';
                     })->join(', ');
+
                 return $promise;
             });
     }

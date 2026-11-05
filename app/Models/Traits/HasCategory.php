@@ -10,8 +10,6 @@ trait HasCategory
 {
     /**
      * Boot the HasCategory trait for a model.
-     *
-     * @return void
      */
     public static function bootHasCategory(): void
     {

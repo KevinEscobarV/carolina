@@ -14,6 +14,7 @@ class Amortization extends Component
     public $promiseId;
 
     public $promise;
+
     public $projection = [];
 
     public function deleteQuota($index)
@@ -64,10 +65,10 @@ class Amortization extends Component
         }
 
         $payments->each(function ($payment) {
-            $payment->payment_date_formatted = $payment->payment_date ? $payment->payment_date->translatedFormat("F j/Y") : 'Sin definir';
+            $payment->payment_date_formatted = $payment->payment_date ? $payment->payment_date->translatedFormat('F j/Y') : 'Sin definir';
             $payment->paid_amount_formatted = number_format($payment->paid_amount, 0, ',', '.');
             foreach ($this->projection as $key => $quota) {
-                if (!isset($this->projection[$key]['payment'])) {
+                if (! isset($this->projection[$key]['payment'])) {
                     $this->projection[$key]['payment'] = [
                         'id' => $payment->id,
                         'bill_number' => $payment->bill_number,

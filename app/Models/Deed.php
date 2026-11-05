@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Deed extends Model
 {
-    use HasFactory, SoftDeletes, HasCategory;
+    use HasCategory, HasFactory, SoftDeletes;
 
     protected $fillable = [
         'number',
@@ -21,12 +21,12 @@ class Deed extends Model
         'status',
         'observations',
         'promise_id',
-        'category_id'
+        'category_id',
     ];
 
     protected $casts = [
         'signature_date' => 'date',
-        'status' => DeedStatus::class
+        'status' => DeedStatus::class,
     ];
 
     public function promise()
@@ -41,20 +41,16 @@ class Deed extends Model
 
     /**
      * Scope a query to only include buyers that match the search.
-     * 
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
-     * @param  string  $search
-     * @return void
      */
     public function scopeSearch(Builder $query, string $search): void
     {
         $operator = config('database.operator');
         if ($search) {
-            $query->where('number', $operator, '%' . $search . '%')
-                ->orWhere('book', $operator, '%' . $search . '%')
+            $query->where('number', $operator, '%'.$search.'%')
+                ->orWhere('book', $operator, '%'.$search.'%')
                 ->orWhereHas('promise', function ($query) use ($search, $operator) {
                     $query->whereHas('buyers', function ($query) use ($search, $operator) {
-                        $query->where('names', $operator, '%' . $search . '%');
+                        $query->where('names', $operator, '%'.$search.'%');
                     });
                 });
         }
@@ -62,10 +58,8 @@ class Deed extends Model
 
     /**
      * Scope a query to only include buyers that match the search.
-     * 
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     *
      * @param  string  $search
-     * @return void
      */
     public function scopeSort(Builder $query, ?string $column, bool $asc): void
     {
@@ -76,13 +70,11 @@ class Deed extends Model
 
     /**
      * Scope a query to only include buyers that are trashed.
-     * 
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
-     * @param  bool  $onlyTrash
-     * @return void
      */
     public function scopeTrash(Builder $query, bool $onlyTrash): void
     {
-        if ($onlyTrash) $query->onlyTrashed();
+        if ($onlyTrash) {
+            $query->onlyTrashed();
+        }
     }
 }
