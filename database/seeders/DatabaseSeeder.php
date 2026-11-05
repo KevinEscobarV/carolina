@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\Category;
 use App\Models\User;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Str;
 
 class DatabaseSeeder extends Seeder
 {
@@ -15,11 +16,17 @@ class DatabaseSeeder extends Seeder
     {
         // User::factory(10)->create();
 
+        $password = env('ADMIN_PASSWORD') ?: Str::password(16);
+
         User::create([
             'name' => 'Alejandra Barahona',
             'email' => 'alejandra@loteosmcrv.com',
-            'password' => bcrypt('admin2024*'),
+            'password' => bcrypt($password),
         ]);
+
+        if (! env('ADMIN_PASSWORD')) {
+            $this->command->warn("Contraseña del administrador: {$password}");
+        }
 
         Category::create([
             'name' => 'Rivarca',

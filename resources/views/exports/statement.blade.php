@@ -215,10 +215,10 @@
 <body>
     <header class="clearfix">
         <div id="logo" style="margin-left: -18px">
-            <img src="{{ asset('img/logo.png') }}">
+            <img src="{{ public_path('img/logo.png') }}">
           </div>
         <div id="company">
-            <h2 class="name">Martha Carolina Riveros Vargas - {{$promise->category->name}}</h2>
+            <h2 class="name">Martha Carolina Riveros Vargas - {{ $promise->category?->name }}</h2>
             <div>Yopal - Casanare</div>
             <div>Tel: 312 885 4721</div>
             <div>NIT: 1.098.656.012-1</div>
@@ -230,7 +230,7 @@
         <div id="details" class="clearfix">
             <div id="client">
                 <h2 class="name">{{ $buyer->names }} {{ $buyer->surnames }}</h2>
-                <div>{{ $buyer->document_type->label() }}: {{ $buyer->document_number }}</div>
+                <div>{{ $buyer->document_type?->label() ?? 'Documento' }}: {{ $buyer->document_number }}</div>
                 <div>{{ $buyer->address }}</div>
                 <div class="address">Tel: {{ $buyer->phone_one ?? 'No definido' }}</div>
                 <div class="email"><a href="mailto:{{ $buyer->email }}">{{ $buyer->email }}</a></div>
@@ -239,7 +239,7 @@
             <div id="invoice">
                 <h1>{{ $promise->number }}</h1>
                 <div class="date">Fecha de promesa: {{ $promise->signature_date ? $promise->signature_date->translatedFormat("F j/Y") : 'Sin definir' }}</div>
-                <div>Metodo de Pago: {{ $promise->payment_method->label() }}</div>
+                <div>Metodo de Pago: {{ $promise->payment_method?->label() ?? 'Sin definir' }}</div>
                 <div>Cuotas: {{ $promise->number_of_fees }}</div>
                 <div>Valor Promesa: {{ $promise->value_formatted }} COP</div>
             </div>
@@ -285,7 +285,7 @@
                 <tr>
                     <td colspan="3"></td>
                     <td colspan="2">Frecuencia de Pago</td>
-                    <td>{{ $promise->payment_frequency->label() }}</td>
+                    <td>{{ $promise->payment_frequency?->label() ?? 'Sin definir' }}</td>
                 </tr>
                 <tr>
                     <td colspan="3"></td>
