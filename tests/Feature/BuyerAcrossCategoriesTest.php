@@ -160,10 +160,7 @@ class BuyerAcrossCategoriesTest extends TestCase
 
         Auth::logout();
 
-        $signedUrl = Livewire::test(StatementPage::class)
-            ->set('document_number', '1115918673')
-            ->call('explore')
-            ->get('statementUrls')[$promise->id];
+        $signedUrl = $this->statementLink('1115918673');
 
         $this->get($signedUrl)
             ->assertOk()
@@ -176,6 +173,34 @@ class BuyerAcrossCategoriesTest extends TestCase
 
         $this->get($signedUrl)
             ->assertRedirect(route('personal-account-statement'));
+    }
+
+    public function test_statement_renders_with_incomplete_data(): void
+    {
+        $buyer = $this->createBuyerIn($this->campaignA, ['document_number' => '1115918673', 'document_type' => null]);
+        $promise = Promise::create(['number' => 'P-A', 'signature_date' => now()]);
+        $promise->buyers()->attach($buyer);
+
+        Auth::logout();
+
+        $this->get($this->statementLink('1115918673'))
+            ->assertOk()
+            ->assertHeader('content-type', 'application/pdf');
+    }
+
+    /**
+     * Search the public statement and return the first download link, as the browser would follow it.
+     */
+    private function statementLink(string $document): string
+    {
+        $html = Livewire::test(StatementPage::class)
+            ->set('document_number', $document)
+            ->call('explore')
+            ->html();
+
+        preg_match('/href="([^"]*download[^"]*)"/', $html, $match);
+
+        return html_entity_decode($match[1]);
     }
 
     /**

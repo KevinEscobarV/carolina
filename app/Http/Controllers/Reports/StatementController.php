@@ -28,8 +28,8 @@ class StatementController extends Controller
             'promise' => $promise, 
             'buyer' => $buyer ,
             'payments' => $promise->payments,
-            'total_agreement_amount' => number_format($total->total_agreement_amount, 0, ',', '.'),
-            'total_paid_amount' => number_format($total->total_paid_amount, 0, ',', '.'),
+            'total_agreement_amount' => number_format($total->total_agreement_amount ?? 0, 0, ',', '.'),
+            'total_paid_amount' => number_format($total->total_paid_amount ?? 0, 0, ',', '.'),
         ]);
 
         return $pdf->stream();
