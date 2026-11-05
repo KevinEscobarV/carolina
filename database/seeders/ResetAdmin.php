@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Str;
 use Spatie\Permission\Models\Role;
 
 class ResetAdmin extends Seeder
@@ -14,11 +15,13 @@ class ResetAdmin extends Seeder
      */
     public function run(): void
     {
-        $user = User::firstOrCreate(
+        $password = env('ADMIN_PASSWORD') ?: Str::password(16);
+
+        $user = User::updateOrCreate(
             ['email' => 'alejandra@loteosmcrv.com'],
             [
                 'name' => 'Alejandra Barahona',
-                'password' => bcrypt('admin2024*'),
+                'password' => bcrypt($password),
             ]
         );
 
@@ -27,5 +30,9 @@ class ResetAdmin extends Seeder
         $user->assignRole($role);
 
         $this->command->info('Usuario administrador restablecido');
+
+        if (! env('ADMIN_PASSWORD')) {
+            $this->command->warn("Contraseña generada: {$password}");
+        }
     }
 }
