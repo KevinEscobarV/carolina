@@ -26,7 +26,8 @@
                     placeholder="Seleccione una Manzana" :async-data="route('api.blocks.index')" option-label="code"
                     option-value="id" />
             </div>
-            <div class="col-span-6 sm:col-span-3" wire:ignore>
+            {{-- The key rebuilds the ignored select when the block changes, so it loads that block's parcels --}}
+            <div class="col-span-6 sm:col-span-3" wire:ignore wire:key="parcels-{{ $block }}">
                 <x-wireui-select label="Lotes" wire:model.live.debounce.500ms="form.parcels" empty-message="Seleccione una manzana primero"
                     :async-data="route('api.parcels.promises', $block)"
                     placeholder="Marque los lotes"  option-label="number"

@@ -17,8 +17,9 @@ class Index extends Controller
             ->select('id', 'number', 'value', 'area_m2', 'promise_id', 'block_id', 'category_id')
             ->orderBy('number')
             ->with('block')
+            // Parcels already selected keep their labels even when they belong to another block
             ->when(
-                $block->exists,
+                $block->exists && ! $request->exists('selected'),
                 fn (Builder $query) => $query->where('block_id', $block->id),
             )
             ->when(
