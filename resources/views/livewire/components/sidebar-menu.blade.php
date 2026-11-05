@@ -64,7 +64,7 @@
                 </x-side-link>
             @endcan
 
-            @can('view.contegories')
+            @can('view.categories')
                 <x-side-link href="{{ route('categories') }}" :active="request()->routeIs(['categories', 'categories.*'])" icon="megaphone">
                     <span x-show="open" x-transition.duration.500ms>Campañas</span>
                 </x-side-link>
