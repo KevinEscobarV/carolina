@@ -215,7 +215,7 @@
 <body>
     <header class="clearfix">
         <div id="logo" style="margin-left: -18px">
-            <img src="{{ asset('img/logo.png') }}">
+            <img src="{{ public_path('img/logo.png') }}">
           </div>
         <div id="company">
             <h2 class="name">Martha Carolina Riveros Vargas - {{$promise->category->name}}</h2>
