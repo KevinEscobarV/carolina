@@ -20,7 +20,7 @@ Carolina permite administrar compradores, manzanas, lotes, promesas de compraven
 
 | Área | Tecnologías |
 |:--|:--|
-| Backend | PHP 8.2+, Laravel 11 |
+| Backend | PHP 8.3+, Laravel 13 |
 | Interfaz | Livewire 3, Alpine.js, WireUI, Tailwind CSS 3, Vite 5 |
 | Autenticación | Jetstream + Fortify |
 | Roles y permisos | `spatie/laravel-permission` |
@@ -30,7 +30,7 @@ Carolina permite administrar compradores, manzanas, lotes, promesas de compraven
 
 ## Requisitos
 
-- **PHP:** 8.2 o superior (probado con 8.4), con las extensiones:
+- **PHP:** 8.3 o superior (probado con 8.4), con las extensiones:
   `bcmath`, `ctype`, `curl`, `dom`, `fileinfo`, `gd`, `intl`, `mbstring`,
   `pdo_sqlite` (desarrollo), `pdo_pgsql` (producción), `xml` y `zip`.
 - **Composer:** versión 2.
@@ -143,7 +143,7 @@ php artisan tinker --execute="App\Models\Category::create(['name' => 'Rivarca'])
 php artisan db:seed --class=ResetAdmin
 ```
 
-El correo y la contraseña del administrador están en [database/seeders/ResetAdmin.php](database/seeders/ResetAdmin.php). Cambia la contraseña desde el perfil después de entrar por primera vez.
+El correo del administrador está en [database/seeders/ResetAdmin.php](database/seeders/ResetAdmin.php). La contraseña sale de `ADMIN_PASSWORD`; si está vacía, el seeder genera una aleatoria y la muestra en la consola. Si el usuario ya existe, el seeder le restablece la contraseña. Cámbiala desde el perfil después de entrar.
 
 > [!WARNING]
 > **No uses `php artisan db:seed` sin `--class`.** El seeder por defecto falla en una instalación nueva con `Attempt to read property "currentCategory" on null`. Los modelos con campaña (`HasCategory`) toman la campaña del usuario autenticado, y en consola no hay ninguno. Por el mismo motivo, los seeders que importan los Excel de `public/imports/` tampoco funcionan todavía. Está registrado como mejora pendiente.
@@ -184,7 +184,8 @@ Con Herd no hace falta `php artisan serve`. Si la carpeta está dentro de un dir
 
 | Variable | Descripción |
 |:--|:--|
-| `APP_URL` | URL base, usada en los enlaces firmados del estado de cuenta público. |
+| `APP_URL` | URL base de la aplicación. |
+| `ADMIN_PASSWORD` | Contraseña que asigna el seeder `ResetAdmin`. Vacía: se genera una aleatoria. |
 | `APP_ENV` | Con `production` se fuerza HTTPS en todas las URLs. |
 | `DB_*` | Conexión a la base de datos (paso 4). |
 | `SESSION_DRIVER` | `database` por defecto. La tabla `sessions` se crea con las migraciones. |
@@ -195,7 +196,7 @@ Con Herd no hace falta `php artisan serve`. Si la carpeta está dentro de un dir
 
 ## Tests
 
-Los tests usan SQLite en memoria y no modifican tu base de datos. Necesitan los assets compilados; si no, las pantallas de login y registro devuelven error 500 (`Vite manifest not found`).
+Los tests usan SQLite en memoria y no modifican tu base de datos. Necesitan los assets compilados; si no, la pantalla de login devuelve error 500 (`Vite manifest not found`).
 
 ```bash
 npm run build
