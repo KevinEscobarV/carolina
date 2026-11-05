@@ -1,9 +1,13 @@
 <div class="divide-y divide-gray-200 rounded-xl bg-white shadow-sm ring-1 ring-gray-950/5 dark:divide-white/10 dark:bg-gray-800 dark:ring-white/10">
     <div class="flex flex-col sm:grid grid-cols-8 gap-2 p-6">
-        <x-table.header :$trash routeCreate="{{route('parcels.create')}}">
+        <x-table.header model="parcels" :$trash routeCreate="{{route('parcels.create')}}">
             <x-slot name="import">
-                <livewire:parcel.index.import-registration-number />
-                <livewire:parcel.index.import />
+                @can('edit.parcels')
+                    <livewire:parcel.index.import-registration-number />
+                @endcan
+                @can('create.parcels')
+                    <livewire:parcel.index.import />
+                @endcan
             </x-slot>
         </x-table.header>
         {{-- <x-parcel.index.bulk-actions /> --}}

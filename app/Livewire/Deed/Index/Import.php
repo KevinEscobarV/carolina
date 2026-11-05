@@ -19,6 +19,8 @@ class Import extends Component
 
     public function import()
     {
+        $this->authorize('create.deeds');
+
         $this->validate();
 
         $import = new General();

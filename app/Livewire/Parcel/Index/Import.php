@@ -22,6 +22,8 @@ class Import extends Component
 
     public function import()
     {
+        $this->authorize('create.parcels');
+
         try {
             $this->validate();
 

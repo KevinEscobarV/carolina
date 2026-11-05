@@ -83,11 +83,11 @@ Route::middleware([
     | API Routes for Selects
     |--------------------------------------------------------------------------
     */
-    Route::get('/select/buyers', \App\Http\Controllers\Api\Buyers\Index::class)->name('api.buyers.index');
+    Route::get('/select/buyers', \App\Http\Controllers\Api\Buyers\Index::class)->middleware('can:view.buyers')->name('api.buyers.index');
     Route::get('/select/buyers/other-categories', [\App\Http\Controllers\Api\Buyers\Index::class, 'otherCategories'])->middleware('can:change.category')->name('api.buyers.other-categories');
-    Route::get('/select/promises', \App\Http\Controllers\Api\Promises\Index::class)->name('api.promises.index');
-    Route::get('/select/categories', \App\Http\Controllers\Api\Categories\Index::class)->name('api.categories.index');
-    Route::get('/select/blocks', \App\Http\Controllers\Api\Blocks\Index::class)->name('api.blocks.index');
-    Route::get('/select/blocks/parcels/promises/{block?}', [\App\Http\Controllers\Api\Parcels\Index::class, 'promises'])->name('api.parcels.promises');
-    Route::get('/select/blocks/parcels/deeds/{block?}', [\App\Http\Controllers\Api\Parcels\Index::class, 'deeds'])->name('api.parcels.deeds');
+    Route::get('/select/promises', \App\Http\Controllers\Api\Promises\Index::class)->middleware('can:view.promises')->name('api.promises.index');
+    Route::get('/select/categories', \App\Http\Controllers\Api\Categories\Index::class)->middleware('can:view.categories')->name('api.categories.index');
+    Route::get('/select/blocks', \App\Http\Controllers\Api\Blocks\Index::class)->middleware('can:view.blocks')->name('api.blocks.index');
+    Route::get('/select/blocks/parcels/promises/{block?}', [\App\Http\Controllers\Api\Parcels\Index::class, 'promises'])->middleware('can:view.parcels')->name('api.parcels.promises');
+    Route::get('/select/blocks/parcels/deeds/{block?}', [\App\Http\Controllers\Api\Parcels\Index::class, 'deeds'])->middleware('can:view.parcels')->name('api.parcels.deeds');
 });

@@ -32,12 +32,16 @@ class Table extends Component
 
     public function edit(Block $block)
     {
+        $this->authorize('edit.blocks');
+
         $this->form->setBlock($block);
         $this->modal = true;
     }
 
     public function update()
     {
+        $this->authorize('edit.blocks');
+
         $update = $this->form->update();
 
         if ($update) {

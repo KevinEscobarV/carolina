@@ -15,6 +15,8 @@ class General extends Component
 
     public function exportGeneral()
     {
+        $this->authorize('view.parcels');
+
         try {
             $name = 'Reporte-Lotes-' . now()->format('Y-m-d-h') . '.xlsx';
             $report = new ParcelGeneral($this->position, $this->status, $this->registrationNumber);

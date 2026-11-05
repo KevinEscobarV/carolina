@@ -12,6 +12,8 @@ trait SoftDeletes
     
     public function deleteSelected()
     {
+        $this->authorizeDeleting();
+
         $items = $this->model->whereIn('id', $this->selectedIds)->get();
 
         foreach ($items as $item) {
@@ -60,6 +62,8 @@ trait SoftDeletes
 
     public function delete($id)
     {
+        $this->authorizeDeleting();
+
         $item = $this->model->withTrashed()->find($id);
 
         $item->trashed()
@@ -69,9 +73,19 @@ trait SoftDeletes
 
     public function restore($id)
     {
+        $this->authorizeDeleting();
+
         $item = $this->model->withTrashed()->find($id);
 
         $item->restore();
+    }
+
+    /**
+     * Archiving, restoring and deleting require the module's delete permission, e.g. delete.buyers.
+     */
+    protected function authorizeDeleting(): void
+    {
+        $this->authorize('delete.'.$this->model->getTable());
     }
 
     public function onlyTrash()

@@ -21,6 +21,8 @@ class Create extends Component
 
     public function save(): void
     {
+        $this->authorize('create.deeds');
+
         $save = $this->form->save();
 
         if ($save) {

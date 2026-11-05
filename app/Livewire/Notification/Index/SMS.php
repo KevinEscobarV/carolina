@@ -16,6 +16,8 @@ class SMS extends Component
 
     public function sendSMS()
     {
+        $this->authorize('send.messages.personalized');
+
         $this->validate([
             'message' => 'required|min:10|max:160',
             'buyers' => 'required'

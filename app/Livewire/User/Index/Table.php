@@ -38,12 +38,16 @@ class Table extends Component
 
     public function edit(User $user)
     {
+        $this->authorize('edit.users');
+
         $this->form->setUser($user);
         $this->modal = true;
     }
 
     public function update()
     {
+        $this->authorize('edit.users');
+
         $update = $this->form->update();
 
         if ($update) {

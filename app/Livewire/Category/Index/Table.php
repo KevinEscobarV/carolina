@@ -32,12 +32,16 @@ class Table extends Component
 
     public function edit(Category $category)
     {
+        $this->authorize('edit.categories');
+
         $this->form->setCategory($category);
         $this->modal = true;
     }
 
     public function update()
     {
+        $this->authorize('edit.categories');
+
         $update = $this->form->update();
 
         if ($update) {

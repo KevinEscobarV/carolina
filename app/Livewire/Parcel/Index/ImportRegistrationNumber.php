@@ -24,6 +24,8 @@ class ImportRegistrationNumber extends Component
 
     public function import()
     {
+        $this->authorize('edit.parcels');
+
         $this->validate();
 
         $collection = Excel::toCollection(new DataImport, $this->file);

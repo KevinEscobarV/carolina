@@ -35,12 +35,16 @@ class Table extends Component
 
     public function edit(Role $role)
     {
+        $this->authorize('edit.roles');
+
         $this->form->setRole($role);
         $this->modal = true;
     }
 
     public function update()
     {
+        $this->authorize('edit.roles');
+
         $update = $this->form->update();
 
         if ($update) {

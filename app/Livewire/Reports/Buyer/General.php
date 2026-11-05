@@ -20,6 +20,8 @@ class General extends Component
 
     public function exportGeneral()
     {
+        $this->authorize('view.buyers');
+
         $this->validate([
             'fromDate' => 'required|date',
             'toDate' => 'required|date',

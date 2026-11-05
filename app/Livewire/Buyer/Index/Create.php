@@ -41,6 +41,8 @@ class Create extends Component
 
     public function save(): void
     {
+        $this->authorize('create.buyers');
+
         $save = $this->form->save();
 
         if ($save) {

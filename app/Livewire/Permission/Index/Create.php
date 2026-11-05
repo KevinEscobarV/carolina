@@ -22,6 +22,8 @@ class Create extends Component
 
     public function save(): void
     {
+        $this->authorize('create.roles');
+
         $save = $this->form->save();
 
         if ($save) {

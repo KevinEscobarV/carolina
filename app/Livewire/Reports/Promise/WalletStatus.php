@@ -16,6 +16,8 @@ class WalletStatus extends Component
 
     public function exportGeneral()
     {
+        $this->authorize('view.promises');
+
         $this->validate([
             'fromDate' => 'nullable|date',
             'toDate' => 'nullable|date',

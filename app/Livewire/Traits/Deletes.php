@@ -10,6 +10,8 @@ trait Deletes
     
     public function deleteSelected()
     {
+        $this->authorizeDeleting();
+
         $items = $this->model->whereIn('id', $this->selectedIds)->get();
 
         foreach ($items as $item) {
@@ -33,7 +35,17 @@ trait Deletes
 
     public function delete($id)
     {
+        $this->authorizeDeleting();
+
         $item = $this->model->where('id', $id)->first();
         $item->delete();
+    }
+
+    /**
+     * Deleting requires the module's delete permission, e.g. delete.roles.
+     */
+    protected function authorizeDeleting(): void
+    {
+        $this->authorize('delete.'.$this->model->getTable());
     }
 }
