@@ -223,9 +223,14 @@ class Promise extends Model
     {
         if ($column) {
             if ($column === 'buyer') {
-                $query->join('promise_buyer', 'promise_buyer.promise_id', '=', 'promises.id')
-                    ->join('buyers', 'buyers.id', '=', 'promise_buyer.buyer_id')
-                    ->orderBy('buyers.names', $asc ? 'asc' : 'desc');
+                // A subquery keeps one row per promise and the promise's own columns
+                $query->orderBy(
+                    Buyer::select('names')
+                        ->join('promise_buyer', 'promise_buyer.buyer_id', '=', 'buyers.id')
+                        ->whereColumn('promise_buyer.promise_id', 'promises.id')
+                        ->limit(1),
+                    $asc ? 'asc' : 'desc'
+                );
             } else if ($column === 'parcel') {
                 $query->join('parcels', 'parcels.promise_id', '=', 'promises.id')
                     ->orderBy('parcels.number', $asc ? 'asc' : 'desc');

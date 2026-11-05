@@ -41,12 +41,20 @@ class Table extends Component
         return view('components.table.placeholder');
     }
 
+    /**
+     * @return array<int, string>
+     */
+    protected function sortableColumns(): array
+    {
+        return ['id', 'bill_number', 'agreement_date', 'agreement_amount', 'payment_date', 'paid_amount', 'payment_method', 'bank', 'observations'];
+    }
+
     public function render()
     {
         $total = Payment::select( DB::raw('SUM(agreement_amount) as total_agreement_amount'), DB::raw('SUM(paid_amount) as total_paid_amount') )->promiseFilter($this->promiseIds)->trash($this->trash)->first();
 
         return view('livewire.payment.index.table', [
-            'payments' => Payment::search($this->search)->sort($this->sortCol, $this->sortAsc)->promiseFilter($this->promiseIds)->trash($this->trash)->with('promise.buyers', 'promise.parcels.block')->paginate($this->perPage),
+            'payments' => Payment::search($this->search)->sort($this->sortColumn(), $this->sortAsc)->promiseFilter($this->promiseIds)->trash($this->trash)->with('promise.buyers', 'promise.parcels.block')->paginate($this->perPage),
             'total_agreement_amount' => number_format($total->total_agreement_amount, 0, ',', '.'),
             'total_paid_amount' => number_format($total->total_paid_amount, 0, ',', '.'),
         ]);

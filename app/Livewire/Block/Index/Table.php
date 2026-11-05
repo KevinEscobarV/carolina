@@ -65,11 +65,19 @@ class Table extends Component
         return view('components.table.placeholder');
     }
 
+    /**
+     * @return array<int, string>
+     */
+    protected function sortableColumns(): array
+    {
+        return ['id', 'code', 'category', 'updated_at'];
+    }
+
     #[On('refresh-block-table')] 
     public function render()
     {
         return view('livewire.block.index.table', [
-            'blocks' => Block::search($this->search)->sort($this->sortCol, $this->sortAsc)->with('category')->trash($this->trash)->paginate($this->perPage),
+            'blocks' => Block::search($this->search)->sort($this->sortColumn(), $this->sortAsc)->with('category')->trash($this->trash)->paginate($this->perPage),
         ]);
     }
 }

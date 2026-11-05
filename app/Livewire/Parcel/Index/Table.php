@@ -38,11 +38,19 @@ class Table extends Component
         return view('components.table.placeholder');
     }
 
+    /**
+     * @return array<int, string>
+     */
+    protected function sortableColumns(): array
+    {
+        return ['id', 'number', 'block', 'position', 'value', 'registration_number', 'promise_id', 'updated_at'];
+    }
+
     #[On('refresh-parcel-table')] 
     public function render()
     {
         return view('livewire.parcel.index.table', [
-            'parcels' => Parcel::search($this->search)->sort($this->sortCol, $this->sortAsc)->with('block.category', 'promise.buyers')->trash($this->trash)->paginate($this->perPage),
+            'parcels' => Parcel::search($this->search)->sort($this->sortColumn(), $this->sortAsc)->with('block.category', 'promise.buyers')->trash($this->trash)->paginate($this->perPage),
         ]);
     }
 }

@@ -40,11 +40,19 @@ class Table extends Component
         return view('components.table.placeholder');
     }
 
+    /**
+     * @return array<int, string>
+     */
+    protected function sortableColumns(): array
+    {
+        return ['id', 'names', 'surnames', 'email', 'document_type', 'document_number', 'civil_status'];
+    }
+
     #[On('refresh-buyer-table')] 
     public function render()
     {
         return view('livewire.buyer.index.table', [
-            'buyers' => Buyer::search($this->search)->sort($this->sortCol, $this->sortAsc)->with('promises.parcels.block', 'promises.payments')->trash($this->trash)->paginate($this->perPage),
+            'buyers' => Buyer::search($this->search)->sort($this->sortColumn(), $this->sortAsc)->with('promises.parcels.block', 'promises.payments')->trash($this->trash)->paginate($this->perPage),
         ]);
     }
 }

@@ -65,12 +65,20 @@ class Table extends Component
         return view('components.table.placeholder');
     }
 
+    /**
+     * @return array<int, string>
+     */
+    protected function sortableColumns(): array
+    {
+        return ['id', 'name', 'email', 'updated_at'];
+    }
+
     #[On('refresh-user-table')] 
     public function render()
     {
         return view('livewire.user.index.table', [
             'users' => User::with('roles', 'currentCategory')
-            ->search($this->search)->sort($this->sortCol, $this->sortAsc)->trash($this->trash)->paginate($this->perPage),
+            ->search($this->search)->sort($this->sortColumn(), $this->sortAsc)->trash($this->trash)->paginate($this->perPage),
         ]);
     }
 }

@@ -39,11 +39,19 @@ class Table extends Component
     }
 
 
+    /**
+     * @return array<int, string>
+     */
+    protected function sortableColumns(): array
+    {
+        return ['id', 'number', 'book', 'signature_date', 'value', 'status', 'observations'];
+    }
+
     #[On('refresh-deed-table')] 
     public function render()
     {
         return view('livewire.deed.index.table', [
-            'deeds' => Deed::search($this->search)->sort($this->sortCol, $this->sortAsc)->with('promise.parcels.block', 'promise.buyers')->trash($this->trash)->paginate($this->perPage),
+            'deeds' => Deed::search($this->search)->sort($this->sortColumn(), $this->sortAsc)->with('promise.parcels.block', 'promise.buyers')->trash($this->trash)->paginate($this->perPage),
         ]);
     }
 }

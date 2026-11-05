@@ -63,6 +63,14 @@ class Table extends Component
     }
 
 
+    /**
+     * @return array<int, string>
+     */
+    protected function sortableColumns(): array
+    {
+        return ['id', 'name', 'updated_at'];
+    }
+
     #[On('refresh-role-table')] 
     public function render()
     {
@@ -72,8 +80,8 @@ class Table extends Component
             $roles->where('name', config('database.operator'), "%{$this->search}%");
         }
 
-        if ($this->sortCol) {
-            $roles->orderBy($this->sortCol, $this->sortAsc ? 'asc' : 'desc');
+        if ($this->sortColumn()) {
+            $roles->orderBy($this->sortColumn(), $this->sortAsc ? 'asc' : 'desc');
         }
 
         return view('livewire.permission.index.table', [

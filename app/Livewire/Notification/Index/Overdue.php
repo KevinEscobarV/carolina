@@ -92,8 +92,16 @@ class Overdue extends Component
 
         return Promise::whereNotNull('projection')
             ->whereRaw($raw)
-            ->sort($this->sortCol, $this->sortAsc)
+            ->sort($this->sortColumn(), $this->sortAsc)
             ->with('buyers', 'payments', 'parcels.block');
+    }
+
+    /**
+     * @return array<int, string>
+     */
+    protected function sortableColumns(): array
+    {
+        return ['number', 'buyer', 'value', 'initial_fee', 'quota_amount', 'interest_rate', 'payment_frequency', 'payment_method'];
     }
 
     public function render()

@@ -18,6 +18,6 @@ class CategoryScope implements Scope
             return;
         }
 
-        $builder->where('category_id', Auth::user()->currentCategory->id);
+        $builder->where($model->qualifyColumn('category_id'), Auth::user()->currentCategory->id);
     }
 }
