@@ -24,7 +24,7 @@ class Index extends Controller
                 $request->search,
                 fn (Builder $query) => $query->where('names', $operator, "%{$request->search}%")
                     ->orWhere('surnames', $operator, "%{$request->search}%")
-                    ->orWhere('document_number', $operator, "%{$request->search}%")
+                    ->orWhere(fn (Builder $query) => $query->documentContains($request->search))
                     ->orWhere('email', $operator, "%{$request->search}%")
             )
             ->when(
@@ -66,7 +66,7 @@ class Index extends Controller
                 fn (Builder $query) => $query->where(
                     fn (Builder $query) => $query->where('names', $operator, "%{$request->search}%")
                         ->orWhere('surnames', $operator, "%{$request->search}%")
-                        ->orWhere('document_number', $operator, "%{$request->search}%")
+                        ->orWhere(fn (Builder $query) => $query->documentContains($request->search))
                         ->orWhere('email', $operator, "%{$request->search}%")
                 )
             )

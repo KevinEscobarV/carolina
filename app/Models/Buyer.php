@@ -134,7 +134,7 @@ class Buyer extends Model
             $query->where('names', $operator, "%$search%")
                 ->orWhere('surnames', $operator, "%$search%")
                 ->orWhere('email', $operator, "%$search%")
-                ->orWhere('document_number', $operator, "%$search%");
+                ->orWhere(fn (Builder $query) => $query->documentContains($search));
     }
 
     /**
@@ -147,14 +147,55 @@ class Buyer extends Model
      */
     public function scopeByDocument(Builder $query, ?string $document): void
     {
-        $document = strtoupper(preg_replace('/[\s.\-]/', '', (string) $document));
+        $document = static::normalizeDocument($document);
 
         if ($document === '') {
             $query->whereRaw('1 = 0');
             return;
         }
 
-        $query->whereRaw("UPPER(REPLACE(REPLACE(REPLACE(document_number, '.', ''), ' ', ''), '-', '')) = ?", [$document]);
+        $query->whereRaw('UPPER('.static::normalizedDocumentColumn($query).') = ?', [$document]);
+    }
+
+    /**
+     * Scope a query to buyers whose document contains the given text, so "1.115.918" and "1115918"
+     * find the same buyer whether the document was saved with dots or without them.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @param  string|null  $search
+     * @return void
+     */
+    public function scopeDocumentContains(Builder $query, ?string $search): void
+    {
+        $search = static::normalizeDocument($search);
+
+        if ($search === '') {
+            $query->whereRaw('1 = 0');
+            return;
+        }
+
+        $query->whereRaw(
+            'UPPER('.static::normalizedDocumentColumn($query).') '.config('database.operator').' ?',
+            ["%{$search}%"]
+        );
+    }
+
+    /**
+     * Remove dots, spaces and hyphens from a document number and uppercase it.
+     */
+    protected static function normalizeDocument(?string $document): string
+    {
+        return strtoupper(preg_replace('/[\s.\-]/', '', (string) $document));
+    }
+
+    /**
+     * SQL expression for the document number without dots, spaces and hyphens.
+     */
+    protected static function normalizedDocumentColumn(Builder $query): string
+    {
+        $column = $query->qualifyColumn('document_number');
+
+        return "REPLACE(REPLACE(REPLACE({$column}, '.', ''), ' ', ''), '-', '')";
     }
 
     /**

@@ -89,7 +89,7 @@ class Payment extends Model
                             $query->where('names', $operator, "%$search%")
                                 ->orWhere('surnames', $operator, "%$search%")
                                 ->orWhere('email', $operator, "%$search%")
-                                ->orWhere('document_number', $operator, "%$search%");
+                                ->orWhere(fn (Builder $query) => $query->documentContains($search));
                         });
                 });
     }

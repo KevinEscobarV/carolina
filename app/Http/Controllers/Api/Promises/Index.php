@@ -23,7 +23,7 @@ class Index extends Controller
                     ->orWhereHas(
                         'buyers',
                         fn (Builder $query) => $query->where('names', $operator, "%{$request->search}%")
-                            ->orWhere('document_number', $operator, "%{$request->search}%")
+                            ->orWhere(fn (Builder $query) => $query->documentContains($request->search))
                     )
             )
             ->when(
