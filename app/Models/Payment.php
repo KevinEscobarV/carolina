@@ -102,7 +102,7 @@ class Payment extends Model
      * @param  bool  $asc
      * @return void
      */
-    public function scopeSort(Builder $query, string $column = null, bool $asc): void
+    public function scopeSort(Builder $query, ?string $column, bool $asc): void
     {
         if ($column) {
             if ($column === 'promise') {
