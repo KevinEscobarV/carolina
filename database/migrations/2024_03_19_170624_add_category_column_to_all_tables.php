@@ -13,42 +13,42 @@ return new class extends Migration
     {
         Schema::table('promises', function (Blueprint $table) {
             $table->foreignId('category_id')
-            ->default(1)
-            ->constrained('categories')
-            ->cascadeOnDelete()
-            ->cascadeOnUpdate();
+                ->default(1)
+                ->constrained('categories')
+                ->cascadeOnDelete()
+                ->cascadeOnUpdate();
         });
 
         Schema::table('buyers', function (Blueprint $table) {
             $table->foreignId('category_id')
-            ->default(1)
-            ->constrained('categories')
-            ->cascadeOnDelete()
-            ->cascadeOnUpdate();
+                ->default(1)
+                ->constrained('categories')
+                ->cascadeOnDelete()
+                ->cascadeOnUpdate();
         });
 
         Schema::table('parcels', function (Blueprint $table) {
             $table->foreignId('category_id')
-            ->default(1)
-            ->constrained('categories')
-            ->cascadeOnDelete()
-            ->cascadeOnUpdate();
+                ->default(1)
+                ->constrained('categories')
+                ->cascadeOnDelete()
+                ->cascadeOnUpdate();
         });
 
         Schema::table('deeds', function (Blueprint $table) {
             $table->foreignId('category_id')
-            ->default(1)
-            ->constrained('categories')
-            ->cascadeOnDelete()
-            ->cascadeOnUpdate();
+                ->default(1)
+                ->constrained('categories')
+                ->cascadeOnDelete()
+                ->cascadeOnUpdate();
         });
 
         Schema::table('payments', function (Blueprint $table) {
             $table->foreignId('category_id')
-            ->default(1)
-            ->constrained('categories')
-            ->cascadeOnDelete()
-            ->cascadeOnUpdate();
+                ->default(1)
+                ->constrained('categories')
+                ->cascadeOnDelete()
+                ->cascadeOnUpdate();
         });
     }
 

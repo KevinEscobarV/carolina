@@ -3,7 +3,6 @@
 namespace App\Livewire\Forms;
 
 use App\Enums\PaymentFrequency;
-use App\Enums\PaymentMethod;
 use App\Enums\PromisePaymentMethod;
 use App\Enums\PromiseStatus;
 use App\Models\Parcel;
@@ -89,7 +88,7 @@ class PromiseForm extends Form
             'switch_quota',
             'observations',
             'projection',
-            'number_of_fees'
+            'number_of_fees',
         ]));
 
         $this->buyers = $model->buyers->pluck('id')->toArray();
@@ -169,10 +168,9 @@ class PromiseForm extends Form
         return true;
     }
 
-
     public function save()
     {
-        if (!is_array($this->projection) || empty($this->projection)) {
+        if (! is_array($this->projection) || empty($this->projection)) {
             $this->amortization();
         }
 

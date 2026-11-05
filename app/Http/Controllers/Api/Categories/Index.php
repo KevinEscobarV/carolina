@@ -4,9 +4,9 @@ namespace App\Http\Controllers\Api\Categories;
 
 use App\Http\Controllers\Controller;
 use App\Models\Category;
-use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Http\Request;
 
 class Index extends Controller
 {
@@ -27,7 +27,8 @@ class Index extends Controller
                 fn (Builder $query) => $query->limit(50)
             )
             ->get()->map(function (Category $category) {
-                $category->description = 'Manzanas: ' . $category->blocks->count();
+                $category->description = 'Manzanas: '.$category->blocks->count();
+
                 return $category;
             });
     }

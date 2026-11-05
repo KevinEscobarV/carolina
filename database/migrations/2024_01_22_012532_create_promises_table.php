@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
 
             $table->string('number')->unique()->index();
-            
+
             $table->date('signature_date');
 
             $table->decimal('value', 15, 2)->default(0);

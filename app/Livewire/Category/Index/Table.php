@@ -17,27 +17,33 @@ use WireUi\Traits\Actions;
 class Table extends Component
 {
     use Actions;
-    use WithPagination;
     use SoftDeletes;
     use Sortable;
+    use WithPagination;
 
     public $model = null;
+
     public $modal = false;
+
     public CategoryForm $form;
 
     public function mount()
     {
-        $this->model = new Category(); // This is used for the SoftDeletes trait
+        $this->model = new Category; // This is used for the SoftDeletes trait
     }
 
     public function edit(Category $category)
     {
+        $this->authorize('edit.categories');
+
         $this->form->setCategory($category);
         $this->modal = true;
     }
 
     public function update()
     {
+        $this->authorize('edit.categories');
+
         $update = $this->form->update();
 
         if ($update) {
@@ -61,11 +67,19 @@ class Table extends Component
         return view('components.table.placeholder');
     }
 
-    #[On('refresh-category-table')] 
+    /**
+     * @return array<int, string>
+     */
+    protected function sortableColumns(): array
+    {
+        return ['id', 'name'];
+    }
+
+    #[On('refresh-category-table')]
     public function render()
     {
         return view('livewire.category.index.table', [
-            'categories' => Category::search($this->search)->sort($this->sortCol, $this->sortAsc)->trash($this->trash)->paginate($this->perPage),
+            'categories' => Category::search($this->search)->sort($this->sortColumn(), $this->sortAsc)->trash($this->trash)->paginate($this->perPage),
         ]);
     }
 }

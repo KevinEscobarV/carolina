@@ -25,11 +25,11 @@ return [
         |
     */
     'modal' => [
-        'zIndex'   => env('WIREUI_MODAL_Z_INDEX', 'z-50'),
+        'zIndex' => env('WIREUI_MODAL_Z_INDEX', 'z-50'),
         'maxWidth' => env('WIREUI_MODAL_MAX_WIDTH', '2xl'),
-        'spacing'  => env('WIREUI_MODAL_SPACING', 'p-4'),
-        'align'    => env('WIREUI_MODAL_ALIGN', 'start'),
-        'blur'     => env('WIREUI_MODAL_BLUR', false),
+        'spacing' => env('WIREUI_MODAL_SPACING', 'p-4'),
+        'align' => env('WIREUI_MODAL_ALIGN', 'start'),
+        'blur' => env('WIREUI_MODAL_BLUR', false),
     ],
 
     /*
@@ -42,9 +42,9 @@ return [
     */
     'card' => [
         'padding' => env('WIREUI_CARD_PADDING', 'px-2 py-5 md:px-4'),
-        'shadow'  => env('WIREUI_CARD_SHADOW', 'shadow-md'),
+        'shadow' => env('WIREUI_CARD_SHADOW', 'shadow-md'),
         'rounded' => env('WIREUI_CARD_ROUNDED', 'rounded-lg'),
-        'color'   => env('WIREUI_CARD_COLOR', 'bg-white dark:bg-secondary-800'),
+        'color' => env('WIREUI_CARD_COLOR', 'bg-white dark:bg-secondary-800'),
     ],
 
     /*

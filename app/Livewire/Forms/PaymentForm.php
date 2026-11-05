@@ -74,7 +74,7 @@ class PaymentForm extends Form
                 $this->addError('is_initial_fee', 'La cuota inicial de esta promesa ya ha sido registrada');
 
                 return false;
-            } else if ($this->paid_amount != $promise->initial_fee) {
+            } elseif ($this->paid_amount != $promise->initial_fee) {
                 $this->addError('paid_amount', 'El monto pagado debe ser igual al monto de la cuota inicial indicada en la promesa, por favor no modifiques este campo después de haber marcado la casilla de cuota inicial');
 
                 return false;
@@ -82,7 +82,7 @@ class PaymentForm extends Form
         }
 
         // Validate if the payment method is bank transfer or deposit, the bank field is required
-        if (in_array($this->payment_method, [PaymentMethod::BANK_TRANSFER, PaymentMethod::DEPOSIT]) && !$this->bank) {
+        if (in_array($this->payment_method, [PaymentMethod::BANK_TRANSFER, PaymentMethod::DEPOSIT]) && ! $this->bank) {
             $this->addError('bank', 'El campo banco es requerido para los métodos de pago transferencia bancaria y consignación');
 
             return false;
@@ -109,7 +109,7 @@ class PaymentForm extends Form
                 $this->addError('is_initial_fee', 'La cuota inicial de esta promesa ya ha sido registrada');
 
                 return false;
-            } else if ($this->paid_amount != $promise->initial_fee) {
+            } elseif ($this->paid_amount != $promise->initial_fee) {
                 $this->addError('paid_amount', 'El monto pagado debe ser igual al monto de la cuota inicial indicada en la promesa, por favor no modifiques este campo después de haber marcado la casilla de cuota inicial');
 
                 return false;
@@ -117,7 +117,7 @@ class PaymentForm extends Form
         }
 
         // Validate if the payment method is bank transfer or deposit, the bank field is required
-        if (in_array($this->payment_method, [PaymentMethod::BANK_TRANSFER, PaymentMethod::DEPOSIT]) && !$this->bank) {
+        if (in_array($this->payment_method, [PaymentMethod::BANK_TRANSFER, PaymentMethod::DEPOSIT]) && ! $this->bank) {
             $this->addError('bank', 'El campo banco es requerido para los métodos de pago transferencia bancaria y consignación');
 
             return false;

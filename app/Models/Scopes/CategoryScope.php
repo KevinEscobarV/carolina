@@ -14,10 +14,10 @@ class CategoryScope implements Scope
      */
     public function apply(Builder $builder, Model $model): void
     {
-        if (!Auth::check()) {
+        if (! Auth::check()) {
             return;
         }
 
-        $builder->where('category_id', Auth::user()->currentCategory->id);
+        $builder->where($model->qualifyColumn('category_id'), Auth::user()->currentCategory->id);
     }
 }

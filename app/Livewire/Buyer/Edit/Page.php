@@ -12,7 +12,7 @@ use WireUi\Traits\Actions;
 class Page extends Component
 {
     use Actions;
-    
+
     public Buyer $buyer;
 
     public BuyerForm $form;
@@ -28,10 +28,10 @@ class Page extends Component
 
         if ($update) {
             $this->notification()->confirm([
-                'icon'        => 'success',
-                'title'       => 'Cliente actualizado exitosamente',
+                'icon' => 'success',
+                'title' => 'Cliente actualizado exitosamente',
                 'description' => 'El cliente ha sido actualizado correctamente',
-                'accept'      => [
+                'accept' => [
                     'label' => 'Volver a clientes',
                     'url' => route('buyers'),
                 ],

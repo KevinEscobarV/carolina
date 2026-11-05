@@ -13,7 +13,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Payment extends Model
 {
-    use HasFactory, SoftDeletes, HasCategory;
+    use HasCategory, HasFactory, SoftDeletes;
 
     /**
      * The attributes that are mass assignable.
@@ -70,37 +70,29 @@ class Payment extends Model
 
     /**
      * Scope a query to only include buyers that match the search.
-     * 
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
-     * @param  string  $search
-     * @return void
      */
     public function scopeSearch(Builder $query, string $search): void
     {
         $operator = config('database.operator');
-        if ($search)
-            $query->where('agreement_date', $operator, '%' . $search . '%')
-                ->orWhere('agreement_amount', $operator, '%' . $search . '%')
-                ->orWhere('payment_date', $operator, '%' . $search . '%')
-                ->orWhere('paid_amount', $operator, '%' . $search . '%')
+        if ($search) {
+            $query->where('agreement_date', $operator, '%'.$search.'%')
+                ->orWhere('agreement_amount', $operator, '%'.$search.'%')
+                ->orWhere('payment_date', $operator, '%'.$search.'%')
+                ->orWhere('paid_amount', $operator, '%'.$search.'%')
                 ->orWhereHas('promise', function ($query) use ($search, $operator) {
-                    $query->where('number', $operator, '%' . $search . '%')
+                    $query->where('number', $operator, '%'.$search.'%')
                         ->orWhereHas('buyers', function ($query) use ($search, $operator) {
                             $query->where('names', $operator, "%$search%")
                                 ->orWhere('surnames', $operator, "%$search%")
                                 ->orWhere('email', $operator, "%$search%")
-                                ->orWhere('document_number', $operator, "%$search%");
+                                ->orWhere(fn (Builder $query) => $query->documentContains($search));
                         });
                 });
+        }
     }
 
     /**
      * Scope a query to sort buyers by the specified column.
-     * 
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
-     * @param  string  $column
-     * @param  bool  $asc
-     * @return void
      */
     public function scopeSort(Builder $query, ?string $column, bool $asc): void
     {
@@ -108,7 +100,7 @@ class Payment extends Model
             if ($column === 'promise') {
                 $query->join('promises', 'promises.id', '=', 'payments.promise_id')
                     ->orderBy('promises.number', $asc ? 'asc' : 'desc');
-            } else if ($column === 'parcel') {
+            } elseif ($column === 'parcel') {
                 $query->join('promises', 'promises.id', '=', 'payments.promise_id')
                     ->join('parcels', 'parcels.id', '=', 'promises.parcel_id')
                     ->orderBy('parcels.number', $asc ? 'asc' : 'desc');
@@ -120,25 +112,23 @@ class Payment extends Model
 
     /**
      * Scope a query to only include payments that match the promise ids.
-     * 
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     *
      * @param  array<int>  $promiseIds
-     * @return void
      */
     public function scopePromiseFilter(Builder $query, array $promiseIds): void
     {
-        if ($promiseIds) $query->whereIn('promise_id', $promiseIds);
+        if ($promiseIds) {
+            $query->whereIn('promise_id', $promiseIds);
+        }
     }
 
     /**
      * Scope a query to only include buyers that are trashed.
-     * 
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
-     * @param  bool  $onlyTrash
-     * @return void
      */
     public function scopeTrash(Builder $query, bool $onlyTrash): void
     {
-        if ($onlyTrash) $query->onlyTrashed();
+        if ($onlyTrash) {
+            $query->onlyTrashed();
+        }
     }
 }

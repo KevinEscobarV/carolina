@@ -13,7 +13,7 @@ use WireUi\Traits\Actions;
 class Page extends Component
 {
     use Actions;
-    
+
     public Payment $payment;
 
     public PaymentForm $form;
@@ -77,10 +77,10 @@ class Page extends Component
 
         if ($save) {
             $this->notification()->confirm([
-                'icon'        => 'success',
-                'title'       => 'Pago actualizado exitosamente',
+                'icon' => 'success',
+                'title' => 'Pago actualizado exitosamente',
                 'description' => 'El pago ha sido actualizado correctamente',
-                'accept'      => [
+                'accept' => [
                     'label' => 'Volver a pagos',
                     'url' => route('payments'),
                 ],

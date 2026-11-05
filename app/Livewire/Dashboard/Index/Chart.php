@@ -22,10 +22,10 @@ class Chart extends Component
         if ($driver === 'pgsql') {
             $today = DB::raw("DATE_TRUNC('hour', payment_date) as increment");
             $allTime = DB::raw("DATE_TRUNC('month', payment_date) as increment");
-        } else if ($driver === 'mysql') {
+        } elseif ($driver === 'mysql') {
             $today = DB::raw("DATE_FORMAT(payment_date, '%H') as increment");
             $allTime = DB::raw("DATE_FORMAT(payment_date, '%Y-%m') as increment");
-        } else if ($driver === 'sqlite') {
+        } elseif ($driver === 'sqlite') {
             $today = DB::raw("strftime('%H', payment_date) as increment");
             $allTime = DB::raw("strftime('%Y-%m', payment_date) as increment");
         } else {
@@ -42,7 +42,7 @@ class Chart extends Component
             //     ? DB::raw("to_char(payment_date, 'YYYY-MM') as increment")
             //     : DB::raw("DATE_FORMAT(payment_date, '%Y-%m') as increment"),
 
-            default => DB::raw("DATE(payment_date) as increment"),
+            default => DB::raw('DATE(payment_date) as increment'),
         };
 
         $results = Payment::query()
@@ -65,6 +65,7 @@ class Chart extends Component
     public function render()
     {
         $this->fillDataset();
+
         return view('livewire.dashboard.index.chart');
     }
 }

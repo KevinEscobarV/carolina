@@ -12,17 +12,19 @@ use WireUi\Traits\Actions;
 class Page extends Component
 {
     use Actions;
+
     public ParcelForm $form;
 
     public Parcel $parcel;
 
     public $marker;
+
     public $polygon;
 
     public function mount()
     {
         $this->form->setParcel($this->parcel);
-        
+
         $this->marker = $this->parcel->location ? $this->parcel->location->toJson() : null;
 
         $this->polygon = $this->parcel->area ? $this->parcel->area->toJson() : null;
@@ -34,10 +36,10 @@ class Page extends Component
 
         if ($save) {
             $this->notification()->confirm([
-                'icon'        => 'success',
-                'title'       => 'Lote actualizado exitosamente',
+                'icon' => 'success',
+                'title' => 'Lote actualizado exitosamente',
                 'description' => 'El lote se ha actualizado correctamente',
-                'accept'      => [
+                'accept' => [
                     'label' => 'Volver a tabla de lotes',
                     'url' => route('parcels'),
                 ],
@@ -53,6 +55,7 @@ class Page extends Component
             $this->notification()->success(
                 'Ubicación asignada',
             );
+
             return;
         }
 
@@ -62,9 +65,11 @@ class Page extends Component
             $this->notification()->success(
                 'Área asignada',
             );
+
             return;
         }
     }
+
     public function render()
     {
         return view('livewire.parcel.edit.page');

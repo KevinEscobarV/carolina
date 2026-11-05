@@ -37,6 +37,7 @@ class BuyerAcrossCategoriesTest extends TestCase
         $this->campaignA = Category::create(['name' => 'Campaña A']);
         $this->campaignB = Category::create(['name' => 'Campaña B']);
         $this->user = User::factory()->create(['current_category_id' => $this->campaignA->id]);
+        $this->user->givePermissionTo(Permission::create(['name' => 'create.buyers']));
 
         $this->actingAs($this->user);
     }

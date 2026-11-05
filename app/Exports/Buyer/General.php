@@ -3,6 +3,7 @@
 namespace App\Exports\Buyer;
 
 use App\Models\Buyer;
+use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\Exportable;
 use Maatwebsite\Excel\Concerns\FromQuery;
 use Maatwebsite\Excel\Concerns\RegistersEventListeners;
@@ -14,32 +15,33 @@ use Maatwebsite\Excel\Concerns\WithMapping;
 use Maatwebsite\Excel\Concerns\WithStyles;
 use Maatwebsite\Excel\Events\AfterSheet;
 use PhpOffice\PhpSpreadsheet\Shared\Date;
+use PhpOffice\PhpSpreadsheet\Style\Fill;
 use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
-class General implements FromQuery, WithHeadings, WithMapping, ShouldAutoSize, WithColumnFormatting, WithStyles, WithEvents
+class General implements FromQuery, ShouldAutoSize, WithColumnFormatting, WithEvents, WithHeadings, WithMapping, WithStyles
 {
     use Exportable, RegistersEventListeners;
 
     public function __construct(
         public $fromDate = null,
         public $toDate = null,
-    ) {
-    }
+    ) {}
 
     /**
-     * @return \Illuminate\Support\Collection
+     * @return Collection
      */
     public function query()
     {
         $query = Buyer::query()->with('promises.payments')
             ->whereDate('created_at', '>=', $this->fromDate)->whereDate('created_at', '<=', $this->toDate)
             ->orderBy('created_at', 'asc');
+
         return $query;
     }
 
     /**
-     * @param Buyer $buyer
+     * @param  Buyer  $buyer
      */
     public function map($buyer): array
     {
@@ -104,10 +106,10 @@ class General implements FromQuery, WithHeadings, WithMapping, ShouldAutoSize, W
         $sheet->setAutoFilter('A1:Q1');
 
         return [
-            1    => [
+            1 => [
                 'font' => ['bold' => true],
                 'fill' => [
-                    'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_GRADIENT_LINEAR,
+                    'fillType' => Fill::FILL_GRADIENT_LINEAR,
                     'rotation' => 90,
                     'startColor' => [
                         'argb' => 'EC4899',
@@ -131,17 +133,17 @@ class General implements FromQuery, WithHeadings, WithMapping, ShouldAutoSize, W
     {
         $highestRow = $event->sheet->getDelegate()->getHighestRow();
 
-        $agreement_amount = '=SUM(M2:M' . $highestRow . ')';
-        $paid_amount = '=SUM(N2:N' . $highestRow . ')';
+        $agreement_amount = '=SUM(M2:M'.$highestRow.')';
+        $paid_amount = '=SUM(N2:N'.$highestRow.')';
 
-        $event->sheet->setCellValue('L' . ($highestRow + 2), 'Total');
-        $event->sheet->setCellValue('M' . ($highestRow + 2), $agreement_amount);
-        $event->sheet->setCellValue('N' . ($highestRow + 2), $paid_amount);
+        $event->sheet->setCellValue('L'.($highestRow + 2), 'Total');
+        $event->sheet->setCellValue('M'.($highestRow + 2), $agreement_amount);
+        $event->sheet->setCellValue('N'.($highestRow + 2), $paid_amount);
 
-        $event->sheet->getStyle('A' . ($highestRow + 2) . ':Q' . ($highestRow + 2))->applyFromArray([
+        $event->sheet->getStyle('A'.($highestRow + 2).':Q'.($highestRow + 2))->applyFromArray([
             'font' => ['bold' => true, 'size' => 12],
             'fill' => [
-                'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_GRADIENT_LINEAR,
+                'fillType' => Fill::FILL_GRADIENT_LINEAR,
                 'rotation' => 90,
                 'startColor' => [
                     'argb' => 'EC4899',
@@ -161,4 +163,3 @@ class General implements FromQuery, WithHeadings, WithMapping, ShouldAutoSize, W
         ]);
     }
 }
-

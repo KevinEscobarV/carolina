@@ -13,7 +13,6 @@ use App\Models\Buyer;
 use App\Models\Deed;
 use App\Models\Parcel;
 use App\Models\Promise;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
@@ -47,7 +46,7 @@ class ImportPromises extends Seeder
                         'observations' => $item['observaciones'],
                         'parcel_id' => $parcel->id,
                     ]);
-                } else if (is_string($item['no_de_folio_de_matricula'])) {
+                } elseif (is_string($item['no_de_folio_de_matricula'])) {
                     Deed::create([
                         'number' => null,
                         'value' => $item['gastos_de_escrituracion_y_registro'] ? $item['gastos_de_escrituracion_y_registro'] : 0,
@@ -63,7 +62,7 @@ class ImportPromises extends Seeder
                         'document_number' => strval($item['cedula']),
                     ], [
                         'names' => $item['nombres'],
-                        'surnames' => $item['apellidos'] . ' ' . $item['segundo_apellido'],
+                        'surnames' => $item['apellidos'].' '.$item['segundo_apellido'],
                         'email' => $item['email'],
                         'document_type' => DocumentType::CC,
                         'civil_status' => $this->processCivilStatus($item['estado_civil']),
@@ -79,7 +78,7 @@ class ImportPromises extends Seeder
 
                     $promise = Promise::where('number', strval($item['consecutivo_promesa']))->first();
 
-                    if (!$promise) {
+                    if (! $promise) {
 
                         $periodicity = $this->processPeriodicity($item['fechas'], $item['fecha_de_firma_de_escritura']);
 
@@ -100,13 +99,13 @@ class ImportPromises extends Seeder
                         $promise->value = $value + $promise->value;
                         $promise->save();
                     }
-                    
+
                     $promise->buyers()->syncWithoutDetaching($buyer->id);
                     $parcel->value = $item['valor_lote'] ? $item['valor_lote'] : 0;
                     $parcel->promise_id = $promise->id;
                     $parcel->save();
                 }
-            };
+            }
 
             DB::commit();
 
@@ -150,7 +149,7 @@ class ImportPromises extends Seeder
         $date = Date::excelToDateTimeObject($date);
 
         if (is_numeric($periodicity[0])) {
-            $cut_off_date = $date->format('Y-m') . '-' . $periodicity[0];
+            $cut_off_date = $date->format('Y-m').'-'.$periodicity[0];
             $payment_frequency = PaymentFrequency::MONTHLY;
         } else {
             $cut_off_date = $date->format('Y-m-d');

@@ -17,30 +17,36 @@ use WireUi\Traits\Actions;
 class Table extends Component
 {
     use Actions;
-    use WithPagination;
     use Deletes;
     use Sortable;
+    use WithPagination;
 
     public $model = null;
+
     public $modal = false;
+
     public $permissions = [];
 
     public RoleForm $form;
 
     public function mount()
     {
-        $this->model = new Role(); // This is used for the SoftDeletes trait
+        $this->model = new Role; // This is used for the SoftDeletes trait
         $this->permissions = Permission::select('id', 'name', 'description')->get();
     }
 
     public function edit(Role $role)
     {
+        $this->authorize('edit.roles');
+
         $this->form->setRole($role);
         $this->modal = true;
     }
 
     public function update()
     {
+        $this->authorize('edit.roles');
+
         $update = $this->form->update();
 
         if ($update) {
@@ -58,8 +64,15 @@ class Table extends Component
         return view('components.table.placeholder');
     }
 
+    /**
+     * @return array<int, string>
+     */
+    protected function sortableColumns(): array
+    {
+        return ['id', 'name', 'updated_at'];
+    }
 
-    #[On('refresh-role-table')] 
+    #[On('refresh-role-table')]
     public function render()
     {
         $roles = Role::query();
@@ -68,8 +81,8 @@ class Table extends Component
             $roles->where('name', config('database.operator'), "%{$this->search}%");
         }
 
-        if ($this->sortCol) {
-            $roles->orderBy($this->sortCol, $this->sortAsc ? 'asc' : 'desc');
+        if ($this->sortColumn()) {
+            $roles->orderBy($this->sortColumn(), $this->sortAsc ? 'asc' : 'desc');
         }
 
         return view('livewire.permission.index.table', [

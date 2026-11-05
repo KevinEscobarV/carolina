@@ -11,8 +11,9 @@ use WireUi\Traits\Actions;
 class Create extends Component
 {
     use Actions;
-    
+
     public $roles = [];
+
     public $categories = [];
 
     public UserForm $form;
@@ -25,6 +26,8 @@ class Create extends Component
 
     public function save(): void
     {
+        $this->authorize('create.users');
+
         $save = $this->form->save();
 
         if ($save) {

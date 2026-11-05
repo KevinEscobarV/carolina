@@ -23,10 +23,10 @@ class StatementController extends Controller
             return redirect()->route('personal-account-statement')->dangerBanner('No puedes descargar el reporte de una promesa que no te pertenece.');
         }
 
-        $total = $promise->payments()->select( DB::raw('SUM(agreement_amount) as total_agreement_amount'), DB::raw('SUM(paid_amount) as total_paid_amount') )->first();
+        $total = $promise->payments()->select(DB::raw('SUM(agreement_amount) as total_agreement_amount'), DB::raw('SUM(paid_amount) as total_paid_amount'))->first();
         $pdf = Pdf::loadView('exports.statement', [
-            'promise' => $promise, 
-            'buyer' => $buyer ,
+            'promise' => $promise,
+            'buyer' => $buyer,
             'payments' => $promise->payments,
             'total_agreement_amount' => number_format($total->total_agreement_amount ?? 0, 0, ',', '.'),
             'total_paid_amount' => number_format($total->total_paid_amount ?? 0, 0, ',', '.'),

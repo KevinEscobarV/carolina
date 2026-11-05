@@ -11,6 +11,7 @@ use WireUi\Traits\Actions;
 class Page extends Component
 {
     use Actions;
+
     public ParcelForm $form;
 
     public function setCoordinates($shape, $coordinates): void
@@ -20,6 +21,7 @@ class Page extends Component
             $this->notification()->success(
                 'Ubicación asignada',
             );
+
             return;
         }
 
@@ -29,6 +31,7 @@ class Page extends Component
             $this->notification()->success(
                 'Área asignada',
             );
+
             return;
         }
     }
@@ -39,10 +42,10 @@ class Page extends Component
 
         if ($save) {
             $this->notification()->confirm([
-                'icon'        => 'success',
-                'title'       => 'Lote creado exitosamente',
+                'icon' => 'success',
+                'title' => 'Lote creado exitosamente',
                 'description' => 'El lote se ha creado correctamente',
-                'accept'      => [
+                'accept' => [
                     'label' => 'Volver a tabla de lotes',
                     'url' => route('parcels'),
                 ],

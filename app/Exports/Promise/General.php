@@ -3,6 +3,7 @@
 namespace App\Exports\Promise;
 
 use App\Models\Promise;
+use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\Exportable;
 use Maatwebsite\Excel\Concerns\FromQuery;
 use Maatwebsite\Excel\Concerns\RegistersEventListeners;
@@ -14,39 +15,40 @@ use Maatwebsite\Excel\Concerns\WithMapping;
 use Maatwebsite\Excel\Concerns\WithStyles;
 use Maatwebsite\Excel\Events\AfterSheet;
 use PhpOffice\PhpSpreadsheet\Shared\Date;
+use PhpOffice\PhpSpreadsheet\Style\Fill;
 use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
-class General implements FromQuery, WithHeadings, WithMapping, ShouldAutoSize, WithColumnFormatting, WithStyles, WithEvents
+class General implements FromQuery, ShouldAutoSize, WithColumnFormatting, WithEvents, WithHeadings, WithMapping, WithStyles
 {
     use Exportable, RegistersEventListeners;
 
     public function __construct(
         public $fromDate = null,
         public $toDate = null,
-    ) {
-    }
+    ) {}
 
     /**
-     * @return \Illuminate\Support\Collection
+     * @return Collection
      */
     public function query()
     {
         $query = Promise::query()->with('buyers', 'parcels.block', 'category', 'payments')
             ->whereDate('signature_date', '>=', $this->fromDate)->whereDate('signature_date', '<=', $this->toDate)
             ->orderBy('signature_date', 'asc');
+
         return $query;
     }
 
     /**
-     * @param Promise $promise
+     * @param  Promise  $promise
      */
     public function map($promise): array
     {
         return [
             $promise->number,
             $promise->buyers ? $promise->buyers->map(fn ($buyer) => $buyer->document_number)->implode(', ') : 'N/A',
-            $promise->buyers ? $promise->buyers->map(fn ($buyer) => $buyer->names . ' ' . $buyer->surnames)->implode(', ') : 'N/A',
+            $promise->buyers ? $promise->buyers->map(fn ($buyer) => $buyer->names.' '.$buyer->surnames)->implode(', ') : 'N/A',
             $promise->status->text(),
             $promise->signature_date ? Date::dateTimeToExcel($promise->signature_date) : 'Sin fecha',
             $promise->value,
@@ -58,9 +60,9 @@ class General implements FromQuery, WithHeadings, WithMapping, ShouldAutoSize, W
             $promise->payment_frequency->label(),
             $promise->payment_method->label(),
             $promise->total_paid,
-            $promise->parcels->map(fn ($parcel) => $parcel->block->code . ':' . $parcel->number)->implode(', '),
+            $promise->parcels->map(fn ($parcel) => $parcel->block->code.':'.$parcel->number)->implode(', '),
             $promise->category ? $promise->category->name : 'Sin campaña',
-            $promise->observations, 
+            $promise->observations,
         ];
     }
 
@@ -107,10 +109,10 @@ class General implements FromQuery, WithHeadings, WithMapping, ShouldAutoSize, W
         $sheet->setAutoFilter('A1:Q1');
 
         return [
-            1    => [
+            1 => [
                 'font' => ['bold' => true],
                 'fill' => [
-                    'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_GRADIENT_LINEAR,
+                    'fillType' => Fill::FILL_GRADIENT_LINEAR,
                     'rotation' => 90,
                     'startColor' => [
                         'argb' => 'EC4899',
@@ -146,17 +148,17 @@ class General implements FromQuery, WithHeadings, WithMapping, ShouldAutoSize, W
     {
         $highestRow = $event->sheet->getDelegate()->getHighestRow();
 
-        $agreement_amount = '=SUM(F2:F' . $highestRow . ')';
-        $paid_amount = '=SUM(N2:N' . $highestRow . ')';
+        $agreement_amount = '=SUM(F2:F'.$highestRow.')';
+        $paid_amount = '=SUM(N2:N'.$highestRow.')';
 
-        $event->sheet->setCellValue('E' . ($highestRow + 2), 'Total');
-        $event->sheet->setCellValue('F' . ($highestRow + 2), $agreement_amount);
-        $event->sheet->setCellValue('N' . ($highestRow + 2), $paid_amount);
+        $event->sheet->setCellValue('E'.($highestRow + 2), 'Total');
+        $event->sheet->setCellValue('F'.($highestRow + 2), $agreement_amount);
+        $event->sheet->setCellValue('N'.($highestRow + 2), $paid_amount);
 
-        $event->sheet->getStyle('A' . ($highestRow + 2) . ':Q' . ($highestRow + 2))->applyFromArray([
+        $event->sheet->getStyle('A'.($highestRow + 2).':Q'.($highestRow + 2))->applyFromArray([
             'font' => ['bold' => true, 'size' => 12],
             'fill' => [
-                'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_GRADIENT_LINEAR,
+                'fillType' => Fill::FILL_GRADIENT_LINEAR,
                 'rotation' => 90,
                 'startColor' => [
                     'argb' => 'EC4899',

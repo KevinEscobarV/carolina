@@ -6,6 +6,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -16,13 +17,13 @@ use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
 {
-    use HasRoles;
     use HasApiTokens;
     use HasFactory;
     use HasProfilePhoto;
+    use HasRoles;
     use Notifiable;
-    use TwoFactorAuthenticatable;
     use SoftDeletes;
+    use TwoFactorAuthenticatable;
 
     /**
      * The attributes that are mass assignable.
@@ -83,7 +84,7 @@ class User extends Authenticatable
      */
     public function toggleSidebar()
     {
-        $this->expanded_sidebar = !$this->expanded_sidebar;
+        $this->expanded_sidebar = ! $this->expanded_sidebar;
 
         $this->save();
     }
@@ -99,7 +100,7 @@ class User extends Authenticatable
             return mb_substr($segment, 0, 1);
         })->join(' '));
 
-        return 'https://ui-avatars.com/api/?name=' . urlencode($name) . '&color=FFFFFF&background=F59E0B';
+        return 'https://ui-avatars.com/api/?name='.urlencode($name).'&color=FFFFFF&background=F59E0B';
     }
 
     /**
@@ -116,7 +117,7 @@ class User extends Authenticatable
     /**
      * Get the current category of the user's context.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return BelongsTo
      */
     public function currentCategory()
     {
@@ -148,28 +149,22 @@ class User extends Authenticatable
         return true;
     }
 
-        /**
+    /**
      * Scope a query to only include buyers that match the search.
-     * 
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
-     * @param  string  $search
-     * @return void
      */
     public function scopeSearch(Builder $query, string $search): void
     {
         $operator = config('database.operator');
         if ($search) {
-            $query->where('name', $operator, '%' . $search . '%')
-                ->orWhere('email', $operator, '%' . $search . '%');
+            $query->where('name', $operator, '%'.$search.'%')
+                ->orWhere('email', $operator, '%'.$search.'%');
         }
     }
 
     /**
      * Scope a query to only include buyers that match the search.
-     * 
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     *
      * @param  string  $search
-     * @return void
      */
     public function scopeSort(Builder $query, ?string $column, bool $asc): void
     {
@@ -180,13 +175,11 @@ class User extends Authenticatable
 
     /**
      * Scope a query to only include buyers that are trashed.
-     * 
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
-     * @param  bool  $onlyTrash
-     * @return void
      */
     public function scopeTrash(Builder $query, bool $onlyTrash): void
     {
-        if ($onlyTrash) $query->onlyTrashed();
+        if ($onlyTrash) {
+            $query->onlyTrashed();
+        }
     }
 }

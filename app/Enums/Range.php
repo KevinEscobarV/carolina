@@ -16,13 +16,13 @@ enum Range: string
     public function label($start = null, $end = null)
     {
         return match ($this) {
-            static::All_Time => 'Todo el tiempo',
-            static::Year => 'Este año',
-            static::Last_30 => 'Últimos 30 días',
-            static::Last_7 => 'Últimos 7 días',
-            static::Today => 'Hoy',
-            static::Custom => ($start !== null && $end !== null)
-                ? str($start)->replace('-', '/') . ' - ' . str($end)->replace('-', '/')
+            self::All_Time => 'Todo el tiempo',
+            self::Year => 'Este año',
+            self::Last_30 => 'Últimos 30 días',
+            self::Last_7 => 'Últimos 7 días',
+            self::Today => 'Hoy',
+            self::Custom => ($start !== null && $end !== null)
+                ? str($start)->replace('-', '/').' - '.str($end)->replace('-', '/')
                 : 'Personalizado',
         };
     }
@@ -30,10 +30,10 @@ enum Range: string
     public function dates()
     {
         return match ($this) {
-            static::Today => [Carbon::today(), now()],
-            static::Last_7 => [Carbon::today()->subDays(6), now()],
-            static::Last_30 => [Carbon::today()->subDays(29), now()],
-            static::Year => [Carbon::now()->startOfYear(), now()],
+            self::Today => [Carbon::today(), now()],
+            self::Last_7 => [Carbon::today()->subDays(6), now()],
+            self::Last_30 => [Carbon::today()->subDays(29), now()],
+            self::Year => [Carbon::now()->startOfYear(), now()],
         };
     }
 }

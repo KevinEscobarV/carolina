@@ -1,6 +1,9 @@
 <?php
 
+use App\Http\Controllers\Api\Buyers\Index;
 use App\Http\Controllers\CurrentCategoryController;
+use App\Http\Controllers\Reports\StatementController;
+use App\Livewire\Dashboard\Index\Page;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -23,7 +26,7 @@ Route::get('/', function () {
 Route::get('/personal-account-statement', App\Livewire\Public\Buyer\Statement\Page::class)->name('personal-account-statement');
 
 // Route to download general parcel report
-Route::get('/personal-account-statement/download/{promise}/{buyer}', [App\Http\Controllers\Reports\StatementController::class, 'download'])->name('statement-download');
+Route::get('/personal-account-statement/download/{promise}/{buyer}', [StatementController::class, 'download'])->name('statement-download');
 
 Route::middleware([
     'auth:sanctum',
@@ -32,7 +35,7 @@ Route::middleware([
 ])->group(function () {
 
     // Dashboard
-    Route::get('/dashboard', App\Livewire\Dashboard\Index\Page::class)->name('dashboard');
+    Route::get('/dashboard', Page::class)->name('dashboard');
 
     // Buyers
     Route::get('/buyers', App\Livewire\Buyer\Index\Page::class)->middleware('can:view.buyers')->name('buyers');
@@ -83,11 +86,11 @@ Route::middleware([
     | API Routes for Selects
     |--------------------------------------------------------------------------
     */
-    Route::get('/select/buyers', \App\Http\Controllers\Api\Buyers\Index::class)->name('api.buyers.index');
-    Route::get('/select/buyers/other-categories', [\App\Http\Controllers\Api\Buyers\Index::class, 'otherCategories'])->middleware('can:change.category')->name('api.buyers.other-categories');
-    Route::get('/select/promises', \App\Http\Controllers\Api\Promises\Index::class)->name('api.promises.index');
-    Route::get('/select/categories', \App\Http\Controllers\Api\Categories\Index::class)->name('api.categories.index');
-    Route::get('/select/blocks', \App\Http\Controllers\Api\Blocks\Index::class)->name('api.blocks.index');
-    Route::get('/select/blocks/parcels/promises/{block?}', [\App\Http\Controllers\Api\Parcels\Index::class, 'promises'])->name('api.parcels.promises');
-    Route::get('/select/blocks/parcels/deeds/{block?}', [\App\Http\Controllers\Api\Parcels\Index::class, 'deeds'])->name('api.parcels.deeds');
+    Route::get('/select/buyers', Index::class)->middleware('can:view.buyers')->name('api.buyers.index');
+    Route::get('/select/buyers/other-categories', [Index::class, 'otherCategories'])->middleware('can:change.category')->name('api.buyers.other-categories');
+    Route::get('/select/promises', App\Http\Controllers\Api\Promises\Index::class)->middleware('can:view.promises')->name('api.promises.index');
+    Route::get('/select/categories', App\Http\Controllers\Api\Categories\Index::class)->middleware('can:view.categories')->name('api.categories.index');
+    Route::get('/select/blocks', App\Http\Controllers\Api\Blocks\Index::class)->middleware('can:view.blocks')->name('api.blocks.index');
+    Route::get('/select/blocks/parcels/promises/{block?}', [App\Http\Controllers\Api\Parcels\Index::class, 'promises'])->middleware('can:view.parcels')->name('api.parcels.promises');
+    Route::get('/select/blocks/parcels/deeds/{block?}', [App\Http\Controllers\Api\Parcels\Index::class, 'deeds'])->middleware('can:view.parcels')->name('api.parcels.deeds');
 });

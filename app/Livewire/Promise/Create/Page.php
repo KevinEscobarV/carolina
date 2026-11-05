@@ -12,6 +12,7 @@ use WireUi\Traits\Actions;
 class Page extends Component
 {
     use Actions;
+
     public PromiseForm $form;
 
     public $block;
@@ -47,10 +48,10 @@ class Page extends Component
             );
 
             $this->notification()->confirm([
-                'icon'        => 'success',
-                'title'       => 'Promesa creada exitosamente',
+                'icon' => 'success',
+                'title' => 'Promesa creada exitosamente',
                 'description' => 'La promesa se ha creado correctamente',
-                'accept'      => [
+                'accept' => [
                     'label' => 'Volver a tabla de promesas',
                     'url' => route('promises'),
                 ],

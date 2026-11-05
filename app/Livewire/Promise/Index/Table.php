@@ -17,15 +17,15 @@ use WireUi\Traits\Actions;
 class Table extends Component
 {
     use Actions;
-    use WithPagination;
     use SoftDeletes;
     use Sortable;
+    use WithPagination;
 
     public $model = null;
 
     public function mount()
     {
-        $this->model = new Promise(); // This is used for the SoftDeletes trait
+        $this->model = new Promise; // This is used for the SoftDeletes trait
     }
 
     #[Renderless]
@@ -39,11 +39,19 @@ class Table extends Component
         return view('components.table.placeholder');
     }
 
-    #[On('refresh-promise-table')] 
+    /**
+     * @return array<int, string>
+     */
+    protected function sortableColumns(): array
+    {
+        return ['id', 'number', 'buyer', 'signature_date', 'signature_deed_date', 'value', 'initial_fee', 'quota_amount', 'interest_rate', 'payment_frequency', 'payment_method', 'status', 'observations'];
+    }
+
+    #[On('refresh-promise-table')]
     public function render()
     {
         return view('livewire.promise.index.table', [
-            'promises' => Promise::search($this->search)->sort($this->sortCol, $this->sortAsc)->with('buyers', 'payments', 'parcels.block')->trash($this->trash)->paginate($this->perPage),
+            'promises' => Promise::search($this->search)->sort($this->sortColumn(), $this->sortAsc)->with('buyers', 'payments', 'parcels.block')->trash($this->trash)->paginate($this->perPage),
             'total_value' => number_format(Promise::sum('value'), 0, ',', '.'),
             'total_paid_amount' => number_format(Payment::sum('paid_amount'), 0, ',', '.'),
         ]);

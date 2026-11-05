@@ -13,13 +13,11 @@ use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\WithValidation;
 use PhpOffice\PhpSpreadsheet\Shared\Date;
 
-class General implements ToModel, WithHeadingRow, WithValidation, SkipsOnFailure
+class General implements SkipsOnFailure, ToModel, WithHeadingRow, WithValidation
 {
     use Importable, SkipsFailures;
 
     /**
-     * @param array $row
-     *
      * @return Deed|null
      */
     public function model(array $row)
@@ -35,7 +33,7 @@ class General implements ToModel, WithHeadingRow, WithValidation, SkipsOnFailure
             default => DeedStatus::PAID,
         };
 
-        if (!$parcel) {
+        if (! $parcel) {
             return null;
         }
 
@@ -47,7 +45,7 @@ class General implements ToModel, WithHeadingRow, WithValidation, SkipsOnFailure
             'book' => $row['libro_opcional'],
             'status' => $status,
             'observations' => $row['observaciones'],
-         ]);
+        ]);
     }
 
     public function rules(): array

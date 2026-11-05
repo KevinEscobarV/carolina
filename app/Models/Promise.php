@@ -17,7 +17,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Promise extends Model
 {
-    use HasFactory, SoftDeletes, HasCategory;
+    use HasCategory, HasFactory, SoftDeletes;
 
     /**
      * The attributes that are mass assignable.
@@ -41,7 +41,7 @@ class Promise extends Model
         'category_id',
         'projection',
         'number_of_fees',
-        'switch_quota'
+        'switch_quota',
     ];
 
     /**
@@ -58,7 +58,7 @@ class Promise extends Model
         'status' => PromiseStatus::class,
         'switch_payment' => 'boolean',
         'switch_quota' => 'boolean',
-        'projection' => 'array'
+        'projection' => 'array',
     ];
 
     public function payments(): HasMany
@@ -92,7 +92,7 @@ class Promise extends Model
 
         return $date;
     }
-    
+
     /**
      * Get the current cut off date by payment frequency.
      */
@@ -193,43 +193,40 @@ class Promise extends Model
 
     /**
      * Scope a query to only include buyers that match the search.
-     * 
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
-     * @param  string  $search
-     * @return void
      */
     public function scopeSearch(Builder $query, string $search): void
     {
         $operator = config('database.operator');
-        if ($search)
+        if ($search) {
             $query->where('number', $operator, "%$search%")
                 ->orWhereHas('buyers', function (Builder $query) use ($search, $operator) {
                     $query->where('names', $operator, "%$search%")
                         ->orWhere('surnames', $operator, "%$search%")
                         ->orWhere('email', $operator, "%$search%")
-                        ->orWhere('document_number', $operator, "%$search%");
+                        ->orWhere(fn (Builder $query) => $query->documentContains($search));
                 });
+        }
     }
 
     /**
      * Scope a query to sort buyers by the specified column.
-     * 
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
-     * @param  string  $column
-     * @param  bool  $asc
-     * @return void
      */
     public function scopeSort(Builder $query, ?string $column, bool $asc): void
     {
         if ($column) {
             if ($column === 'buyer') {
-                $query->join('promise_buyer', 'promise_buyer.promise_id', '=', 'promises.id')
-                    ->join('buyers', 'buyers.id', '=', 'promise_buyer.buyer_id')
-                    ->orderBy('buyers.names', $asc ? 'asc' : 'desc');
-            } else if ($column === 'parcel') {
+                // A subquery keeps one row per promise and the promise's own columns
+                $query->orderBy(
+                    Buyer::select('names')
+                        ->join('promise_buyer', 'promise_buyer.buyer_id', '=', 'buyers.id')
+                        ->whereColumn('promise_buyer.promise_id', 'promises.id')
+                        ->limit(1),
+                    $asc ? 'asc' : 'desc'
+                );
+            } elseif ($column === 'parcel') {
                 $query->join('parcels', 'parcels.promise_id', '=', 'promises.id')
                     ->orderBy('parcels.number', $asc ? 'asc' : 'desc');
-            } else if ($column === 'promise') {
+            } elseif ($column === 'promise') {
                 $query->orderBy('promises.number', $asc ? 'asc' : 'desc');
             } else {
                 $query->orderBy($column, $asc ? 'asc' : 'desc');
@@ -239,13 +236,11 @@ class Promise extends Model
 
     /**
      * Scope a query to only include buyers that are trashed.
-     * 
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
-     * @param  bool  $onlyTrash
-     * @return void
      */
     public function scopeTrash(Builder $query, bool $onlyTrash): void
     {
-        if ($onlyTrash) $query->onlyTrashed();
+        if ($onlyTrash) {
+            $query->onlyTrashed();
+        }
     }
 }

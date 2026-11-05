@@ -5,9 +5,9 @@ namespace App\Http\Controllers\Api\Parcels;
 use App\Http\Controllers\Controller;
 use App\Models\Block;
 use App\Models\Parcel;
-use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Http\Request;
 
 class Index extends Controller
 {
@@ -34,12 +34,12 @@ class Index extends Controller
                 $status = $parcel->promise_id ? 'En Promesa' : 'Disponible';
                 $led = $parcel->promise_id ? '🟡' : '🟢';
 
-                $parcel->number = $parcel->number . ' - ' . $parcel->block->code . ' ' . $led;
+                $parcel->number = $parcel->number.' - '.$parcel->block->code.' '.$led;
 
-                $parcel->description = 'Manzana: ' . $parcel->block->code
-                    . '<br>Area: ' . number_format($parcel->area_m2) . ' m²'
-                    . '<br>Valor: $' . number_format($parcel->value, 0, ',', '.')
-                    . '<br>Estado: ' . $status;
+                $parcel->description = 'Manzana: '.$parcel->block->code
+                    .'<br>Area: '.number_format($parcel->area_m2).' m²'
+                    .'<br>Valor: $'.number_format($parcel->value, 0, ',', '.')
+                    .'<br>Estado: '.$status;
 
                 $parcel->disabled = $parcel->promise_id ? true : false;
 
@@ -65,12 +65,12 @@ class Index extends Controller
                 $status = $parcel->deed ? 'Escriturado' : 'Sin Escriturar';
                 $led = $parcel->deed ? '🔵' : '🟢';
 
-                $parcel->number = $parcel->number . ' - ' . $block->code . ' ' . $led;
+                $parcel->number = $parcel->number.' - '.$block->code.' '.$led;
 
-                $parcel->description = 'Manzana: ' . $block->code
-                    . '<br>Area: ' . number_format($parcel->area_m2) . ' m²'
-                    . '<br>Valor: $' . number_format($parcel->value, 0, ',', '.')
-                    . '<br>Estado: ' . $status;
+                $parcel->description = 'Manzana: '.$block->code
+                    .'<br>Area: '.number_format($parcel->area_m2).' m²'
+                    .'<br>Valor: $'.number_format($parcel->value, 0, ',', '.')
+                    .'<br>Estado: '.$status;
 
                 $parcel->disabled = $parcel->deed ? true : false;
 

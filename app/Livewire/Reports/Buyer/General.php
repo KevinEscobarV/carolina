@@ -9,7 +9,9 @@ use WireUi\Traits\Actions;
 class General extends Component
 {
     use Actions;
+
     public $fromDate;
+
     public $toDate;
 
     public function mount()
@@ -20,18 +22,20 @@ class General extends Component
 
     public function exportGeneral()
     {
+        $this->authorize('view.buyers');
+
         $this->validate([
             'fromDate' => 'required|date',
             'toDate' => 'required|date',
         ],
-        [],
-        [
-            'fromDate' => 'fecha de inicial',
-            'toDate' => 'fecha de final',
-        ]);
+            [],
+            [
+                'fromDate' => 'fecha de inicial',
+                'toDate' => 'fecha de final',
+            ]);
 
         try {
-            $name = 'Reporte-Clientes-' . now()->format('Y-m-d-h') . '.xlsx';
+            $name = 'Reporte-Clientes-'.now()->format('Y-m-d-h').'.xlsx';
             $report = new BuyerGeneral($this->fromDate, $this->toDate);
 
             $this->notification()->success('Reporte generado', 'El reporte se ha exportado correctamente');
@@ -41,7 +45,7 @@ class General extends Component
         } catch (\Throwable $th) {
             $this->notification()->error(
                 'Error al exportar el reporte',
-                'Ocurrió un error al exportar el reporte, por favor intente nuevamente, error: ' . $th->getMessage()
+                'Ocurrió un error al exportar el reporte, por favor intente nuevamente, error: '.$th->getMessage()
             );
         }
     }

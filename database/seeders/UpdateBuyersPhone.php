@@ -4,7 +4,6 @@ namespace Database\Seeders;
 
 use App\Models\Buyer;
 use App\Models\Scopes\CategoryScope;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
@@ -28,9 +27,9 @@ class UpdateBuyersPhone extends Seeder
                 ->chunk($chunk, function ($buyers) {
                     foreach ($buyers as $buyer) {
 
-                        $buyer->phone_one = '57' . $buyer->phone_one;
+                        $buyer->phone_one = '57'.$buyer->phone_one;
                         if ($buyer->phone_two) {
-                            $buyer->phone_two = '57' . $buyer->phone_two;
+                            $buyer->phone_two = '57'.$buyer->phone_two;
                         }
 
                         $buyer->save();
@@ -38,7 +37,7 @@ class UpdateBuyersPhone extends Seeder
                 });
 
             DB::commit();
-            
+
         } catch (\Throwable $th) {
 
             DB::rollBack();

@@ -31,24 +31,18 @@ class Category extends Model
 
     /**
      * Scope a query to only include buyers that match the search.
-     * 
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
-     * @param  string  $search
-     * @return void
      */
     public function scopeSearch(Builder $query, string $search): void
     {
         if ($search) {
-            $query->where('name', config('database.operator'), '%' . $search . '%');
+            $query->where('name', config('database.operator'), '%'.$search.'%');
         }
     }
 
     /**
      * Scope a query to only include buyers that match the search.
-     * 
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     *
      * @param  string  $search
-     * @return void
      */
     public function scopeSort(Builder $query, ?string $column, bool $asc): void
     {
@@ -59,13 +53,11 @@ class Category extends Model
 
     /**
      * Scope a query to only include buyers that are trashed.
-     * 
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
-     * @param  bool  $onlyTrash
-     * @return void
      */
     public function scopeTrash(Builder $query, bool $onlyTrash): void
     {
-        if ($onlyTrash) $query->onlyTrashed();
+        if ($onlyTrash) {
+            $query->onlyTrashed();
+        }
     }
 }

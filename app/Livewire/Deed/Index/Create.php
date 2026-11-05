@@ -9,7 +9,7 @@ use WireUi\Traits\Actions;
 class Create extends Component
 {
     use Actions;
-    
+
     public DeedForm $form;
 
     public $block;
@@ -21,6 +21,8 @@ class Create extends Component
 
     public function save(): void
     {
+        $this->authorize('create.deeds');
+
         $save = $this->form->save();
 
         if ($save) {

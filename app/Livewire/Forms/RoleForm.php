@@ -10,12 +10,13 @@ class RoleForm extends Form
     public ?Role $role;
 
     public $name = '';
+
     public $permissions = [];
 
     public function setRole(Role $role)
     {
         $this->role = $role;
-        
+
         $this->fill($role->only([
             'name',
         ]));
@@ -34,7 +35,7 @@ class RoleForm extends Form
     public function editRules()
     {
         return [
-            'name' => 'required|string|max:255|unique:roles,name,' . $this->role->id,
+            'name' => 'required|string|max:255|unique:roles,name,'.$this->role->id,
             'permissions' => 'required|array|min:1',
         ];
     }

@@ -14,7 +14,7 @@ class Page extends Component
     use Actions;
 
     public $block;
-    
+
     public Deed $deed;
 
     public DeedForm $form;
@@ -31,10 +31,10 @@ class Page extends Component
 
         if ($update) {
             $this->notification()->confirm([
-                'icon'        => 'success',
-                'title'       => 'Escritura actualizada exitosamente',
+                'icon' => 'success',
+                'title' => 'Escritura actualizada exitosamente',
                 'description' => 'La escritura se ha actualizado correctamente',
-                'accept'      => [
+                'accept' => [
                     'label' => 'Volver a escrituras',
                     'url' => route('deeds'),
                 ],

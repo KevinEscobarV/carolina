@@ -5,7 +5,6 @@ namespace Database\Seeders;
 use App\Enums\ParcelPosition;
 use App\Imports\DataImport;
 use App\Models\Block;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Maatwebsite\Excel\Facades\Excel;
 

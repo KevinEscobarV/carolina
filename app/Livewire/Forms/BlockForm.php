@@ -35,6 +35,7 @@ class BlockForm extends Form
 
         if (Block::where('code', $this->code)->exists()) {
             $this->addError('code', 'Ya existe un bloque con este código');
+
             return;
         }
 
@@ -55,6 +56,7 @@ class BlockForm extends Form
 
         if (Block::where('code', $this->code)->where('id', '!=', $this->block->id)->exists()) {
             $this->addError('code', 'Ya existe un bloque con este código');
+
             return;
         }
 

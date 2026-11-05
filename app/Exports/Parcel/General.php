@@ -3,6 +3,7 @@
 namespace App\Exports\Parcel;
 
 use App\Models\Parcel;
+use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\Exportable;
 use Maatwebsite\Excel\Concerns\FromQuery;
 use Maatwebsite\Excel\Concerns\RegistersEventListeners;
@@ -14,10 +15,11 @@ use Maatwebsite\Excel\Concerns\WithMapping;
 use Maatwebsite\Excel\Concerns\WithStyles;
 use Maatwebsite\Excel\Events\AfterSheet;
 use PhpOffice\PhpSpreadsheet\Shared\Date;
+use PhpOffice\PhpSpreadsheet\Style\Fill;
 use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
-class General implements FromQuery, WithHeadings, WithMapping, ShouldAutoSize, WithColumnFormatting, WithStyles, WithEvents
+class General implements FromQuery, ShouldAutoSize, WithColumnFormatting, WithEvents, WithHeadings, WithMapping, WithStyles
 {
     use Exportable, RegistersEventListeners;
 
@@ -28,7 +30,7 @@ class General implements FromQuery, WithHeadings, WithMapping, ShouldAutoSize, W
     ) {}
 
     /**
-     * @return \Illuminate\Support\Collection
+     * @return Collection
      */
     public function query()
     {
@@ -43,7 +45,7 @@ class General implements FromQuery, WithHeadings, WithMapping, ShouldAutoSize, W
     }
 
     /**
-     * @param Parcel $parcel
+     * @param  Parcel  $parcel
      */
     public function map($parcel): array
     {
@@ -105,10 +107,10 @@ class General implements FromQuery, WithHeadings, WithMapping, ShouldAutoSize, W
         $sheet->setAutoFilter('A1:N1');
 
         return [
-            1    => [
+            1 => [
                 'font' => ['bold' => true],
                 'fill' => [
-                    'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_GRADIENT_LINEAR,
+                    'fillType' => Fill::FILL_GRADIENT_LINEAR,
                     'rotation' => 90,
                     'startColor' => [
                         'argb' => 'EC4899',
@@ -132,16 +134,15 @@ class General implements FromQuery, WithHeadings, WithMapping, ShouldAutoSize, W
     {
         $highestRow = $event->sheet->getDelegate()->getHighestRow();
 
-        $parcels_value = '=SUM(F2:F' . $highestRow . ')';
+        $parcels_value = '=SUM(F2:F'.$highestRow.')';
 
-        $event->sheet->setCellValue('E' . ($highestRow + 2), 'Total');
-        $event->sheet->setCellValue('F' . ($highestRow + 2), $parcels_value);
-        
+        $event->sheet->setCellValue('E'.($highestRow + 2), 'Total');
+        $event->sheet->setCellValue('F'.($highestRow + 2), $parcels_value);
 
-        $event->sheet->getStyle('A' . ($highestRow + 2) . ':N' . ($highestRow + 2))->applyFromArray([
+        $event->sheet->getStyle('A'.($highestRow + 2).':N'.($highestRow + 2))->applyFromArray([
             'font' => ['bold' => true, 'size' => 12],
             'fill' => [
-                'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_GRADIENT_LINEAR,
+                'fillType' => Fill::FILL_GRADIENT_LINEAR,
                 'rotation' => 90,
                 'startColor' => [
                     'argb' => 'EC4899',

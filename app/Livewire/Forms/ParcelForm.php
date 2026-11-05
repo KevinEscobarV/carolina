@@ -6,9 +6,9 @@ use App\Enums\ParcelPosition;
 use App\Models\Parcel;
 use Livewire\Attributes\Validate;
 use Livewire\Form;
+use MatanYadaev\EloquentSpatial\Objects\LineString;
 use MatanYadaev\EloquentSpatial\Objects\Point;
 use MatanYadaev\EloquentSpatial\Objects\Polygon;
-use MatanYadaev\EloquentSpatial\Objects\LineString;
 
 class ParcelForm extends Form
 {
@@ -61,6 +61,7 @@ class ParcelForm extends Form
 
         if (Parcel::where('number', $this->number)->where('block_id', $this->block_id)->exists()) {
             $this->addError('number', 'Ya existe un lote con este número en esta manzana');
+
             return;
         }
 
@@ -87,6 +88,7 @@ class ParcelForm extends Form
 
         if (Parcel::where('number', $this->number)->where('block_id', $this->block_id)->where('id', '!=', $this->parcel->id)->exists()) {
             $this->addError('number', 'Ya existe un lote con este número en esta manzana');
+
             return;
         }
 

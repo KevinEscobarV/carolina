@@ -8,12 +8,12 @@ use Illuminate\Database\Eloquent\Model;
 
 class Setting extends Model
 {
-    use HasFactory, HasCategory;
+    use HasCategory, HasFactory;
 
     protected $fillable = [
         'key',
         'value',
         'description',
-        'category_id'
+        'category_id',
     ];
 }

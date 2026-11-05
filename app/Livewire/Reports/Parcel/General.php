@@ -9,14 +9,19 @@ use WireUi\Traits\Actions;
 class General extends Component
 {
     use Actions;
+
     public $status = '';
+
     public $position = '';
+
     public $registrationNumber = '';
 
     public function exportGeneral()
     {
+        $this->authorize('view.parcels');
+
         try {
-            $name = 'Reporte-Lotes-' . now()->format('Y-m-d-h') . '.xlsx';
+            $name = 'Reporte-Lotes-'.now()->format('Y-m-d-h').'.xlsx';
             $report = new ParcelGeneral($this->position, $this->status, $this->registrationNumber);
 
             $this->notification()->success('Reporte generado', 'El reporte se ha exportado correctamente');
@@ -26,7 +31,7 @@ class General extends Component
         } catch (\Throwable $th) {
             $this->notification()->error(
                 'Error al exportar el reporte',
-                'Ocurrió un error al exportar el reporte, por favor intente nuevamente, error: ' . $th->getMessage()
+                'Ocurrió un error al exportar el reporte, por favor intente nuevamente, error: '.$th->getMessage()
             );
         }
     }

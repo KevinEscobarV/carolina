@@ -6,7 +6,6 @@ use App\Enums\PaymentMethod;
 use App\Imports\DataImport;
 use App\Models\Parcel;
 use App\Models\Payment;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
@@ -23,7 +22,6 @@ class ImportTransactions extends Seeder
         $this->command->info('Importing transactions...');
 
         $collection = Excel::toCollection(new DataImport, public_path('imports/transacciones.xlsx'));
-
 
         try {
 
@@ -52,14 +50,13 @@ class ImportTransactions extends Seeder
                                 'promise_id' => $parcel->promise->id,
                             ]);
                         } else {
-                            $this->command->info('Parcel not found: ' . $row['mz'] . ' - ' . $row['lote'] . ' Recibo:' . $row['recibo_no']);
+                            $this->command->info('Parcel not found: '.$row['mz'].' - '.$row['lote'].' Recibo:'.$row['recibo_no']);
                         }
                     } else {
-                        $this->command->info('Parcel not defined: ' . $row['mz'] . ' - ' . $row['lote'] . ' Recibo:' . $row['recibo_no']);
+                        $this->command->info('Parcel not defined: '.$row['mz'].' - '.$row['lote'].' Recibo:'.$row['recibo_no']);
                     }
                 }
             }
-
 
             DB::commit();
         } catch (\Throwable $th) {

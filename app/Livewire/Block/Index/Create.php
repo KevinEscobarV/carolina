@@ -14,6 +14,8 @@ class Create extends Component
 
     public function save(): void
     {
+        $this->authorize('create.blocks');
+
         $save = $this->form->save();
 
         if ($save) {

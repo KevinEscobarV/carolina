@@ -4,9 +4,9 @@ namespace App\Http\Controllers\Api\Blocks;
 
 use App\Http\Controllers\Controller;
 use App\Models\Block;
-use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Http\Request;
 
 class Index extends Controller
 {
@@ -26,8 +26,9 @@ class Index extends Controller
             )
             ->with('category:id,name')
             ->get()->map(function (Block $block) {
-                $block->description = 'Campaña: ' . $block->category->name 
-                    . '<br>Área: ' . number_format($block->area_m2, 2, ',', '.') . ' m2';
+                $block->description = 'Campaña: '.$block->category->name
+                    .'<br>Área: '.number_format($block->area_m2, 2, ',', '.').' m2';
+
                 return $block;
             });
     }

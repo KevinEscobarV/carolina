@@ -16,15 +16,15 @@ use WireUi\Traits\Actions;
 class Table extends Component
 {
     use Actions;
-    use WithPagination;
     use SoftDeletes;
     use Sortable;
+    use WithPagination;
 
     public $model = null;
 
     public function mount()
     {
-        $this->model = new Buyer(); // This is used for the SoftDeletes trait
+        $this->model = new Buyer; // This is used for the SoftDeletes trait
         $this->sortCol = 'names';
         $this->sortAsc = true;
     }
@@ -40,11 +40,19 @@ class Table extends Component
         return view('components.table.placeholder');
     }
 
-    #[On('refresh-buyer-table')] 
+    /**
+     * @return array<int, string>
+     */
+    protected function sortableColumns(): array
+    {
+        return ['id', 'names', 'surnames', 'email', 'document_type', 'document_number', 'civil_status'];
+    }
+
+    #[On('refresh-buyer-table')]
     public function render()
     {
         return view('livewire.buyer.index.table', [
-            'buyers' => Buyer::search($this->search)->sort($this->sortCol, $this->sortAsc)->with('promises.parcels.block', 'promises.payments')->trash($this->trash)->paginate($this->perPage),
+            'buyers' => Buyer::search($this->search)->sort($this->sortColumn(), $this->sortAsc)->with('promises.parcels.block', 'promises.payments')->trash($this->trash)->paginate($this->perPage),
         ]);
     }
 }

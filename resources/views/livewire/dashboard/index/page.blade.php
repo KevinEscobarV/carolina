@@ -68,11 +68,21 @@
             <h1 class="text-3xl text-gray-800 dark:text-gray-200">Reportes</h1>
         </div>
         <div class="grid grid-cols-2 gap-4 sm:grid-cols-3 p-6">
-            <livewire:reports.promise.general />
-            <livewire:reports.buyer.general />
-            <livewire:reports.parcel.general />
-            <livewire:reports.payment.general />
-            <livewire:reports.promise.wallet-status />
+            @can('view.promises')
+                <livewire:reports.promise.general />
+            @endcan
+            @can('view.buyers')
+                <livewire:reports.buyer.general />
+            @endcan
+            @can('view.parcels')
+                <livewire:reports.parcel.general />
+            @endcan
+            @can('view.payments')
+                <livewire:reports.payment.general />
+            @endcan
+            @can('view.promises')
+                <livewire:reports.promise.wallet-status />
+            @endcan
         </div>
     </div>
 </div>
