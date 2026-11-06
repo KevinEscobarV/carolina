@@ -167,6 +167,54 @@ class Promise extends Model
     }
 
     /**
+     * Amount financed minus what the quotas pay to principal: above zero the quotas fall short,
+     * below zero they pay more than the promise is worth.
+     */
+    public function scheduleDifference(): int
+    {
+        return (int) round((float) $this->value - (float) $this->initial_fee) - (int) $this->quotas->sum('principal');
+    }
+
+    /**
+     * What is wrong with the schedule, for the review screen: missing on a credit promise, quotas that
+     * do not add up to the amount financed, dates out of order or quotas of $0.
+     *
+     * @return list<array{type: string, label: string}>
+     */
+    public function scheduleIssues(): array
+    {
+        if ($this->quotas->isEmpty()) {
+            return $this->payment_method === PromisePaymentMethod::CREDIT
+                ? [['type' => 'missing', 'label' => 'Sin proyección']]
+                : [];
+        }
+
+        $issues = [];
+        $difference = $this->scheduleDifference();
+
+        if (abs($difference) >= Standing::TOLERANCE) {
+            $issues[] = [
+                'type' => 'out_of_balance',
+                'label' => ($difference > 0 ? 'Faltan $' : 'Sobran $').number_format(abs($difference), 0, ',', '.'),
+            ];
+        }
+
+        $unordered = $this->quotas->values()->first(
+            fn (Quota $quota, int $index) => $index > 0 && $quota->due_date->lt($this->quotas->values()[$index - 1]->due_date)
+        );
+        if ($unordered) {
+            $issues[] = ['type' => 'unordered_dates', 'label' => "Cuota {$unordered->number} antes que la anterior"];
+        }
+
+        $zero = $this->quotas->where('amount', 0)->where('is_prepayment', false)->count();
+        if ($zero > 0) {
+            $issues[] = ['type' => 'zero_quotas', 'label' => $zero === 1 ? '1 cuota en $0' : "{$zero} cuotas en \$0"];
+        }
+
+        return $issues;
+    }
+
+    /**
      * How the payments (without the initial fee) cover the quotas.
      */
     public function coverage(): Coverage

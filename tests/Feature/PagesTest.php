@@ -40,6 +40,7 @@ class PagesTest extends TestCase
             'payments.create' => ['payments.create'],
             'promises' => ['promises'],
             'promises.create' => ['promises.create'],
+            'promises.review' => ['promises.review'],
             'categories' => ['categories'],
             'deeds' => ['deeds'],
             'notifications' => ['notifications'],
