@@ -10,6 +10,7 @@ Carolina permite administrar compradores, manzanas, lotes, promesas de compraven
 - [Requisitos](#requisitos)
 - [Instalación para desarrollo](#instalación-para-desarrollo)
 - [Variables de entorno](#variables-de-entorno)
+- [Homepage](#homepage)
 - [Tests](#tests)
 - [Comandos útiles](#comandos-útiles)
 - [Despliegue en producción](#despliegue-en-producción)
@@ -180,7 +181,7 @@ npm run build
 php artisan serve
 ```
 
-Abre [http://localhost:8000](http://localhost:8000). La raíz redirige al login.
+Abre [http://localhost:8000](http://localhost:8000). La raíz es el homepage público; el panel está en `/login`.
 
 Con Herd no hace falta `php artisan serve`. Si la carpeta está dentro de un directorio que Herd sirve, la app queda en [http://carolina.test](http://carolina.test). En ese caso pon `APP_URL=http://carolina.test` en `.env`.
 
@@ -200,6 +201,16 @@ Con Herd no hace falta `php artisan serve`. Si la carpeta está dentro de un dir
 | `LABSMOBILE_USERNAME`, `LABSMOBILE_PASSWORD` | Credenciales de Labsmobile para enviar SMS y consultar el saldo. No vienen en `.env.example`; agrégalas a mano. Sin ellas, la sección de Notificaciones no puede consultar saldo ni enviar mensajes. |
 | `MAIL_*` | Envío de correos (recuperación de contraseña). En desarrollo puedes usar `MAIL_MAILER=log`. |
 | `PULSE_ENABLED` | Activa o desactiva Laravel Pulse (`/pulse`). |
+| `HOME_SAMPLE_CONTENT` | `true` (por defecto) muestra en el homepage el aviso "Vista previa: algunas fotos y textos son de ejemplo". Ponla en `false` cuando el contenido sea el real. |
+
+## Homepage
+
+La raíz (`/`) es la página pública de la empresa: proyectos, cómo comprar, ubicación, contacto, la consulta del estado de cuenta y el enlace al panel administrativo.
+
+- **Cifras** (proyectos, lotes, lotes vendidos, familias, m², disponibilidad por proyecto): salen de la base de datos, de todas las campañas, y se guardan en caché 10 minutos.
+- **Textos, contacto y datos de cada proyecto** (descripción, características, foto, coordenadas del mapa): están en [config/home.php](config/home.php). Los proyectos se relacionan con las campañas por su nombre; una campaña sin entrada ahí aparece con una foto y un texto genéricos. Los valores marcados `EJEMPLO` esperan los datos reales.
+- **Fotos**: en `public/img/home/`, en WebP. Las actuales son de ejemplo (Unsplash). Para el enlace compartido en redes se usa `og.jpg` (1200 × 630).
+- El estado de cuenta se busca con el componente Livewire `Public\Buyer\Statement\Lookup`, que usan tanto el homepage como `/personal-account-statement`.
 
 ## Tests
 

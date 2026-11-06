@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\Buyers\Index;
 use App\Http\Controllers\CurrentCategoryController;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Reports\StatementController;
 use App\Livewire\Dashboard\Index\Page;
 use Illuminate\Support\Facades\Route;
@@ -17,10 +18,8 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-// Route to redirect to login
-Route::get('/', function () {
-    return redirect()->route('login');
-});
+// Public homepage
+Route::get('/', HomeController::class)->name('home');
 
 // Route to download personal account statement
 Route::get('/personal-account-statement', App\Livewire\Public\Buyer\Statement\Page::class)->name('personal-account-statement');

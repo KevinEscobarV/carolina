@@ -7,7 +7,7 @@ use App\Enums\DocumentType;
 use App\Enums\PaymentFrequency;
 use App\Enums\PromisePaymentMethod;
 use App\Livewire\Buyer\Index\Create;
-use App\Livewire\Public\Buyer\Statement\Page as StatementPage;
+use App\Livewire\Public\Buyer\Statement\Lookup as StatementLookup;
 use App\Models\Buyer;
 use App\Models\Category;
 use App\Models\Promise;
@@ -126,7 +126,7 @@ class BuyerAcrossCategoriesTest extends TestCase
 
         Auth::logout();
 
-        Livewire::test(StatementPage::class)
+        Livewire::test(StatementLookup::class)
             ->set('document_number', '1.115.918.673')
             ->call('explore')
             ->assertSee(route('statement-download', [$promiseA->id, $buyerA->id]))
@@ -141,7 +141,7 @@ class BuyerAcrossCategoriesTest extends TestCase
 
         Auth::logout();
 
-        Livewire::test(StatementPage::class)
+        Livewire::test(StatementLookup::class)
             ->set('document_number', '1115918')
             ->call('explore')
             ->assertSet('promises', [])
@@ -194,7 +194,7 @@ class BuyerAcrossCategoriesTest extends TestCase
      */
     private function statementLink(string $document): string
     {
-        $html = Livewire::test(StatementPage::class)
+        $html = Livewire::test(StatementLookup::class)
             ->set('document_number', $document)
             ->call('explore')
             ->html();
