@@ -34,9 +34,14 @@ class FortifyServiceProvider extends ServiceProvider
         Fortify::resetUserPasswordsUsing(ResetUserPassword::class);
 
         RateLimiter::for('login', function (Request $request) {
-            $throttleKey = Str::transliterate(Str::lower($request->input(Fortify::username())).'|'.$request->ip());
+            $email = Str::transliterate(Str::lower($request->input(Fortify::username())));
 
-            return Limit::perMinute(5)->by($throttleKey);
+            // The hosting proxy takes the client's X-Forwarded-For as its address, so the
+            // address can be faked; the limit per email holds even when it changes.
+            return [
+                Limit::perMinute(5)->by($email.'|'.$request->ip()),
+                Limit::perMinute(10)->by($email),
+            ];
         });
 
         RateLimiter::for('two-factor', function (Request $request) {
