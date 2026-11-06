@@ -1,97 +1,63 @@
-<div class="col-span-12 lg:col-span-5">
+<div class="col-span-12 lg:col-span-7">
     <x-card>
         @if ($promise)
-            <div class="flex flex-wrap -m-3 mb-3">
-                <div class="px-3 pt-3 w-full">
-                    <div class="flex items-center gap-3">
-                        <h2 class="text-lg text-gray-800 dark:text-gray-200 leading-tight">
-                            {{ $promise->number}}
-                        </h2>
-                        <div wire:loading class="flex items-start ml-auto">
-                            <svg class="animate-spin h-9 w-9 dark:text-secondary-300" xmlns="http://www.w3.org/2000/svg"
-                                fill="none" viewBox="0 0 24 24">
-                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
-                                    stroke-width="4"></circle>
-                                <path class="opacity-75" fill="currentColor"
-                                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z">
-                                </path>
-                            </svg>
-                        </div>
+            @php
+                $money = fn ($value) => number_format((float) $value, 0, ',', '.');
+                $coverage = $this->coverage();
+            @endphp
+
+            <div class="flex flex-col gap-5">
+                <div class="flex flex-wrap items-center justify-between gap-3">
+                    <div>
+                        <p class="text-xs font-semibold uppercase tracking-wider text-primary-600 dark:text-primary-400">Proyección de pagos</p>
+                        <h2 class="text-lg font-semibold text-gray-900 dark:text-white">{{ $promise->number }}</h2>
                     </div>
-                </div>
-                <div class="p-3 md:w-1/2">
-                    <div class="flex rounded-lg h-full bg-gray-100 dark:bg-gray-900/30 p-8 flex-col">
-                        <div class="flex items-center mb-3">
-                            <div class="w-8 h-8 mr-3 inline-flex items-center justify-center rounded-full bg-primary-500 dark:bg-primary-500 text-white flex-shrink-0">
-                                <svg fill="none" stroke="currentColor" stroke-linecap="round"
-                                    stroke-linejoin="round" stroke-width="2" class="w-5 h-5"
-                                    viewBox="0 0 24 24">
-                                    <path d="M22 12h-4l-3 9L9 3l-3 9H2"></path>
-                                </svg>
-                            </div>
-                            <h2 class="text-gray-900 dark:text-gray-200 text-lg title-font font-medium">Total Promesa</h2>
-                        </div>
-                        <div class="flex-grow">
-                            <p class="font-light text-lg">
-                                <span class="text-gray-400 dark:text-gray-300">$</span> {{ $promise->value_formatted }} <span class="text-gray-400 text-sm">COP</span>
-                            </p>
-                        </div>
-                    </div>
-                </div>
-                <div class="p-3 md:w-1/2">
-                    <div class="flex rounded-lg h-full bg-gray-100 dark:bg-gray-900/30 p-8 flex-col">
-                        <div class="flex items-center mb-3">
-                            <div
-                                class="w-8 h-8 mr-3 inline-flex items-center justify-center rounded-full bg-primary-500 dark:bg-primary-500 text-white flex-shrink-0">
-                                <svg fill="none" stroke="currentColor" stroke-linecap="round"
-                                    stroke-linejoin="round" stroke-width="2" class="w-5 h-5"
-                                    viewBox="0 0 24 24">
-                                    <circle cx="6" cy="6" r="3"></circle>
-                                    <circle cx="6" cy="18" r="3"></circle>
-                                    <path d="M20 4L8.12 15.88M14.47 14.48L20 20M8.12 8.12L12 12"></path>
-                                </svg>
-                            </div>
-                            <h2 class="text-gray-900 dark:text-gray-200 text-lg title-font font-medium">Total Pagado</h2>
-                        </div>
-                        <div class="flex-grow">
-                            <p class="font-light text-lg">
-                                <span class="text-gray-400 dark:text-gray-300">$</span> {{ $promise->total_paid_formatted }} <span class="text-gray-400 text-sm">COP</span>
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <form wire:submit.prevent="save">
-                @if ($promise->projection)
-                    <div class="col-span-6">
-                        @if ($promise->interest_rate == 0)
-                            <x-payment.edit-projection :$projection />
-                        @else
-                            <x-promise.projection :$projection />
-                        @endif
-                    </div>
-                @endif
-                <div class="flex items-center justify-end gap-2 mt-6 p-2">
-                    <x-wireui-button type="submit" spinner="save" primary label="Actualizar Proyección" />
-                </div>
-            </form>
-        @else
-            <div class="p-3 w-full">
-                <div class="flex items-center gap-3">
-                    <h2 class="text-lg text-gray-800 dark:text-gray-200 leading-tight">
-                        Selecciona una promesa
-                    </h2>
-                    <div wire:loading class="flex items-start ml-auto">
-                        <svg class="animate-spin h-9 w-9 dark:text-secondary-300" xmlns="http://www.w3.org/2000/svg"
-                            fill="none" viewBox="0 0 24 24">
-                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
-                                stroke-width="4"></circle>
-                            <path class="opacity-75" fill="currentColor"
-                                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z">
-                            </path>
+                    <div wire:loading class="ml-auto">
+                        <svg class="h-6 w-6 animate-spin text-gray-400" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z" />
                         </svg>
                     </div>
                 </div>
+
+                <dl class="grid grid-cols-3 gap-3">
+                    <div class="rounded-xl bg-gray-50 px-4 py-3 ring-1 ring-inset ring-gray-200 dark:bg-white/5 dark:ring-white/10">
+                        <dt class="text-xs text-gray-500 dark:text-gray-400">Valor promesa</dt>
+                        <dd class="mt-1 font-semibold text-gray-900 dark:text-white">${{ $promise->value_formatted }}</dd>
+                    </div>
+                    <div class="rounded-xl bg-gray-50 px-4 py-3 ring-1 ring-inset ring-gray-200 dark:bg-white/5 dark:ring-white/10">
+                        <dt class="text-xs text-gray-500 dark:text-gray-400">Total pagado</dt>
+                        <dd class="mt-1 font-semibold text-emerald-600 dark:text-emerald-400">${{ $promise->total_paid_formatted }}</dd>
+                    </div>
+                    <div class="rounded-xl bg-gray-50 px-4 py-3 ring-1 ring-inset ring-gray-200 dark:bg-white/5 dark:ring-white/10">
+                        <dt class="text-xs text-gray-500 dark:text-gray-400">Saldo</dt>
+                        <dd class="mt-1 font-semibold text-gray-900 dark:text-white">${{ $promise->balance_formatted }}</dd>
+                    </div>
+                </dl>
+
+                @if ($schedule)
+                    <x-promise.schedule-editor
+                        :rows="$schedule"
+                        :version="$scheduleVersion"
+                        :principal="$promise->scheduleTerms()->principal"
+                        :has-interest="(float) $promise->interest_rate > 0 || collect($schedule)->sum('interest') > 0"
+                        :coverage="$coverage"
+                        :mode="$promise->rebalanceMode()" />
+
+                    <div class="flex justify-end">
+                        <x-wireui-button wire:click="save" spinner="save" primary icon="check" label="Guardar proyección" />
+                    </div>
+                @else
+                    <p class="rounded-xl border-2 border-dashed border-gray-200 px-6 py-8 text-center text-sm text-gray-500 dark:border-white/10 dark:text-gray-400">
+                        Esta promesa no tiene proyección de pagos. Genérala desde la edición de la promesa.
+                    </p>
+                @endif
+            </div>
+        @else
+            <div class="flex flex-col items-center gap-2 px-6 py-10 text-center">
+                <x-icon name="table-cells" class="h-8 w-8 text-gray-400" />
+                <p class="font-medium text-gray-700 dark:text-gray-300">Selecciona una promesa</p>
+                <p class="text-sm text-gray-500 dark:text-gray-400">Aquí verás sus cuotas y lo que cubre cada pago.</p>
             </div>
         @endif
     </x-card>

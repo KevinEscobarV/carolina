@@ -2,94 +2,66 @@
 
 namespace App\Livewire\Payment\Components;
 
+use App\Enums\RebalanceMode;
+use App\Livewire\Traits\EditsSchedule;
 use App\Models\Promise;
+use App\Services\Amortization\Coverage;
+use App\Services\Amortization\ScheduleTerms;
+use Illuminate\View\View;
 use Livewire\Attributes\On;
 use Livewire\Component;
 use WireUi\Traits\Actions;
 
+/**
+ * Schedule of the promise chosen in the payment form: what each quota got from the payments,
+ * and editing of the pending quotas.
+ */
 class Amortization extends Component
 {
-    use Actions;
+    use Actions, EditsSchedule;
 
-    public $promiseId;
+    public ?Promise $promise = null;
 
-    public $promise;
-
-    public $projection = [];
-
-    public function deleteQuota($index)
+    #[On('show-amortization')]
+    public function setProjection(Promise $promise): void
     {
-        unset($this->projection[$index]);
+        $this->promise = $promise;
+        $this->schedule = $promise->scheduleRows();
+        $this->scheduleVersion++;
+        $this->resetErrorBag('schedule');
     }
 
-    public function addQuota()
+    public function save(): void
     {
-        $this->projection[] = [
-            'number' => count($this->projection) + 1,
-            'due_date' => now()->format('Y-m-d'),
-            'payment_amount' => 0,
-            'interest_payment' => 0,
-            'principal_payment' => 0,
-            'remaining_balance' => 0,
-        ];
-    }
-
-    public function save()
-    {
-        $this->validate([
-            'projection' => 'required',
-        ]);
-
-        $this->promise->projection = $this->projection;
-        $this->promise->save();
+        $this->promise->saveSchedule($this->schedule);
 
         $this->notification()->success(
-            'Proyección de amortización guardada',
-            'La proyección de amortización ha sido guardada correctamente.'
+            'Proyección guardada',
+            'Las cuotas de la promesa se actualizaron correctamente.'
         );
     }
 
-    public function addPayments()
+    public function coverage(): Coverage
     {
-        $payments = $this->promise->payments->where('is_initial_fee', false)->sortBy('payment_date');
-        $check = $payments->count() + 1;
-        $number = 1;
-
-        foreach ($this->projection as $key => $quota) {
-            if ($check == $number) {
-                $this->projection[$key]['is_last'] = true;
-            }
-
-            $this->projection[$key]['number'] = $number++;
-            $this->projection[$key]['payment'] = null;
-        }
-
-        $payments->each(function ($payment) {
-            $payment->payment_date_formatted = $payment->payment_date ? $payment->payment_date->translatedFormat('F j/Y') : 'Sin definir';
-            $payment->paid_amount_formatted = number_format($payment->paid_amount, 0, ',', '.');
-            foreach ($this->projection as $key => $quota) {
-                if (! isset($this->projection[$key]['payment'])) {
-                    $this->projection[$key]['payment'] = [
-                        'id' => $payment->id,
-                        'bill_number' => $payment->bill_number,
-                        'payment_date_formatted' => $payment->payment_date_formatted,
-                        'paid_amount_formatted' => $payment->paid_amount_formatted,
-                    ];
-                    break;
-                }
-            }
-        });
+        return Coverage::of($this->schedule, (float) $this->promise->payments()->where('is_initial_fee', false)->sum('paid_amount'));
     }
 
-    #[On('show-amortization')]
-    public function setProjection(Promise $promise)
+    protected function lockedQuotas(): int
     {
-        $this->promise = $promise;
-        $this->projection = $promise->projection;
-        $this->addPayments();
+        return $this->coverage()->paidCount;
     }
 
-    public function render()
+    protected function scheduleTerms(): ScheduleTerms
+    {
+        return $this->promise->scheduleTerms();
+    }
+
+    protected function scheduleMode(): RebalanceMode
+    {
+        return $this->promise->rebalanceMode();
+    }
+
+    public function render(): View
     {
         return view('livewire.payment.components.amortization');
     }

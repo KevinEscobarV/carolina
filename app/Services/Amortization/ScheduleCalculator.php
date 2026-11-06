@@ -88,6 +88,49 @@ class ScheduleCalculator
     }
 
     /**
+     * Adds a quota after the last one and spreads the pending balance over the ordinary quotas from $from on.
+     *
+     * @param  list<array<string, mixed>>  $rows
+     * @return list<array<string, mixed>>
+     */
+    public function addQuota(array $rows, int $from, ScheduleTerms $terms): array
+    {
+        $rows = array_values($rows);
+        $rows[] = $this->newRow($terms, $this->nextDueDate($rows, $terms));
+
+        return $this->redistribute($rows, $from, $terms);
+    }
+
+    /**
+     * Removes quota $index and spreads the pending balance over the ordinary quotas from $from on.
+     *
+     * @param  list<array<string, mixed>>  $rows
+     * @return list<array<string, mixed>>
+     */
+    public function removeQuota(array $rows, int $index, int $from, ScheduleTerms $terms): array
+    {
+        $rows = array_values($rows);
+        array_splice($rows, $index, 1);
+
+        if ($rows === []) {
+            throw new ScheduleException('La proyección debe tener al menos una cuota.');
+        }
+
+        return $this->redistribute($rows, min($from, count($rows) - 1), $terms);
+    }
+
+    /**
+     * Spreads the balance pending at quota $from over the ordinary quotas from there on.
+     *
+     * @param  list<array<string, mixed>>  $rows
+     * @return list<array<string, mixed>>
+     */
+    public function redistribute(array $rows, int $from, ScheduleTerms $terms): array
+    {
+        return $this->amortize($this->spread(array_values($rows), $from, $terms), $from, $terms, closeLast: true);
+    }
+
+    /**
      * Recalculates interest, principal and balance keeping the amounts; the last quota closes the balance.
      *
      * @param  list<array<string, mixed>>  $rows

@@ -164,6 +164,23 @@ class ScheduleCalculatorTest extends TestCase
         $this->assertSame([100_000, 500_000], array_column($rows, 'amount'));
     }
 
+    public function test_adding_a_quota_spreads_the_pending_balance_over_one_more_quota(): void
+    {
+        $rows = $this->calculator->addQuota($this->sixQuotasOf100k(), 2, $this->terms(600_000));
+
+        $this->assertSame([100_000, 100_000, 80_000, 80_000, 80_000, 80_000, 80_000], array_column($rows, 'amount'));
+        $this->assertSame('2026-07-15', end($rows)['due_date']);
+    }
+
+    public function test_removing_a_quota_spreads_the_pending_balance_over_the_rest_and_renumbers(): void
+    {
+        $rows = $this->calculator->removeQuota($this->sixQuotasOf100k(), 3, 2, $this->terms(600_000));
+
+        $this->assertSame([100_000, 100_000, 133_333, 133_333, 133_334], array_column($rows, 'amount'));
+        $this->assertSame([1, 2, 3, 4, 5], array_column($rows, 'number'));
+        $this->assertSame(['2026-01-15', '2026-02-15', '2026-03-15', '2026-05-15', '2026-06-15'], array_column($rows, 'due_date'));
+    }
+
     public function test_moving_a_due_date_moves_the_following_ones_with_the_frequency(): void
     {
         $rows = $this->calculator->moveDueDate($this->sixQuotasOf100k(), 1, CarbonImmutable::parse('2026-03-01'), $this->terms(600_000));

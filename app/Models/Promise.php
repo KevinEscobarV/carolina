@@ -6,8 +6,13 @@ use App\Enums\InterestRateType;
 use App\Enums\PaymentFrequency;
 use App\Enums\PromisePaymentMethod;
 use App\Enums\PromiseStatus;
+use App\Enums\RebalanceMode;
 use App\Models\Traits\HasCategory;
+use App\Services\Amortization\Coverage;
+use App\Services\Amortization\InterestRate;
+use App\Services\Amortization\ScheduleTerms;
 use Carbon\Carbon;
+use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -15,6 +20,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\DB;
 
 class Promise extends Model
 {
@@ -74,6 +81,90 @@ class Promise extends Model
     public function quotas(): HasMany
     {
         return $this->hasMany(Quota::class)->orderBy('number');
+    }
+
+    /**
+     * What the schedule is calculated from: the amount financed, rate, dates and extraordinary quotas.
+     */
+    public function scheduleTerms(): ScheduleTerms
+    {
+        $signature = $this->signature_date ? CarbonImmutable::parse($this->signature_date) : null;
+
+        return new ScheduleTerms(
+            principal: (int) round((float) $this->value - (float) $this->initial_fee),
+            firstDueDate: $this->cut_off_date ? CarbonImmutable::parse($this->cut_off_date) : ($signature ?? CarbonImmutable::today()),
+            frequency: $this->payment_frequency ?? PaymentFrequency::MONTHLY,
+            rate: new InterestRate((float) $this->interest_rate, $this->interest_rate_type ?? InterestRateType::MONTHLY),
+            startDate: $signature,
+            extraordinaryMonths: array_map('intval', $this->extraordinary_months ?? []),
+            extraordinaryAmount: (int) $this->extraordinary_amount,
+        );
+    }
+
+    /**
+     * How the following quotas adapt when one changes, as the promise chose for extra payments.
+     */
+    public function rebalanceMode(): RebalanceMode
+    {
+        return RebalanceMode::fromSwitchPayment((bool) $this->switch_payment);
+    }
+
+    /**
+     * The quotas as editable rows of the schedule calculator.
+     *
+     * @return list<array{number: int, due_date: string, amount: int, interest: int, principal: int, balance: int, is_extraordinary: bool}>
+     */
+    public function scheduleRows(): array
+    {
+        return $this->quotas->map(fn (Quota $quota) => [
+            'number' => $quota->number,
+            'due_date' => $quota->due_date->toDateString(),
+            'amount' => $quota->amount,
+            'interest' => $quota->interest,
+            'principal' => $quota->principal,
+            'balance' => $quota->balance,
+            'is_extraordinary' => $quota->is_extraordinary,
+        ])->all();
+    }
+
+    /**
+     * Replaces the schedule. The JSON projection is kept in step for the screens that still read it.
+     *
+     * @param  list<array<string, mixed>>  $rows
+     */
+    public function saveSchedule(array $rows): void
+    {
+        $rows = array_values($rows);
+
+        DB::transaction(function () use ($rows) {
+            Quota::where('promise_id', $this->id)->delete();
+
+            $this->quotas()->createMany(array_map(fn (array $row) => Arr::only($row, [
+                'number', 'due_date', 'amount', 'interest', 'principal', 'balance', 'is_extraordinary',
+            ]), $rows));
+
+            $this->forceFill([
+                'number_of_fees' => count($rows),
+                'projection' => array_map(fn (array $row) => [
+                    'number' => $row['number'],
+                    'due_date' => $row['due_date'],
+                    'payment_amount' => $row['amount'],
+                    'interest_payment' => $row['interest'],
+                    'principal_payment' => $row['principal'],
+                    'remaining_balance' => $row['balance'],
+                ], $rows),
+            ])->save();
+        });
+
+        $this->unsetRelation('quotas');
+    }
+
+    /**
+     * How the payments (without the initial fee) cover the quotas.
+     */
+    public function coverage(): Coverage
+    {
+        return Coverage::of($this->scheduleRows(), (float) $this->payments->where('is_initial_fee', false)->sum('paid_amount'));
     }
 
     public function payments(): HasMany

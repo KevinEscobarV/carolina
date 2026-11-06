@@ -5,7 +5,7 @@
 </x-slot>
 
 <div class="mx-auto sm:px-6 lg:px-8 grid grid-cols-12 gap-6">
-    <div class="col-span-12 lg:col-span-7">
+    <div class="col-span-12 lg:col-span-5">
         <x-card>
             <form wire:submit.prevent="save">
                 <x-payment.form />
