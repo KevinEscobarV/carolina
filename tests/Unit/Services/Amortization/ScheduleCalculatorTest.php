@@ -181,6 +181,30 @@ class ScheduleCalculatorTest extends TestCase
         $this->assertSame(['2026-01-15', '2026-02-15', '2026-03-15', '2026-05-15', '2026-06-15'], array_column($rows, 'due_date'));
     }
 
+    public function test_money_paid_ahead_becomes_an_extra_payment_that_lowers_the_following_quotas(): void
+    {
+        $rows = $this->calculator->applyPrepayment($this->sixQuotasOf100k(), 300_000, CarbonImmutable::parse('2026-02-20'), $this->terms(600_000), RebalanceMode::REDUCE_AMOUNT);
+
+        $this->assertSame([100_000, 100_000, 100_000, 75_000, 75_000, 75_000, 75_000], array_column($rows, 'amount'));
+        $this->assertSame([false, false, true, false, false, false, false], array_column($rows, 'is_prepayment'));
+        $this->assertSame('2026-02-20', $rows[2]['due_date']);
+    }
+
+    public function test_money_paid_ahead_becomes_an_extra_payment_that_removes_quotas_at_the_end(): void
+    {
+        $rows = $this->calculator->applyPrepayment($this->sixQuotasOf100k(), 300_000, CarbonImmutable::parse('2026-02-20'), $this->terms(600_000), RebalanceMode::REDUCE_COUNT);
+
+        $this->assertSame([100_000, 100_000, 100_000, 100_000, 100_000, 100_000], array_column($rows, 'amount'));
+        $this->assertSame('2026-05-15', end($rows)['due_date']);
+    }
+
+    public function test_there_is_no_extra_payment_when_the_money_paid_does_not_exceed_what_is_due(): void
+    {
+        $this->expectException(ScheduleException::class);
+
+        $this->calculator->applyPrepayment($this->sixQuotasOf100k(), 200_000, CarbonImmutable::parse('2026-02-20'), $this->terms(600_000), RebalanceMode::REDUCE_AMOUNT);
+    }
+
     public function test_moving_a_due_date_moves_the_following_ones_with_the_frequency(): void
     {
         $rows = $this->calculator->moveDueDate($this->sixQuotasOf100k(), 1, CarbonImmutable::parse('2026-03-01'), $this->terms(600_000));

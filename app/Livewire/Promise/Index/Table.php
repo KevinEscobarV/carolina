@@ -51,7 +51,7 @@ class Table extends Component
     public function render()
     {
         return view('livewire.promise.index.table', [
-            'promises' => Promise::search($this->search)->sort($this->sortColumn(), $this->sortAsc)->with('buyers', 'payments', 'parcels.block')->trash($this->trash)->paginate($this->perPage),
+            'promises' => Promise::search($this->search)->sort($this->sortColumn(), $this->sortAsc)->with('buyers', 'payments', 'quotas', 'parcels.block')->trash($this->trash)->paginate($this->perPage),
             'total_value' => number_format(Promise::sum('value'), 0, ',', '.'),
             'total_paid_amount' => number_format(Payment::sum('paid_amount'), 0, ',', '.'),
         ]);

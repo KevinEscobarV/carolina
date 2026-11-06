@@ -11,7 +11,7 @@ use App\Models\Traits\HasCategory;
 use App\Services\Amortization\Coverage;
 use App\Services\Amortization\InterestRate;
 use App\Services\Amortization\ScheduleTerms;
-use Carbon\Carbon;
+use App\Services\Amortization\Standing;
 use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -26,6 +26,11 @@ use Illuminate\Support\Facades\DB;
 class Promise extends Model
 {
     use HasCategory, HasFactory, SoftDeletes;
+
+    /**
+     * Standing computed once per instance; reset when the schedule changes.
+     */
+    private ?Standing $standingCache = null;
 
     /**
      * The attributes that are mass assignable.
@@ -112,7 +117,7 @@ class Promise extends Model
     /**
      * The quotas as editable rows of the schedule calculator.
      *
-     * @return list<array{number: int, due_date: string, amount: int, interest: int, principal: int, balance: int, is_extraordinary: bool}>
+     * @return list<array{number: int, due_date: string, amount: int, interest: int, principal: int, balance: int, is_extraordinary: bool, is_prepayment: bool}>
      */
     public function scheduleRows(): array
     {
@@ -124,11 +129,12 @@ class Promise extends Model
             'principal' => $quota->principal,
             'balance' => $quota->balance,
             'is_extraordinary' => $quota->is_extraordinary,
+            'is_prepayment' => $quota->is_prepayment,
         ])->all();
     }
 
     /**
-     * Replaces the schedule. The JSON projection is kept in step for the screens that still read it.
+     * Replaces the schedule. The old JSON projection column is kept in step as a backup until it is dropped.
      *
      * @param  list<array<string, mixed>>  $rows
      */
@@ -140,7 +146,7 @@ class Promise extends Model
             Quota::where('promise_id', $this->id)->delete();
 
             $this->quotas()->createMany(array_map(fn (array $row) => Arr::only($row, [
-                'number', 'due_date', 'amount', 'interest', 'principal', 'balance', 'is_extraordinary',
+                'number', 'due_date', 'amount', 'interest', 'principal', 'balance', 'is_extraordinary', 'is_prepayment',
             ]), $rows));
 
             $this->forceFill([
@@ -157,6 +163,7 @@ class Promise extends Model
         });
 
         $this->unsetRelation('quotas');
+        $this->standingCache = null;
     }
 
     /**
@@ -164,7 +171,44 @@ class Promise extends Model
      */
     public function coverage(): Coverage
     {
-        return Coverage::of($this->scheduleRows(), (float) $this->payments->where('is_initial_fee', false)->sum('paid_amount'));
+        return Coverage::of($this->scheduleRows(), $this->paidTowardsQuotas());
+    }
+
+    /**
+     * Where the promise stands today by the money paid: current quota, arrears and days overdue.
+     */
+    public function standing(): Standing
+    {
+        return $this->standingCache ??= Standing::of(
+            $this->scheduleRows(),
+            $this->paidTowardsQuotas(),
+            CarbonImmutable::today(),
+            Setting::graceDays($this->category_id),
+        );
+    }
+
+    /**
+     * Days overdue of each late promise of the current campaign, the most overdue first.
+     *
+     * @return array<int, int>
+     */
+    public static function overdueDays(): array
+    {
+        return static::query()
+            ->with('quotas', 'payments')
+            ->get()
+            ->filter(fn (self $promise) => $promise->standing()->isOverdue())
+            ->mapWithKeys(fn (self $promise) => [$promise->id => $promise->standing()->daysOverdue])
+            ->sortDesc()
+            ->all();
+    }
+
+    /**
+     * Money paid towards the quotas: every payment except the initial fee.
+     */
+    public function paidTowardsQuotas(): float
+    {
+        return (float) $this->payments->where('is_initial_fee', false)->sum('paid_amount');
     }
 
     public function payments(): HasMany
@@ -178,52 +222,13 @@ class Promise extends Model
     }
 
     /**
-     * Get the current cut off date by payment frequency.
+     * Amount of the quota the promise is on, formatted; null when every quota is paid.
      */
-    public function getCurrentCutOffDateAttribute(): string
+    public function getCurrentQuotaAmountFormattedAttribute(): ?string
     {
-        $number = 1;
-        $check = $this->payments->where('is_initial_fee', false)->count() + 1;
-        $date = now();
+        $quota = $this->standing()->currentQuota;
 
-        if ($this->projection) {
-            foreach ($this->projection as $quota) {
-                if ($check == $number) {
-                    $date = Carbon::parse($quota['due_date']);
-                    break;
-                }
-                $number++;
-            }
-        }
-
-        return $date;
-    }
-
-    /**
-     * Get the current cut off date by payment frequency.
-     */
-    public function getCurrentQuotaAttribute(): array
-    {
-        $number = 1;
-        $check = $this->payments->where('is_initial_fee', false)->count() + 1;
-        $quota = [];
-
-        if ($this->projection) {
-            foreach ($this->projection as $quota) {
-                if ($check == $number) {
-                    $quota = $quota;
-                    break;
-                }
-                $number++;
-            }
-        }
-
-        return $quota;
-    }
-
-    public function getCurrentQuotaAmountFormattedAttribute()
-    {
-        return $this->current_quota ? number_format($this->current_quota['payment_amount'], 0, ',', '.') : null;
+        return $quota ? number_format($quota['amount'], 0, ',', '.') : null;
     }
 
     /**
@@ -242,9 +247,12 @@ class Promise extends Model
         return $this->hasMany(Parcel::class);
     }
 
+    /**
+     * Quotas fully covered by the payments (by amount, not by number of payments).
+     */
     public function getNumberOfPaidFeesAttribute(): int
     {
-        return $this->payments->count();
+        return $this->standing()->paidQuotas();
     }
 
     public function getTotalPaidAttribute(): float

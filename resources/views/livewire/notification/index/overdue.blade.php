@@ -18,10 +18,13 @@
                             Comprador
                         </x-table.sortable>
                         <x-table.th>
-                            Fecha de Corte Actual
+                            Cuota vencida
                         </x-table.th>
                         <x-table.th>
-                            Dias de Mora
+                            Días de mora
+                        </x-table.th>
+                        <x-table.th class="text-right">
+                            Valor en mora
                         </x-table.th>
                         <x-table.sortable column="value" :$sortCol :$sortAsc right>
                             Valor Promesa
@@ -75,19 +78,20 @@
                                     @endforelse
                                 </div>
                             </x-table.td>
+                            @php($standing = $promise->standing())
                             <x-table.td>
-                                @if (isset($promise->current_quota['due_date']))
-                                    {{ Carbon\Carbon::parse($promise->current_quota['due_date'])->format('d/m/Y') }}
+                                @if ($standing->currentQuota)
+                                    {{ Carbon\Carbon::parse($standing->currentQuota['due_date'])->format('d/m/Y') }}
+                                    <span class="text-xs text-gray-400">(cuota {{ $standing->currentQuota['number'] }})</span>
                                 @else
-                                    <span class="text-xs text-gray-400">Sin proyección</span>
+                                    <span class="text-xs text-gray-400">Al día</span>
                                 @endif
                             </x-table.td>
                             <x-table.td class="bg-red-500/20 dark:bg-red-500/50">
-                                @if (isset($promise->current_quota['due_date']))
-                                    {{ Carbon\Carbon::parse($promise->current_quota['due_date'])->diffInDays(Carbon\Carbon::now()->format('Y-m-d')) }}
-                                @else
-                                    <span class="text-xs text-gray-400">Sin proyección</span>
-                                @endif
+                                {{ $standing->daysOverdue }}
+                            </x-table.td>
+                            <x-table.td class="text-right font-medium text-red-600 dark:text-red-400">
+                                <span class="text-gray-400">$</span> {{ number_format($standing->overdueAmount, 0, ',', '.') }}
                             </x-table.td>
                             <x-table.td class="text-right">
                                 <p class="font-light text-lg">
@@ -143,7 +147,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <x-table.td colspan="12">
+                            <x-table.td colspan="16">
                                 <div class="flex justify-center items-center gap-2">
                                     <x-wireui-icon name="document-search" class="w-8 h-8 text-gray-400" />
                                     <span class="font-medium py-8">No se encontraron registros</span>

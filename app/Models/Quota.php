@@ -29,6 +29,7 @@ class Quota extends Model
         'principal',
         'balance',
         'is_extraordinary',
+        'is_prepayment',
     ];
 
     /**
@@ -43,6 +44,7 @@ class Quota extends Model
         'principal' => 'integer',
         'balance' => 'integer',
         'is_extraordinary' => 'boolean',
+        'is_prepayment' => 'boolean',
     ];
 
     /**

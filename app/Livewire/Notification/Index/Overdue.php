@@ -7,7 +7,7 @@ use App\Models\Promise;
 use App\Models\Setting;
 use App\Services\Labsmobile\SMS as LabsmobileSMS;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Database\Eloquent\Builder;
 use Livewire\Component;
 use Livewire\WithPagination;
 use WireUi\Traits\Actions;
@@ -21,6 +21,11 @@ class Overdue extends Component
     public $selectedIds = [];
 
     public $idsOnPage = [];
+
+    /**
+     * @var array<int, int>|null
+     */
+    private ?array $overdueDays = null;
 
     public function mount()
     {
@@ -38,7 +43,7 @@ class Overdue extends Component
             'selectedIds' => 'required|array|min:1',
         ]);
 
-        $promises = Promise::whereIn('id', $this->selectedIds)->with('buyers')->get();
+        $promises = Promise::whereIn('id', $this->selectedIds)->with('buyers', 'quotas', 'payments')->get();
 
         $reponses = 'Respuestas: LabsmobileSMS: <br>';
 
@@ -59,7 +64,14 @@ class Overdue extends Component
                 ]
             )->value;
 
-            $message = $message_header.' Fecha:'.Carbon::parse($promise->current_quota['due_date'])->format('d/m/Y').', Dias mora:'.Carbon::parse($promise->current_quota['due_date'])->diffInDays(Carbon::now()->format('Y-m-d')).'. '.$message_footer;
+            $standing = $promise->standing();
+
+            // It may have been paid since the list was loaded
+            if (! $standing->isOverdue()) {
+                continue;
+            }
+
+            $message = $message_header.' Fecha:'.Carbon::parse($standing->currentQuota['due_date'])->format('d/m/Y').', Dias mora:'.$standing->daysOverdue.'. '.$message_footer;
 
             if ($promise->buyers->count() > 0) {
                 $to = $promise->buyers->pluck('phone_one')->toArray();
@@ -78,24 +90,31 @@ class Overdue extends Component
         $this->reset(['selectedIds']);
     }
 
-    public function promises(): object
+    /**
+     * Promises behind on their quotas by the money paid, the most overdue first unless sorted otherwise.
+     */
+    public function promises(): Builder
     {
-        $driver = DB::connection()->getDriverName();
+        $overdue = $this->overdueDays();
 
-        $raw = null;
+        return Promise::query()
+            ->whereKey(array_keys($overdue))
+            ->when(
+                $this->sortColumn(),
+                fn (Builder $query) => $query->sort($this->sortColumn(), $this->sortAsc),
+                fn (Builder $query) => $overdue ? $query->orderByRaw(
+                    'CASE promises.id '.implode(' ', array_map(fn (int $id, int $position) => "WHEN {$id} THEN {$position}", array_keys($overdue), range(1, count($overdue)))).' END'
+                ) : $query,
+            )
+            ->with('buyers', 'payments', 'quotas', 'parcels.block');
+    }
 
-        if ($driver === 'sqlite') {
-            $raw = "json_extract(projection, '$[' || ((SELECT COUNT(*) FROM payments WHERE payments.promise_id = promises.id and payments.is_initial_fee = '0') + 1) || '].due_date') < date('now')";
-        } elseif (in_array($driver, ['mysql', 'mariadb'])) {
-            $raw = "JSON_UNQUOTE(JSON_EXTRACT(`projection`, CONCAT('$[', ((SELECT COUNT(*) FROM `payments` WHERE `payments`.`promise_id` = `promises`.`id` AND `payments`.`is_initial_fee` = '0') + 1), '].due_date'))) < CURDATE()";
-        } elseif ($driver === 'pgsql') {
-            $raw = "((projection->>(((SELECT COUNT(*) FROM payments WHERE payments.promise_id = promises.id and payments.is_initial_fee = '0') + 1)::int))::jsonb->>'due_date')::date < CURRENT_DATE";
-        }
-
-        return Promise::whereNotNull('projection')
-            ->whereRaw($raw)
-            ->sort($this->sortColumn(), $this->sortAsc)
-            ->with('buyers', 'payments', 'parcels.block');
+    /**
+     * @return array<int, int>
+     */
+    private function overdueDays(): array
+    {
+        return $this->overdueDays ??= Promise::overdueDays();
     }
 
     /**

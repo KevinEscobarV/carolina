@@ -11,6 +11,14 @@
     $money = fn ($value) => number_format((float) $value, 0, ',', '.');
     $paidCount = $coverage?->paidCount ?? 0;
     $hasPending = $paidCount < count($rows);
+    // Money that already covers quotas not yet due: it can become an extra payment
+    $today = now()->toDateString();
+    $prepaid = 0;
+    foreach ($rows as $index => $row) {
+        if ($coverage && $row['due_date'] > $today) {
+            $prepaid += $coverage->applied[$index] ?? 0;
+        }
+    }
     $totalAmount = array_sum(array_column($rows, 'amount'));
     $totalInterest = array_sum(array_column($rows, 'interest'));
     $difference = $rows ? (int) end($rows)['balance'] : 0;
@@ -58,6 +66,19 @@
                 </span>
             </p>
         @endif
+
+        @if ($prepaid >= 1000 && $hasPending)
+            <div class="flex flex-col gap-3 rounded-xl bg-emerald-50 p-4 text-sm text-emerald-900 ring-1 ring-inset ring-emerald-200 dark:bg-emerald-900/20 dark:text-emerald-200 dark:ring-emerald-900/50 sm:flex-row sm:items-center sm:justify-between">
+                <p class="flex items-start gap-2">
+                    <x-icon name="banknotes" class="h-5 w-5 shrink-0" />
+                    <span>
+                        Hay <strong>${{ $money($prepaid) }}</strong> pagados por adelantado.
+                        Puedes aplicarlos como abono a capital{{ $mode ? ': '.mb_strtolower($mode->label()).'.' : '.' }}
+                    </span>
+                </p>
+                <x-wireui-button wire:click="applyPrepayment" spinner="applyPrepayment" positive sm icon="arrow-path" label="Aplicar abono" />
+            </div>
+        @endif
     @endif
 
     @error('schedule')
@@ -88,7 +109,7 @@
     @if ($rows)
         <div class="relative overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-gray-950/5 dark:bg-gray-800 dark:ring-white/10">
             <div class="max-h-[36rem] overflow-auto soft-scrollbar"
-                wire:loading.class="opacity-60" wire:target="schedule,addQuota,removeQuota,toggleExtraordinary,fitSchedule,project">
+                wire:loading.class="opacity-60" wire:target="schedule,addQuota,removeQuota,toggleExtraordinary,fitSchedule,applyPrepayment,project">
                 <table class="min-w-full text-sm">
                     <thead class="sticky top-0 z-10 bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500 dark:bg-gray-900 dark:text-gray-400">
                         <tr>
@@ -118,7 +139,9 @@
                             ])>
                                 <td class="whitespace-nowrap px-4 py-2 font-medium text-gray-900 dark:text-white">
                                     {{ $row['number'] }}
-                                    @if ($row['is_extraordinary'])
+                                    @if (! empty($row['is_prepayment']))
+                                        <span class="ml-1 rounded bg-emerald-100 px-1.5 py-0.5 text-[10px] font-semibold uppercase text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300" title="Abono a capital">Abono</span>
+                                    @elseif ($row['is_extraordinary'])
                                         <span class="ml-1 rounded bg-amber-100 px-1.5 py-0.5 text-[10px] font-semibold uppercase text-amber-700 dark:bg-amber-900/40 dark:text-amber-300" title="Cuota extraordinaria">Extra</span>
                                     @endif
                                 </td>

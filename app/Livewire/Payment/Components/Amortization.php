@@ -43,7 +43,12 @@ class Amortization extends Component
 
     public function coverage(): Coverage
     {
-        return Coverage::of($this->schedule, (float) $this->promise->payments()->where('is_initial_fee', false)->sum('paid_amount'));
+        return Coverage::of($this->schedule, $this->paidTowardsQuotas());
+    }
+
+    protected function paidTowardsQuotas(): float
+    {
+        return (float) $this->promise->payments()->where('is_initial_fee', false)->sum('paid_amount');
     }
 
     protected function lockedQuotas(): int

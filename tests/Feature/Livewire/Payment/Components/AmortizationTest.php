@@ -10,6 +10,7 @@ use App\Models\Promise;
 use App\Models\User;
 use App\Services\Amortization\ScheduleCalculator;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Carbon;
 use Livewire\Features\SupportTesting\Testable;
 use Livewire\Livewire;
 use Tests\TestCase;
@@ -71,6 +72,29 @@ class AmortizationTest extends TestCase
             ['number', 'due_date', 'payment_amount', 'interest_payment', 'principal_payment', 'remaining_balance'],
             array_keys($this->promise->fresh()->projection[1]),
         );
+    }
+
+    public function test_money_paid_ahead_is_applied_as_an_extra_payment_that_lowers_the_next_quotas(): void
+    {
+        Carbon::setTestNow('2026-02-20');
+        Payment::create([
+            'bill_number' => 'F-2',
+            'promise_id' => $this->promise->id,
+            'paid_amount' => 250_000,
+            'payment_date' => '2026-02-15',
+            'payment_method' => PaymentMethod::cases()[0],
+            'is_initial_fee' => false,
+        ]);
+
+        // 400,000 paid, 200,000 due: the other 200,000 becomes an extra payment
+        $schedule = $this->panel()
+            ->call('applyPrepayment')
+            ->assertHasNoErrors()
+            ->get('schedule');
+
+        $this->assertSame([100_000, 100_000, 200_000, 50_000, 50_000, 50_000, 50_000], array_column($schedule, 'amount'));
+        $this->assertTrue($schedule[2]['is_prepayment']);
+        $this->assertSame('2026-02-20', $schedule[2]['due_date']);
     }
 
     private function panel(): Testable

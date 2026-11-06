@@ -33,7 +33,7 @@ class General implements FromQuery, ShouldAutoSize, WithColumnFormatting, WithEv
      */
     public function query()
     {
-        $query = Promise::query()->with('buyers', 'parcels.block', 'category', 'payments')
+        $query = Promise::query()->with('buyers', 'parcels.block', 'category', 'payments', 'quotas')
             ->whereDate('signature_date', '>=', $this->fromDate)->whereDate('signature_date', '<=', $this->toDate)
             ->orderBy('signature_date', 'asc');
 

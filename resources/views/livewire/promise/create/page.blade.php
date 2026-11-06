@@ -6,7 +6,7 @@
 
 <div class="mx-auto sm:px-6 lg:px-8">
     <form wire:submit="save" class="flex flex-col gap-6">
-        <x-promise.form :$block :$isCreate :$form>
+        <x-promise.form :$block :$isCreate :$form :$usury>
             <x-slot:schedule>
                 <x-promise.schedule-editor
                     :rows="$schedule"

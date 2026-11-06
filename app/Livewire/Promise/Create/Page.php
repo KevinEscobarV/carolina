@@ -6,6 +6,7 @@ use App\Enums\RebalanceMode;
 use App\Livewire\Forms\PromiseForm;
 use App\Livewire\Traits\EditsSchedule;
 use App\Models\Parcel;
+use App\Models\Setting;
 use App\Services\Amortization\ScheduleException;
 use App\Services\Amortization\ScheduleTerms;
 use Illuminate\View\View;
@@ -82,6 +83,8 @@ class Page extends Component
 
     public function render(): View
     {
-        return view('livewire.promise.create.page');
+        return view('livewire.promise.create.page', [
+            'usury' => (float) Setting::usuryRate()->value,
+        ]);
     }
 }

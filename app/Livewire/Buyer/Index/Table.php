@@ -52,7 +52,7 @@ class Table extends Component
     public function render()
     {
         return view('livewire.buyer.index.table', [
-            'buyers' => Buyer::search($this->search)->sort($this->sortColumn(), $this->sortAsc)->with('promises.parcels.block', 'promises.payments')->trash($this->trash)->paginate($this->perPage),
+            'buyers' => Buyer::search($this->search)->sort($this->sortColumn(), $this->sortAsc)->with('promises.parcels.block', 'promises.payments', 'promises.quotas')->trash($this->trash)->paginate($this->perPage),
         ]);
     }
 }

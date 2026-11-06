@@ -7,6 +7,7 @@ use App\Livewire\Forms\PromiseForm;
 use App\Livewire\Traits\EditsSchedule;
 use App\Models\Parcel;
 use App\Models\Promise;
+use App\Models\Setting;
 use App\Services\Amortization\Coverage;
 use App\Services\Amortization\ScheduleException;
 use App\Services\Amortization\ScheduleTerms;
@@ -82,7 +83,12 @@ class Page extends Component
 
     public function coverage(): Coverage
     {
-        return Coverage::of($this->schedule, (float) $this->promise->payments()->where('is_initial_fee', false)->sum('paid_amount'));
+        return Coverage::of($this->schedule, $this->paidTowardsQuotas());
+    }
+
+    protected function paidTowardsQuotas(): float
+    {
+        return (float) $this->promise->payments()->where('is_initial_fee', false)->sum('paid_amount');
     }
 
     protected function lockedQuotas(): int
@@ -102,6 +108,8 @@ class Page extends Component
 
     public function render(): View
     {
-        return view('livewire.promise.edit.page');
+        return view('livewire.promise.edit.page', [
+            'usury' => (float) Setting::usuryRate()->value,
+        ]);
     }
 }

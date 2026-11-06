@@ -37,7 +37,7 @@ class Page extends Component
 
     public function autocompleteFields($promise_id): void
     {
-        $promise = Promise::find($promise_id);
+        $promise = Promise::with('payments', 'quotas')->find($promise_id);
 
         if ($this->form->is_initial_fee) {
 
@@ -61,8 +61,10 @@ class Page extends Component
             $this->form->payment_date = $promise->signature_date;
 
         } else {
-            $this->form->agreement_amount = $promise->quota_amount;
-            $this->form->agreement_date = $promise->current_cut_off_date;
+            $quota = $promise->standing()->currentQuota;
+
+            $this->form->agreement_amount = $quota['amount'] ?? $promise->quota_amount;
+            $this->form->agreement_date = $quota['due_date'] ?? now()->format('Y-m-d');
         }
 
         $this->notification()->info(

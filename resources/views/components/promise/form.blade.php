@@ -1,4 +1,4 @@
-@props(['block', 'isCreate', 'form'])
+@props(['block', 'isCreate', 'form', 'usury' => null])
 
 @php
     $money = fn ($value) => number_format((float) $value, 0, ',', '.');
@@ -98,6 +98,15 @@
                         @endif
                     </p>
                 </div>
+                @if ($usury && ! $rate->isZero() && $rate->effectiveAnnual() * 100 > $usury)
+                    <div role="alert" class="col-span-6 flex items-start gap-2 rounded-xl bg-red-50 p-3 text-sm text-red-800 ring-1 ring-inset ring-red-200 dark:bg-red-900/20 dark:text-red-300 dark:ring-red-900/50">
+                        <x-icon name="exclamation-triangle" class="h-5 w-5 shrink-0" />
+                        <p>
+                            La tasa equivale a <strong>{{ number_format($rate->effectiveAnnual() * 100, 2, ',', '.') }} % E.A.</strong> y supera la tasa de usura vigente
+                            (<strong>{{ number_format($usury, 2, ',', '.') }} % E.A.</strong>). Cobrar por encima de ella no está permitido.
+                        </p>
+                    </div>
+                @endif
 
                 <div class="col-span-6 sm:col-span-3">
                     <x-wireui-native-select label="Periodicidad" wire:model.live="form.payment_frequency">

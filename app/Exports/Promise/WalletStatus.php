@@ -5,7 +5,6 @@ namespace App\Exports\Promise;
 use App\Models\Promise;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Concerns\Exportable;
 use Maatwebsite\Excel\Concerns\FromQuery;
 use Maatwebsite\Excel\Concerns\RegistersEventListeners;
@@ -36,20 +35,8 @@ class WalletStatus implements FromQuery, ShouldAutoSize, WithColumnFormatting, W
      */
     public function query()
     {
-        $driver = DB::connection()->getDriverName();
-
-        $raw = null;
-
-        if ($driver === 'sqlite') {
-            $raw = "json_extract(projection, '$[' || ((SELECT COUNT(*) FROM payments WHERE payments.promise_id = promises.id and payments.is_initial_fee = '0') + 1) || '].due_date') < date('now')";
-        } elseif (in_array($driver, ['mysql', 'mariadb'])) {
-            $raw = "JSON_UNQUOTE(JSON_EXTRACT(`projection`, CONCAT('$[', ((SELECT COUNT(*) FROM `payments` WHERE `payments`.`promise_id` = `promises`.`id` AND `payments`.`is_initial_fee` = '0') + 1), '].due_date'))) < CURDATE()";
-        } elseif ($driver === 'pgsql') {
-            $raw = "((projection->>(((SELECT COUNT(*) FROM payments WHERE payments.promise_id = promises.id and payments.is_initial_fee = '0') + 1)::int))::jsonb->>'due_date')::date < CURRENT_DATE";
-        }
-
-        $query = Promise::query()->with('buyers', 'parcels.block', 'category', 'payments')
-            ->when($this->onlyLate, fn ($query) => $query->whereRaw($raw))
+        $query = Promise::query()->with('buyers', 'parcels.block', 'category', 'payments', 'quotas')
+            ->when($this->onlyLate, fn ($query) => $query->whereKey(array_keys(Promise::overdueDays())))
             ->when($this->fromDate, fn ($query) => $query->whereDate('signature_date', '>=', $this->fromDate))
             ->when($this->toDate, fn ($query) => $query->whereDate('signature_date', '<=', $this->toDate))
             ->orderBy('signature_date', 'asc');
@@ -62,17 +49,11 @@ class WalletStatus implements FromQuery, ShouldAutoSize, WithColumnFormatting, W
      */
     public function map($promise): array
     {
-        $mora = 0;
-        $current_quota = null;
-
-        if (isset($promise->current_quota['due_date'])) {
-            $mora = Carbon::parse($promise->current_quota['due_date'])->diffInDays(Carbon::now()->format('Y-m-d'));
-            $mora = $mora > 0 ? $mora : 0;
-        }
-
-        if (isset($promise->current_quota['due_date'])) {
-            $current_quota = Date::dateTimeToExcel(Carbon::parse($promise->current_quota['due_date']));
-        }
+        $standing = $promise->standing();
+        $mora = $standing->daysOverdue;
+        $current_quota = $standing->currentQuota
+            ? Date::dateTimeToExcel(Carbon::parse($standing->currentQuota['due_date']))
+            : null;
 
         return [
             $promise->number,

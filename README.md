@@ -11,6 +11,7 @@ Carolina permite administrar compradores, manzanas, lotes, promesas de compraven
 - [Instalación para desarrollo](#instalación-para-desarrollo)
 - [Variables de entorno](#variables-de-entorno)
 - [Homepage](#homepage)
+- [Proyección de pagos y mora](#proyección-de-pagos-y-mora)
 - [Tests](#tests)
 - [Comandos útiles](#comandos-útiles)
 - [Despliegue en producción](#despliegue-en-producción)
@@ -211,6 +212,18 @@ La raíz (`/`) es la página pública de la empresa: proyectos, cómo comprar, u
 - **Textos, contacto y datos de cada proyecto** (descripción, características, foto, coordenadas del mapa): están en [config/home.php](config/home.php). Los proyectos se relacionan con las campañas por su nombre; una campaña sin entrada ahí aparece con una foto y un texto genéricos. Los valores marcados `EJEMPLO` esperan los datos reales.
 - **Fotos**: en `public/img/home/`, en WebP. Las actuales son de ejemplo (Unsplash). Para el enlace compartido en redes se usa `og.jpg` (1200 × 630).
 - El estado de cuenta se busca con el componente Livewire `Public\Buyer\Statement\Lookup`, que usan tanto el homepage como `/personal-account-statement`.
+
+## Proyección de pagos y mora
+
+Cada promesa tiene su tabla de amortización en la tabla `quotas`: una fila por cuota, en pesos enteros, con fecha, valor, interés, capital, saldo y si es extraordinaria o un abono.
+
+- **Cálculo** ([app/Services/Amortization](app/Services/Amortization)): `ScheduleCalculator` genera la tabla (por número de cuotas o por valor de cuota, con cuotas extraordinarias opcionales) y la recalcula cuando se cambia una cuota. Sistema de cuota fija; la última cuota cierra el saldo en cero. Las fechas no se desbordan (31 de enero, 28 de febrero, 31 de marzo).
+- **Interés**: cada promesa guarda la tasa y su tipo, mensual o efectiva anual; para cada periodicidad se usa la tasa equivalente. En la periodicidad irregular (calendario libre) el interés corre por días.
+- **Al cambiar una cuota**: las siguientes se ajustan según la opción de abonos de la promesa (`switch_payment`): reducir el número de cuotas o reducir su valor. Al cambiar una fecha, las siguientes se corren con la periodicidad.
+- **Pagos y mora, por montos**: lo pagado (sin la cuota inicial) cubre las cuotas en orden. Una cuota está en mora cuando pasaron su vencimiento y los días de gracia de la campaña, y lo pagado no la cubre; las diferencias menores de $1.000 (redondeo) no cuentan. Esto alimenta Notificaciones (SMS), el informe de cartera, el autocompletado de pagos y las cuotas pagadas de los listados y del estado de cuenta.
+- **Abonos**: lo pagado por encima de lo vencido se puede aplicar como abono a capital («Aplicar abono» en la proyección): queda una fila de abono y las cuotas siguientes se ajustan según la opción de la promesa.
+- **Configuración**: los días de gracia (por campaña) y la tasa de usura vigente (nacional, se actualiza cada mes) están en Configuración. El formulario de promesa avisa si la tasa supera la de usura.
+- Mientras exista la columna `promises.projection` (JSON), cada cambio de la proyección también se copia ahí como respaldo; ningún módulo la lee.
 
 ## Tests
 

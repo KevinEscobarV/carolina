@@ -23,6 +23,8 @@ return new class extends Migration
             $table->decimal('principal', 15, 2);
             $table->decimal('balance', 15, 2);
             $table->boolean('is_extraordinary')->default(false);
+            // An extra payment applied to the balance ("Reproyectar saldo"); it charges no interest
+            $table->boolean('is_prepayment')->default(false);
 
             $table->timestamps();
 

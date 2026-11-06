@@ -83,6 +83,15 @@ class PageTest extends TestCase
             ->assertSet('schedule.2.due_date', '2026-03-15');
     }
 
+    public function test_a_rate_above_the_usury_rate_shows_a_warning(): void
+    {
+        Livewire::test(Page::class)
+            ->set('form.interest_rate', 3) // 42.58 % E.A.
+            ->assertSee('supera la tasa de usura vigente')
+            ->set('form.interest_rate', 1.5) // 19.56 % E.A.
+            ->assertDontSee('supera la tasa de usura vigente');
+    }
+
     private function agreement(int $value, int $quotas): Testable
     {
         $parcel = Parcel::create(['number' => 1, 'block_id' => Block::create(['code' => 'M1'])->id, 'value' => $value]);

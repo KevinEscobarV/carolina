@@ -12,7 +12,7 @@ use Carbon\CarbonImmutable;
  * quota always closes the balance at zero, so it absorbs the rounding.
  *
  * A schedule is a list of rows:
- * array{number: int, due_date: string, amount: int, interest: int, principal: int, balance: int, is_extraordinary: bool}
+ * array{number: int, due_date: string, amount: int, interest: int, principal: int, balance: int, is_extraordinary: bool, is_prepayment: bool}
  */
 class ScheduleCalculator
 {
@@ -85,6 +85,42 @@ class ScheduleCalculator
         }
 
         return $this->amortize($this->spread($rows, $from, $terms), $from, $terms, closeLast: true);
+    }
+
+    /**
+     * Turns the money paid beyond what is due by $today into an extra payment: a quota dated $today for
+     * that amount goes after the quotas already due, and the following ones adapt as the promise chose
+     * (fewer quotas at the end, or lower quotas).
+     *
+     * @param  list<array<string, mixed>>  $rows
+     * @return list<array<string, mixed>>
+     */
+    public function applyPrepayment(array $rows, float $paid, CarbonImmutable $today, ScheduleTerms $terms, RebalanceMode $mode): array
+    {
+        $rows = array_values($rows);
+        $dueCount = 0;
+        while ($dueCount < count($rows) && $rows[$dueCount]['due_date'] <= $today->toDateString()) {
+            $dueCount++;
+        }
+
+        $prepayment = (int) round($paid) - array_sum(array_column(array_slice($rows, 0, $dueCount), 'amount'));
+
+        if ($prepayment <= 0) {
+            throw new ScheduleException('No hay abonos por aplicar: lo pagado no supera lo que ya venció.');
+        }
+
+        if ($dueCount === count($rows)) {
+            throw new ScheduleException('Todas las cuotas ya vencieron: no quedan cuotas siguientes que ajustar.');
+        }
+
+        array_splice($rows, $dueCount, 0, [[
+            ...$this->newRow($terms, $today, $prepayment),
+            'amount' => $prepayment,
+            'is_extraordinary' => false,
+            'is_prepayment' => true,
+        ]]);
+
+        return $this->rebalance($rows, $dueCount, $terms, $mode);
     }
 
     /**
@@ -206,7 +242,8 @@ class ScheduleCalculator
 
             $row = $isAppended ? $this->newRow($terms, $this->nextDueDate($result, $terms), $appendQuota) : $pending[$index];
             $date = CarbonImmutable::parse($row['due_date']);
-            $interest = (int) round($balance * $terms->rateFor($date, $previous));
+            // An extra payment lowers the balance between two quotas and charges no interest of its own
+            $interest = empty($row['is_prepayment']) ? (int) round($balance * $terms->rateFor($date, $previous)) : 0;
             $owed = $balance + $interest;
             $amount = (int) $row['amount'];
 
@@ -250,10 +287,10 @@ class ScheduleCalculator
 
         for ($index = $from; $index < count($rows); $index++) {
             $date = CarbonImmutable::parse($rows[$index]['due_date']);
-            $discount /= 1 + $terms->rateFor($date, $previous);
+            $discount /= 1 + (empty($rows[$index]['is_prepayment']) ? $terms->rateFor($date, $previous) : 0);
             $previous = $date;
 
-            if ($rows[$index]['is_extraordinary']) {
+            if ($this->isFixed($rows[$index])) {
                 $extraordinaryValue += $rows[$index]['amount'] * $discount;
             } else {
                 $ordinaryFactor += $discount;
@@ -274,12 +311,22 @@ class ScheduleCalculator
         $quota = max(0, (int) round($remaining / $ordinaryFactor));
 
         for ($index = $from; $index < count($rows); $index++) {
-            if (! $rows[$index]['is_extraordinary']) {
+            if (! $this->isFixed($rows[$index])) {
                 $rows[$index]['amount'] = $quota;
             }
         }
 
         return $rows;
+    }
+
+    /**
+     * Extraordinary quotas and extra payments keep their amount when the others are spread.
+     *
+     * @param  array<string, mixed>  $row
+     */
+    private function isFixed(array $row): bool
+    {
+        return ! empty($row['is_extraordinary']) || ! empty($row['is_prepayment']);
     }
 
     /**
@@ -290,7 +337,7 @@ class ScheduleCalculator
      */
     private function followingQuota(array $rows, int $index): int
     {
-        $ordinary = fn (array $row) => ! $row['is_extraordinary'] && $row['amount'] > 0;
+        $ordinary = fn (array $row) => ! $this->isFixed($row) && $row['amount'] > 0;
 
         $after = array_values(array_filter(array_slice($rows, $index + 1), $ordinary));
         $before = array_values(array_filter(array_slice($rows, 0, $index), $ordinary));
@@ -333,6 +380,7 @@ class ScheduleCalculator
             'principal' => 0,
             'balance' => 0,
             'is_extraordinary' => $isExtraordinary,
+            'is_prepayment' => false,
         ];
     }
 

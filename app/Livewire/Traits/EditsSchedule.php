@@ -97,6 +97,29 @@ trait EditsSchedule
     }
 
     /**
+     * Turns the money paid beyond what is due today into an extra payment, and adapts the following
+     * quotas as the promise chose ("Reproyectar saldo").
+     */
+    public function applyPrepayment(): void
+    {
+        $this->changeSchedule(fn () => $this->calculator()->applyPrepayment(
+            $this->schedule,
+            $this->paidTowardsQuotas(),
+            CarbonImmutable::today(),
+            $this->scheduleTerms(),
+            $this->scheduleMode(),
+        ));
+    }
+
+    /**
+     * Money already paid towards the quotas (the initial fee apart).
+     */
+    protected function paidTowardsQuotas(): float
+    {
+        return 0;
+    }
+
+    /**
      * Makes the pending quotas pay off exactly the balance, spreading the difference over them.
      */
     public function fitSchedule(): void
