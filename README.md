@@ -26,17 +26,18 @@ Carolina permite administrar compradores, manzanas, lotes, promesas de compraven
 | Roles y permisos | `spatie/laravel-permission` |
 | Excel y PDF | `maatwebsite/excel`, `barryvdh/laravel-dompdf` |
 | Mapas | Leaflet + Leaflet-Geoman (CDN), `matanyadaev/laravel-eloquent-spatial` |
-| Base de datos | SQLite en desarrollo, PostgreSQL en producción |
+| Base de datos | SQLite en desarrollo, MariaDB 10.11 en producción |
 
 ## Requisitos
 
 - **PHP:** 8.3 o superior (probado con 8.4), con las extensiones:
   `bcmath`, `ctype`, `curl`, `dom`, `fileinfo`, `gd`, `intl`, `mbstring`,
-  `pdo_sqlite` (desarrollo), `pdo_pgsql` (producción), `xml` y `zip`.
+  `pdo_sqlite` (desarrollo), `pdo_mysql` (producción), `xml` y `zip`.
 - **Composer:** versión 2.
 - **Node.js y npm:** Node.js 18 o superior (probado con 20).
-- **Base de datos:** SQLite para desarrollo. PostgreSQL requiere **PostGIS**,
-  porque las tablas `blocks` y `parcels` usan columnas `geometry` y `geography`.
+- **Base de datos:** SQLite para desarrollo y MariaDB 10.11 en producción. Las tablas `blocks` y `parcels`
+  usan columnas espaciales (los mapas), que MariaDB y MySQL traen de serie. PostgreSQL también funciona,
+  pero necesita la extensión **PostGIS**.
 
 En Windows, [Laravel Herd](https://herd.laravel.com) incluye PHP, Composer y las extensiones necesarias. Comprueba las herramientas instaladas con:
 
@@ -109,18 +110,21 @@ touch database/database.sqlite
 
 En PowerShell: `New-Item database/database.sqlite`.
 
-#### Opción B: PostgreSQL
+#### Opción B: MariaDB (igual que producción)
 
-Crea la base de datos con PostGIS habilitado (`CREATE EXTENSION postgis;`) y configura `.env`:
+Crea la base de datos en `utf8mb4` (`CREATE DATABASE carolina CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;`) y configura `.env`:
 
 ```dotenv
-DB_CONNECTION=pgsql
+DB_CONNECTION=mariadb
 DB_HOST=127.0.0.1
-DB_PORT=5432
+DB_PORT=3306
 DB_DATABASE=carolina
-DB_USERNAME=postgres
+DB_USERNAME=root
 DB_PASSWORD=tu_contraseña
+DB_TIMEZONE=-05:00
 ```
+
+Con Docker: `docker run -d --name carolina-mariadb -e MARIADB_ROOT_PASSWORD=root -e MARIADB_DATABASE=carolina -p 3306:3306 mariadb:10.11 --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci`.
 
 ### 5. Crear las tablas
 
@@ -188,6 +192,9 @@ Con Herd no hace falta `php artisan serve`. Si la carpeta está dentro de un dir
 | `ADMIN_PASSWORD` | Contraseña que asigna el seeder `ResetAdmin`. Vacía: se genera una aleatoria. |
 | `APP_ENV` | Con `production` se fuerza HTTPS en todas las URLs. |
 | `DB_*` | Conexión a la base de datos (paso 4). |
+| `DB_TIMEZONE` | Zona horaria de la conexión a MariaDB/MySQL. En producción, `-05:00` (Colombia, sin horario de verano): las columnas `TIMESTAMP` se convierten según la zona de la conexión, y la del servidor puede tener horario de verano. |
+| `SESSION_SECURE_COOKIE` | `true` en producción: la cookie de sesión solo viaja por HTTPS. |
+| `TRUSTED_PROXIES` | Proxies cuyos encabezados `X-Forwarded-*` se creen: `*` detrás de un balanceador (por ejemplo, DigitalOcean App Platform). Vacía cuando la app se sirve directo, como en el cPanel de producción. |
 | `SESSION_DRIVER` | `database` por defecto. La tabla `sessions` se crea con las migraciones. |
 | `QUEUE_CONNECTION` | `sync`; actualmente no hay trabajos en cola. |
 | `LABSMOBILE_USERNAME`, `LABSMOBILE_PASSWORD` | Credenciales de Labsmobile para enviar SMS y consultar el saldo. No vienen en `.env.example`; agrégalas a mano. Sin ellas, la sección de Notificaciones no puede consultar saldo ni enviar mensajes. |
@@ -203,6 +210,12 @@ npm run build
 php artisan test
 ```
 
+Para correrlos contra MariaDB, como en producción, crea una base vacía (por ejemplo, `carolina_test`) y pasa la conexión por variables de entorno:
+
+```bash
+DB_CONNECTION=mariadb DB_HOST=127.0.0.1 DB_PORT=3306 DB_DATABASE=carolina_test DB_USERNAME=root DB_PASSWORD=root DB_TIMEZONE=-05:00 php artisan test
+```
+
 ## Comandos útiles
 
 | Comando | Uso |
@@ -214,20 +227,130 @@ php artisan test
 
 ## Despliegue en producción
 
-1. PostgreSQL con PostGIS habilitado.
-2. En `.env`: `APP_ENV=production`, `APP_DEBUG=false`, `APP_URL` con `https://`, credenciales de base de datos, Labsmobile y correo.
-3. Instala dependencias, compila los assets y prepara la aplicación:
+Producción corre en un hosting compartido con cPanel (iFastNet, CloudLinux, PHP 8.4, MariaDB 10.11), en el dominio principal. La raíz del sitio es la carpeta `public/` de una copia del repositorio. No hay despliegue automático: cada actualización se publica a mano por SSH.
+
+Los datos del servidor (usuario, host, puerto SSH, contraseñas) no van aquí, porque este repositorio es público.
+
+> [!NOTE]
+> Hasta el 6 de noviembre de 2026 la app corría en DigitalOcean App Platform con PostgreSQL y PostGIS. Ese día se migró a este hosting y a MariaDB: los datos se copiaron con un script que comparó fila por fila y los totales de dinero. Por eso el código conserva las ramas para `pgsql` y la variable `TRUSTED_PROXIES`.
+
+### Lo que git no trae
+
+| Qué | Cómo llega al servidor |
+|:--|:--|
+| `vendor/` | `composer install --no-dev --optimize-autoloader` en el servidor |
+| `public/build/` | `npm run build` en tu PC y `scp` |
+| `.env` | Se escribe a mano en el servidor, una sola vez |
+
+### Primera vez
+
+1. **PHP 8.4.** El servidor usa alt-php. Para la web, elige 8.4 en *Select PHP Version* de cPanel (o `selectorctl --set-user-current=8.4` por SSH). La consola no sigue ese selector: pon `/opt/alt/php84/usr/bin` al principio del `PATH` en `~/.bashrc`, que también trae `composer`.
+2. **Código:** `git clone https://github.com/KevinEscobarV/carolina.git ~/apps/carolina` y, dentro, `composer install --no-dev --optimize-autoloader`.
+3. **Raíz del sitio.** En el dominio principal la raíz es `public_html` y cPanel no deja cambiarla. Renómbrala, crea un enlace en su lugar y pasa a la app los archivos de PHP que dejó cPanel:
 
    ```bash
-   composer install --no-dev --optimize-autoloader
-   npm ci
-   npm run build
+   cd ~ && mv public_html public_html.cpanel-orig && ln -s apps/carolina/public public_html
+   cp -p public_html.cpanel-orig/.user.ini public_html.cpanel-orig/php.ini apps/carolina/public/
+   printf '/public/.user.ini\n/public/php.ini\n/public/.well-known/\n/public/cgi-bin/\n' >> apps/carolina/.git/info/exclude
+   ```
+
+   `.well-known/` es donde AutoSSL deja sus archivos de validación; con la exclusión, `git status` queda limpio.
+4. **Base de datos** MariaDB y su usuario, desde cPanel. Pásala a `utf8mb4`, porque el servidor crea las bases en `latin1`:
+
+   ```sql
+   ALTER DATABASE <base> CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+   ```
+
+5. **`.env`** (permisos `600`), con estas diferencias frente al de desarrollo:
+
+   | Variable | Valor |
+   |:--|:--|
+   | `APP_ENV` / `APP_DEBUG` / `APP_URL` | `production` / `false` / `https://loteoscarolinariveros.com` |
+   | `LOG_CHANNEL` / `LOG_LEVEL` | `daily` (guarda 14 días) / `info` |
+   | `DB_CONNECTION`, `DB_HOST`, `DB_PORT` | `mariadb`, `localhost`, `3306` |
+   | `DB_DATABASE`, `DB_USERNAME`, `DB_PASSWORD` | Los de la base creada en cPanel |
+   | `DB_TIMEZONE` | `-05:00` (ver [Variables de entorno](#variables-de-entorno)) |
+   | `SESSION_SECURE_COOKIE` | `true` |
+   | `TRUSTED_PROXIES` | Sin definir |
+   | `MAIL_MAILER`, `MAIL_HOST`, `MAIL_PORT` | `smtp`, `mail.loteoscarolinariveros.com`, `465` |
+   | `MAIL_USERNAME`, `MAIL_PASSWORD`, `MAIL_FROM_ADDRESS` | El buzón `no-reply@loteoscarolinariveros.com` del cPanel |
+   | `LABSMOBILE_USERNAME`, `LABSMOBILE_PASSWORD` | Las credenciales de Labsmobile |
+
+6. **Arranque**, con el build ya subido (ver *Cada actualización*). En una instalación nueva, carga además los datos iniciales del [paso 6](#6-cargar-los-datos-iniciales) con `--force`:
+
+   ```bash
    php artisan migrate --force
    php artisan storage:link
-   php artisan config:cache
-   php artisan route:cache
-   php artisan view:cache
+   php artisan optimize
    ```
+
+7. **Copias de seguridad** (ver más abajo).
+
+### HTTPS y direcciones
+
+El certificado lo emite y renueva AutoSSL de cPanel. De `http://` a `https://`, y de `www.` al dominio principal, redirige la aplicación misma (`RedirectToHttps` y `RedirectToAppHost`), siempre que `APP_URL` empiece por `https://`. La opción *Forzar redirección HTTPS* de cPanel no está disponible en este hosting.
+
+> [!WARNING]
+> El proxy del hosting toma como IP del visitante la que este declare en `X-Forwarded-For`, así que cualquiera puede falsear su IP. No se arregla desde la app. Por eso el login, además del límite por correo e IP, tiene uno solo por correo (10 intentos por minuto). Cualquier límite nuevo que dependa de la IP se puede eludir en este hosting.
+
+### Cada actualización
+
+En tu PC, con `main` al día:
+
+```bash
+npm run build
+php artisan test
+scp -P <puerto> -r public/build <usuario>@<servidor>:~/apps/carolina/public/
+```
+
+`scp` copia encima sin borrar, así que el sitio sigue funcionando mientras sube. En Windows, usa el `ssh.exe` y el `scp.exe` del sistema (`C:\Windows\System32\OpenSSH\`) si tu llave está en el agente de Windows: los de Git Bash no lo ven.
+
+En el servidor:
+
+```bash
+cd ~/apps/carolina
+php artisan down
+git pull
+composer install --no-dev --optimize-autoloader   # si cambió composer.lock
+php artisan migrate --force                       # si hay migraciones nuevas
+php artisan optimize
+php artisan up
+```
+
+`php artisan optimize` vuelve a leer `.env` y `config/`: sin él, el servidor sigue con la configuración y las rutas viejas.
+
+### Copias de seguridad
+
+Un cron del servidor saca un dump comprimido de la base todos los días a las 3:15 (hora del servidor) en `~/backups/db/` y borra los de más de 30 días. El script vive en `~/bin/backup-carolina-db.sh` y lee la conexión de un archivo de cliente MySQL con permisos `600` (`~/.carolina-db.cnf`, con `user`, `password` y `host`):
+
+```bash
+#!/bin/bash
+set -euo pipefail
+DEST="$HOME/backups/db"
+FILE="$DEST/carolina-$(date +%Y%m%d-%H%M).sql.gz"
+mysqldump --defaults-extra-file="$HOME/.carolina-db.cnf" --single-transaction \
+  --default-character-set=utf8mb4 --no-tablespaces <base> | gzip -9 > "$FILE.tmp"
+mv "$FILE.tmp" "$FILE"
+find "$DEST" -name 'carolina-*.sql.gz' -mtime +30 -delete
+echo "$(date '+%F %T') OK $(basename "$FILE") $(du -h "$FILE" | cut -f1)"
+```
+
+```cron
+MAILTO=""
+15 3 * * * $HOME/bin/backup-carolina-db.sh >> $HOME/backups/backup.log 2>&1
+```
+
+Instala el cron desde un archivo (`crontab archivo.txt`): en este hosting, `crontab -` desde una tubería no lo guarda.
+
+Para restaurar una copia (reemplaza las tablas):
+
+```bash
+php artisan down
+gunzip -c ~/backups/db/carolina-AAAAMMDD-HHMM.sql.gz | mysql --defaults-extra-file=~/.carolina-db.cnf <base>
+php artisan up
+```
+
+Las copias solo están en el servidor: descarga alguna de vez en cuando.
 
 ## Estructura del proyecto
 
@@ -251,5 +374,8 @@ php artisan test
 | `Vite manifest not found` | Ejecuta `npm run build` o deja `npm run dev` corriendo. |
 | `Attempt to read property "currentCategory" on null` al sembrar datos | Usa los seeders con `--class` del paso 6, no `php artisan db:seed` a secas. |
 | `Database file at path [laravel] does not exist` | Con SQLite, comenta `DB_DATABASE` en `.env` (paso 4). |
+| "Página expirada" (419) al iniciar sesión en producción | Entraste por `http://`: con `SESSION_SECURE_COOKIE=true` la cookie solo viaja por HTTPS. Revisa que `APP_URL` empiece por `https://` para que la app redirija. |
+| Un cambio en `.env` no se nota en el servidor | La configuración está en caché: corre `php artisan optimize`. |
+| Las horas de creación aparecen corridas en producción | Falta `DB_TIMEZONE=-05:00` en `.env`. |
 | Las pantallas no muestran datos después de entrar | El usuario necesita una campaña asignada y el rol "Administrador" (paso 6). |
 | El mapa de lotes sale en gris o incompleto | Revisa la consola del navegador. Leaflet y Leaflet-Geoman se cargan desde unpkg.com, así que hace falta conexión a internet. |
