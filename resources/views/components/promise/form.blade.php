@@ -132,7 +132,7 @@
                 <x-label for="switch_payment" value="¿Como desea que se apliquen los abonos adicionales?" class="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2" />
                 <ul class="grid w-full gap-6 md:grid-cols-2">
                     <li>
-                        <input type="radio" id="reduction" wire:model="form.switch_payment" value="false" class="hidden peer">
+                        <input type="radio" id="reduction" wire:model="form.switch_payment" value="0" class="hidden peer">
                         <label for="reduction" class="inline-flex items-center justify-between w-full px-5 py-3 text-gray-500 bg-white border border-gray-200 rounded-lg cursor-pointer dark:hover:text-gray-300 dark:border-gray-700 dark:peer-checked:text-indigo-500 peer-checked:border-indigo-600 peer-checked:text-indigo-600 hover:text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:bg-gray-800 dark:hover:bg-gray-700">
                             <div class="block">
                                 <div class="w-full text-lg font-semibold">En número de Cuotas</div>
@@ -142,7 +142,7 @@
                         </label>
                     </li>
                     <li>
-                        <input type="radio" id="decrease" wire:model="form.switch_payment" value="true" class="hidden peer" required />
+                        <input type="radio" id="decrease" wire:model="form.switch_payment" value="1" class="hidden peer" required />
                         <label for="decrease" class="inline-flex items-center justify-between w-full px-5 py-3 text-gray-500 bg-white border border-gray-200 rounded-lg cursor-pointer dark:hover:text-gray-300 dark:border-gray-700 dark:peer-checked:text-indigo-500 peer-checked:border-indigo-600 peer-checked:text-indigo-600 hover:text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:bg-gray-800 dark:hover:bg-gray-700">                           
                             <div class="block">
                                 <div class="w-full text-lg font-semibold">En la Cuota</div>
