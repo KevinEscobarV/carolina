@@ -7,6 +7,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <title>{{ $title ? config('app.name', 'Rivarca') . ' | ' . $title : config('app.name', 'Rivarca') }}</title>
+    <x-favicon />
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
