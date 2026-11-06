@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\InterestRateType;
 use App\Enums\PaymentFrequency;
 use App\Enums\PromisePaymentMethod;
 use App\Enums\PromiseStatus;
@@ -32,6 +33,7 @@ class Promise extends Model
         'initial_fee',
         'quota_amount',
         'interest_rate',
+        'interest_rate_type',
         'cut_off_date',
         'payment_frequency',
         'payment_method',
@@ -41,6 +43,8 @@ class Promise extends Model
         'category_id',
         'projection',
         'number_of_fees',
+        'extraordinary_months',
+        'extraordinary_amount',
         'switch_quota',
     ];
 
@@ -59,7 +63,18 @@ class Promise extends Model
         'switch_payment' => 'boolean',
         'switch_quota' => 'boolean',
         'projection' => 'array',
+        'interest_rate_type' => InterestRateType::class,
+        'extraordinary_months' => 'array',
+        'extraordinary_amount' => 'integer',
     ];
+
+    /**
+     * Get the quotas of the amortization schedule, in order.
+     */
+    public function quotas(): HasMany
+    {
+        return $this->hasMany(Quota::class)->orderBy('number');
+    }
 
     public function payments(): HasMany
     {
