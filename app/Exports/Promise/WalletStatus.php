@@ -5,6 +5,7 @@ namespace App\Exports\Promise;
 use App\Models\Promise;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Concerns\Exportable;
 use Maatwebsite\Excel\Concerns\FromQuery;
 use Maatwebsite\Excel\Concerns\RegistersEventListeners;
@@ -35,13 +36,13 @@ class WalletStatus implements FromQuery, ShouldAutoSize, WithColumnFormatting, W
      */
     public function query()
     {
-        $driver = config('database.default');
+        $driver = DB::connection()->getDriverName();
 
         $raw = null;
 
         if ($driver === 'sqlite') {
             $raw = "json_extract(projection, '$[' || ((SELECT COUNT(*) FROM payments WHERE payments.promise_id = promises.id and payments.is_initial_fee = '0') + 1) || '].due_date') < date('now')";
-        } elseif ($driver === 'mysql') {
+        } elseif (in_array($driver, ['mysql', 'mariadb'])) {
             $raw = "JSON_UNQUOTE(JSON_EXTRACT(`projection`, CONCAT('$[', ((SELECT COUNT(*) FROM `payments` WHERE `payments`.`promise_id` = `promises`.`id` AND `payments`.`is_initial_fee` = '0') + 1), '].due_date'))) < CURDATE()";
         } elseif ($driver === 'pgsql') {
             $raw = "((projection->>(((SELECT COUNT(*) FROM payments WHERE payments.promise_id = promises.id and payments.is_initial_fee = '0') + 1)::int))::jsonb->>'due_date')::date < CURRENT_DATE";

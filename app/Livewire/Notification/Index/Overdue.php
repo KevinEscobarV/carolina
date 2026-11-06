@@ -7,6 +7,7 @@ use App\Models\Promise;
 use App\Models\Setting;
 use App\Services\Labsmobile\SMS as LabsmobileSMS;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 use Livewire\WithPagination;
 use WireUi\Traits\Actions;
@@ -79,13 +80,13 @@ class Overdue extends Component
 
     public function promises(): object
     {
-        $driver = config('database.default');
+        $driver = DB::connection()->getDriverName();
 
         $raw = null;
 
         if ($driver === 'sqlite') {
             $raw = "json_extract(projection, '$[' || ((SELECT COUNT(*) FROM payments WHERE payments.promise_id = promises.id and payments.is_initial_fee = '0') + 1) || '].due_date') < date('now')";
-        } elseif ($driver === 'mysql') {
+        } elseif (in_array($driver, ['mysql', 'mariadb'])) {
             $raw = "JSON_UNQUOTE(JSON_EXTRACT(`projection`, CONCAT('$[', ((SELECT COUNT(*) FROM `payments` WHERE `payments`.`promise_id` = `promises`.`id` AND `payments`.`is_initial_fee` = '0') + 1), '].due_date'))) < CURDATE()";
         } elseif ($driver === 'pgsql') {
             $raw = "((projection->>(((SELECT COUNT(*) FROM payments WHERE payments.promise_id = promises.id and payments.is_initial_fee = '0') + 1)::int))::jsonb->>'due_date')::date < CURRENT_DATE";
