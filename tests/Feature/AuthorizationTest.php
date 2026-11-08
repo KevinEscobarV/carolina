@@ -132,6 +132,15 @@ class AuthorizationTest extends TestCase
         Livewire::test($report)->call('exportGeneral')->assertForbidden();
     }
 
+    public function test_the_reports_page_needs_access_to_some_report(): void
+    {
+        $this->get(route('reports'))->assertOk();
+
+        $this->user->syncPermissions(['view.blocks']);
+
+        $this->get(route('reports'))->assertForbidden();
+    }
+
     public static function selectEndpoints(): array
     {
         return [

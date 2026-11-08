@@ -36,6 +36,9 @@ Route::middleware([
     // Dashboard
     Route::get('/dashboard', Page::class)->name('dashboard');
 
+    // Reports (each report checks the permission of its data)
+    Route::get('/reports', App\Livewire\Reports\Index\Page::class)->name('reports');
+
     // Buyers
     Route::get('/buyers', App\Livewire\Buyer\Index\Page::class)->middleware('can:view.buyers')->name('buyers');
     Route::get('/buyers/{buyer}/edit', App\Livewire\Buyer\Edit\Page::class)->middleware('can:edit.buyers')->name('buyers.edit');

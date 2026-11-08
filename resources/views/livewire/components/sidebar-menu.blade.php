@@ -24,9 +24,11 @@
                 <span x-show="open" x-transition.duration.500ms>Administración</span>
             </x-side-link>
             
-            {{-- <x-side-link href="#" icon="chart-pie">
-                <span x-show="open" x-transition.duration.500ms>Reportes</span>
-            </x-side-link> --}}
+            @canany(App\Livewire\Reports\Index\Page::PERMISSIONS)
+                <x-side-link href="{{ route('reports') }}" :active="request()->routeIs('reports')" icon="document-chart-bar">
+                    <span x-show="open" x-transition.duration.500ms>Reportes</span>
+                </x-side-link>
+            @endcanany
 
             @can('view.buyers')
                 <x-side-link href="{{ route('buyers') }}" :active="request()->routeIs(['buyers', 'buyers.*'])" icon="users">

@@ -32,6 +32,7 @@ class PagesTest extends TestCase
     {
         return [
             'dashboard' => ['dashboard'],
+            'reports' => ['reports'],
             'buyers' => ['buyers'],
             'parcels' => ['parcels'],
             'parcels.create' => ['parcels.create'],

@@ -264,29 +264,6 @@
             </section>
         </div>
     </div>
-
-    {{-- Excel reports --}}
-    <section class="{{ $card }}">
-        <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Reportes</h2>
-        <p class="text-sm text-gray-500 dark:text-gray-400">Descarga la información en Excel.</p>
-        <div class="mt-5 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
-            @can('view.promises')
-                <livewire:reports.promise.general />
-            @endcan
-            @can('view.buyers')
-                <livewire:reports.buyer.general />
-            @endcan
-            @can('view.parcels')
-                <livewire:reports.parcel.general />
-            @endcan
-            @can('view.payments')
-                <livewire:reports.payment.general />
-            @endcan
-            @can('view.promises')
-                <livewire:reports.promise.wallet-status />
-            @endcan
-        </div>
-    </section>
 </div>
 
 @assets
