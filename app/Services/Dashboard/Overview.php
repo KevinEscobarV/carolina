@@ -2,6 +2,7 @@
 
 namespace App\Services\Dashboard;
 
+use App\Enums\PortfolioStatus;
 use App\Enums\PromiseStatus;
 use App\Models\Parcel;
 use App\Models\Payment;
@@ -103,21 +104,14 @@ class Overview
      */
     public function aging(): array
     {
-        $groups = [
-            'up_to_date' => ['label' => 'Al día', 'count' => 0, 'amount' => 0],
-            'up_to_30' => ['label' => '1 a 30 días', 'count' => 0, 'amount' => 0],
-            'up_to_90' => ['label' => '31 a 90 días', 'count' => 0, 'amount' => 0],
-            'over_90' => ['label' => 'Más de 90 días', 'count' => 0, 'amount' => 0],
-        ];
+        $groups = [];
+        foreach (PortfolioStatus::aging() as $status) {
+            $groups[$status->value] = ['label' => $status->label(), 'count' => 0, 'amount' => 0];
+        }
 
         foreach ($this->promises->filter(fn (Promise $promise) => $promise->quotas->isNotEmpty()) as $promise) {
             $standing = $promise->standing();
-            $key = match (true) {
-                ! $standing->isOverdue() => 'up_to_date',
-                $standing->daysOverdue <= 30 => 'up_to_30',
-                $standing->daysOverdue <= 90 => 'up_to_90',
-                default => 'over_90',
-            };
+            $key = PortfolioStatus::byDaysOverdue($standing)->value;
 
             $groups[$key]['count']++;
             $groups[$key]['amount'] += $standing->overdueAmount;

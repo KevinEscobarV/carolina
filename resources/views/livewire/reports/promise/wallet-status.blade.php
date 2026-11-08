@@ -1,6 +1,8 @@
-<x-report.card icon="banknotes" title="Estado de cartera" description="Saldo y mora de cada promesa. Las fechas (de creación de la promesa) son opcionales.">
-    <x-wireui-datetime-picker label="Desde" placeholder="Opcional" wire:model="fromDate" without-time />
-    <x-wireui-datetime-picker label="Hasta" placeholder="Opcional" wire:model="toDate" without-time />
+<x-report.card icon="banknotes" title="Estado de cartera" description="Cada promesa activa con su último pago, saldo, cuota pendiente y días de mora a la fecha de corte. Incluye una hoja de resumen.">
+    <div class="col-span-2">
+        <x-wireui-datetime-picker label="Fecha de corte" wire:model="cutOffDate" without-time without-timezone
+            parse-format="YYYY-MM-DD" display-format="DD/MM/YYYY" :clearable="false" />
+    </div>
 
     <div class="col-span-2 flex items-center justify-between gap-3">
         <x-label for="onlyLate" value="Solo promesas en mora" />

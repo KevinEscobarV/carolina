@@ -13,6 +13,7 @@ use App\Services\Amortization\InterestRate;
 use App\Services\Amortization\ScheduleTerms;
 use App\Services\Amortization\Standing;
 use Carbon\CarbonImmutable;
+use Carbon\CarbonInterface;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -21,6 +22,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
 class Promise extends Model
@@ -236,6 +238,32 @@ class Promise extends Model
     }
 
     /**
+     * Where the promise stood on a past date, counting only the payments made up to that day.
+     */
+    public function standingAt(CarbonInterface $date): Standing
+    {
+        return Standing::of(
+            $this->scheduleRows(),
+            $this->paidTowardsQuotas($date),
+            $date,
+            Setting::graceDays($this->category_id),
+        );
+    }
+
+    /**
+     * Payments made up to a date (all of them without one), the latest last.
+     *
+     * @return Collection<int, Payment>
+     */
+    public function paymentsUntil(?CarbonInterface $date = null): Collection
+    {
+        return $this->payments
+            ->filter(fn (Payment $payment) => $date === null || $payment->payment_date === null || $payment->payment_date->toDateString() <= $date->toDateString())
+            ->sortBy(fn (Payment $payment) => [$payment->payment_date?->toDateString() ?? '', $payment->id])
+            ->values();
+    }
+
+    /**
      * Days overdue of each late promise of the current campaign, the most overdue first.
      *
      * @return array<int, int>
@@ -252,11 +280,11 @@ class Promise extends Model
     }
 
     /**
-     * Money paid towards the quotas: every payment except the initial fee.
+     * Money paid towards the quotas, up to a date if given: every payment except the initial fee.
      */
-    public function paidTowardsQuotas(): float
+    public function paidTowardsQuotas(?CarbonInterface $until = null): float
     {
-        return (float) $this->payments->where('is_initial_fee', false)->sum('paid_amount');
+        return (float) $this->paymentsUntil($until)->where('is_initial_fee', false)->sum('paid_amount');
     }
 
     public function payments(): HasMany

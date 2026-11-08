@@ -3,52 +3,59 @@
 namespace App\Livewire\Reports\Promise;
 
 use App\Exports\Promise\WalletStatus as PromiseWalletStatus;
+use Carbon\CarbonImmutable;
+use Illuminate\Support\Str;
+use Illuminate\View\View;
 use Livewire\Component;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use WireUi\Traits\Actions;
 
 class WalletStatus extends Component
 {
     use Actions;
 
-    public $fromDate;
+    public ?string $cutOffDate = null;
 
-    public $toDate;
+    public bool $onlyLate = false;
 
-    public $onlyLate = false;
+    public function mount(): void
+    {
+        $this->cutOffDate = today()->toDateString();
+    }
 
-    public function exportGeneral()
+    public function exportGeneral(): ?BinaryFileResponse
     {
         $this->authorize('view.promises');
 
         $this->validate([
-            'fromDate' => 'nullable|date',
-            'toDate' => 'nullable|date',
-            'onlyLate' => 'nullable|boolean',
+            'cutOffDate' => 'required|date|before_or_equal:today',
+            'onlyLate' => 'boolean',
         ],
             [],
             [
-                'fromDate' => 'fecha de inicial',
-                'toDate' => 'fecha de final',
+                'cutOffDate' => 'fecha de corte',
                 'onlyLate' => 'solo promesas en mora',
             ]);
 
         try {
-            $name = 'Reporte-Estado-Cartera-'.now()->format('Y-m-d-h').'.xlsx';
-            $report = new PromiseWalletStatus($this->fromDate, $this->toDate, $this->onlyLate);
+            $cutOff = CarbonImmutable::parse($this->cutOffDate)->startOfDay();
+            $campaign = (string) auth()->user()->currentCategory?->name;
+            $name = 'Estado-de-cartera-'.Str::slug($campaign ?: 'campana').'-'.$cutOff->format('Y-m-d').'.xlsx';
 
             $this->notification()->success('Reporte generado', 'El reporte se ha exportado correctamente');
 
-            return $report->download($name);
-
+            return (new PromiseWalletStatus($cutOff, $this->onlyLate, $campaign))->download($name);
         } catch (\Throwable $th) {
             $this->notification()->error(
                 'Error al exportar el reporte',
                 'Ocurrió un error al exportar el reporte, por favor intente nuevamente, error: '.$th->getMessage()
             );
+
+            return null;
         }
     }
 
-    public function render()
+    public function render(): View
     {
         return view('livewire.reports.promise.wallet-status');
     }
