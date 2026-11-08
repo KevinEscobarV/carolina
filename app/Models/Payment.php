@@ -42,6 +42,17 @@ class Payment extends Model
         'is_initial_fee' => 'boolean',
     ];
 
+    /**
+     * Payment date as Y-m-d, read from the stored value without building a date object, for loops over
+     * many payments.
+     */
+    public function paymentDay(): ?string
+    {
+        $date = $this->getAttributes()['payment_date'] ?? null;
+
+        return $date === null ? null : substr((string) $date, 0, 10);
+    }
+
     public function getPaidAmountFormattedAttribute(): string
     {
         return number_format($this->paid_amount, 0, ',', '.');

@@ -29,6 +29,11 @@ class Overview
 
     private CarbonImmutable $today;
 
+    /**
+     * @var array<string, int>|null
+     */
+    private ?array $collectedByMonth = null;
+
     public function __construct(?CarbonImmutable $today = null)
     {
         $this->today = $today ?? CarbonImmutable::today();
@@ -44,11 +49,7 @@ class Overview
     public function totals(): array
     {
         $payments = $this->payments();
-        $month = $this->today->startOfMonth();
-        $collectedIn = fn (CarbonImmutable $start) => (int) round($payments
-            ->filter(fn (Payment $payment) => $payment->payment_date?->between($start, $start->endOfMonth()))
-            ->sum('paid_amount'));
-
+        $collected = $this->collectedByMonth();
         $overdue = $this->promises->filter(fn (Promise $promise) => $promise->standing()->isOverdue());
 
         return [
@@ -60,8 +61,8 @@ class Overview
             'overduePromises' => $overdue->count(),
             'lotsSold' => Parcel::query()->whereNotNull('promise_id')->count(),
             'lots' => Parcel::query()->count(),
-            'thisMonth' => $collectedIn($month),
-            'lastMonth' => $collectedIn($month->subMonth()),
+            'thisMonth' => $collected[$this->today->format('Y-m')] ?? 0,
+            'lastMonth' => $collected[$this->today->startOfMonth()->subMonth()->format('Y-m')] ?? 0,
         ];
     }
 
@@ -74,8 +75,20 @@ class Overview
     public function monthly(): array
     {
         $current = $this->today->startOfMonth();
-        $payments = $this->payments()->filter(fn (Payment $payment) => $payment->payment_date !== null);
-        $quotas = $this->promises->flatMap(fn (Promise $promise) => $promise->quotas);
+        $collected = $this->collectedByMonth();
+
+        // One pass over the quotas and the initial fees, grouped by month
+        $scheduled = [];
+        foreach ($this->promises as $promise) {
+            foreach ($promise->quotas as $quota) {
+                $month = substr($quota->dueDay(), 0, 7);
+                $scheduled[$month] = ($scheduled[$month] ?? 0) + $quota->amount;
+            }
+            if ($promise->signature_date !== null && $promise->initial_fee) {
+                $month = $promise->signature_date->format('Y-m');
+                $scheduled[$month] = ($scheduled[$month] ?? 0) + (float) $promise->initial_fee;
+            }
+        }
 
         $series = ['labels' => [], 'months' => [], 'collected' => [], 'scheduled' => [], 'firstFuture' => self::MONTHS_BACK + 1];
 
@@ -85,13 +98,8 @@ class Overview
 
             $series['labels'][] = $start->locale('es')->isoFormat('MMM YY');
             $series['months'][] = $start->locale('es')->isoFormat('MMMM [de] YYYY');
-            $series['collected'][] = $offset > 0 ? null : (int) round($payments
-                ->filter(fn (Payment $payment) => $payment->payment_date->format('Y-m') === $key)
-                ->sum('paid_amount'));
-            $series['scheduled'][] = (int) round(
-                $quotas->filter(fn ($quota) => $quota->due_date->format('Y-m') === $key)->sum('amount')
-                + $this->promises->filter(fn (Promise $promise) => $promise->signature_date?->format('Y-m') === $key)->sum('initial_fee')
-            );
+            $series['collected'][] = $offset > 0 ? null : ($collected[$key] ?? 0);
+            $series['scheduled'][] = (int) round($scheduled[$key] ?? 0);
         }
 
         return $series;
@@ -127,8 +135,8 @@ class Overview
      */
     public function paymentMethods(): array
     {
-        $since = $this->today->startOfMonth()->subMonths(self::MONTHS_BACK);
-        $payments = $this->payments()->filter(fn (Payment $payment) => $payment->payment_date?->gte($since));
+        $since = $this->today->startOfMonth()->subMonths(self::MONTHS_BACK)->toDateString();
+        $payments = $this->payments()->filter(fn (Payment $payment) => $payment->paymentDay() !== null && $payment->paymentDay() >= $since);
         $total = max(1, (float) $payments->sum('paid_amount'));
 
         return $payments
@@ -209,5 +217,19 @@ class Overview
     private function payments(): Collection
     {
         return $this->promises->flatMap(fn (Promise $promise) => $promise->payments);
+    }
+
+    /**
+     * Money collected per month (Y-m), computed once.
+     *
+     * @return array<string, int>
+     */
+    private function collectedByMonth(): array
+    {
+        return $this->collectedByMonth ??= $this->payments()
+            ->filter(fn (Payment $payment) => $payment->paymentDay() !== null)
+            ->groupBy(fn (Payment $payment) => substr((string) $payment->paymentDay(), 0, 7))
+            ->map(fn (Collection $payments) => (int) round($payments->sum('paid_amount')))
+            ->all();
     }
 }

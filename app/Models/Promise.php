@@ -125,7 +125,7 @@ class Promise extends Model
     {
         return $this->quotas->map(fn (Quota $quota) => [
             'number' => $quota->number,
-            'due_date' => $quota->due_date->toDateString(),
+            'due_date' => $quota->dueDay(),
             'amount' => $quota->amount,
             'interest' => $quota->interest,
             'principal' => $quota->principal,
@@ -257,10 +257,23 @@ class Promise extends Model
      */
     public function paymentsUntil(?CarbonInterface $date = null): Collection
     {
-        return $this->payments
-            ->filter(fn (Payment $payment) => $date === null || $payment->payment_date === null || $payment->payment_date->toDateString() <= $date->toDateString())
-            ->sortBy(fn (Payment $payment) => [$payment->payment_date?->toDateString() ?? '', $payment->id])
+        return $this->paymentsMadeBy($date)
+            ->sortBy(fn (Payment $payment) => [$payment->paymentDay() ?? '', $payment->id])
             ->values();
+    }
+
+    /**
+     * Payments made up to a date (all of them without one), in no particular order.
+     *
+     * @return Collection<int, Payment>
+     */
+    private function paymentsMadeBy(?CarbonInterface $date): Collection
+    {
+        $day = $date?->toDateString();
+
+        return $day === null
+            ? $this->payments
+            : $this->payments->filter(fn (Payment $payment) => $payment->paymentDay() === null || $payment->paymentDay() <= $day);
     }
 
     /**
@@ -284,7 +297,7 @@ class Promise extends Model
      */
     public function paidTowardsQuotas(?CarbonInterface $until = null): float
     {
-        return (float) $this->paymentsUntil($until)->where('is_initial_fee', false)->sum('paid_amount');
+        return (float) $this->paymentsMadeBy($until)->where('is_initial_fee', false)->sum('paid_amount');
     }
 
     public function payments(): HasMany

@@ -48,6 +48,15 @@ class Quota extends Model
     ];
 
     /**
+     * Due date as Y-m-d, read from the stored value without building a date object: schedules are read
+     * thousands of times per page and each cast date access creates a new one.
+     */
+    public function dueDay(): string
+    {
+        return substr((string) $this->getAttributes()['due_date'], 0, 10);
+    }
+
+    /**
      * Get the promise that owns the quota.
      */
     public function promise(): BelongsTo
