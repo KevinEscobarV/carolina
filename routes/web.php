@@ -25,7 +25,7 @@ Route::get('/', HomeController::class)->name('home');
 Route::get('/personal-account-statement', App\Livewire\Public\Buyer\Statement\Page::class)->name('personal-account-statement');
 
 // Route to download general parcel report
-Route::get('/personal-account-statement/download/{promise}/{buyer}', [StatementController::class, 'download'])->name('statement-download');
+Route::get('/personal-account-statement/download/{promise}/{buyer}', [StatementController::class, 'download'])->whereNumber(['promise', 'buyer'])->name('statement-download');
 
 Route::middleware([
     'auth:sanctum',

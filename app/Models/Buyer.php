@@ -94,6 +94,39 @@ class Buyer extends Model
     }
 
     /**
+     * Main phone with only its first three and last two digits, for documents anyone with the buyer's
+     * document number can download. The country code 57 is left out.
+     */
+    public function hiddenPhone(): ?string
+    {
+        $digits = (string) preg_replace('/\D/', '', (string) $this->phone_one);
+        if (strlen($digits) === 12 && str_starts_with($digits, '57')) {
+            $digits = substr($digits, 2);
+        }
+
+        if (strlen($digits) < 7) {
+            return null;
+        }
+
+        return substr($digits, 0, 3).str_repeat('•', strlen($digits) - 5).substr($digits, -2);
+    }
+
+    /**
+     * Email with only the first two letters of the name and the domain, for public documents.
+     */
+    public function hiddenEmail(): ?string
+    {
+        $email = mb_strtolower(trim((string) $this->email));
+        if (! str_contains($email, '@')) {
+            return null;
+        }
+
+        [$name, $domain] = explode('@', $email, 2);
+
+        return mb_substr($name, 0, min(2, max(1, mb_strlen($name) - 1))).'••••@'.$domain;
+    }
+
+    /**
      * Get the promises for the buyer.
      */
     public function promises(): BelongsToMany
