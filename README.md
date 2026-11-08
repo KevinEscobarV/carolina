@@ -201,7 +201,7 @@ Con Herd no hace falta `php artisan serve`. Si la carpeta está dentro de un dir
 | `QUEUE_CONNECTION` | `sync`; actualmente no hay trabajos en cola. |
 | `LABSMOBILE_USERNAME`, `LABSMOBILE_PASSWORD` | Credenciales de Labsmobile para enviar SMS y consultar el saldo. No vienen en `.env.example`; agrégalas a mano. Sin ellas, la sección de Notificaciones no puede consultar saldo ni enviar mensajes. |
 | `MAIL_*` | Envío de correos (recuperación de contraseña). En desarrollo puedes usar `MAIL_MAILER=log`. |
-| `PULSE_ENABLED` | Activa o desactiva Laravel Pulse (`/pulse`). |
+| `PULSE_ENABLED` | Activa o desactiva Laravel Pulse (`/pulse`). Una solicitud cuenta como lenta desde 1 s (`PULSE_SLOW_REQUESTS_THRESHOLD`); la página de reportes, que arma los Excel en la misma solicitud, desde 5 s (`PULSE_SLOW_EXPORTS_THRESHOLD`). |
 | `HOME_SAMPLE_CONTENT` | `true` (por defecto) muestra en el homepage el aviso "Vista previa: algunas fotos y textos son de ejemplo". Ponla en `false` cuando el contenido sea el real. |
 
 ## Homepage
@@ -375,6 +375,10 @@ php artisan up
 ```
 
 Las copias solo están en el servidor: descarga alguna de vez en cuando.
+
+### Monitoreo
+
+`/pulse` muestra las solicitudes y consultas lentas, las excepciones y los usuarios más activos. No tiene la tarjeta de servidores: necesita `pulse:check` corriendo siempre, y en un hosting compartido solo vería el servidor físico completo, que se comparte con otros clientes. El CPU, la memoria y los procesos de la cuenta están en cPanel, en *Uso de recursos* (*Resource Usage*).
 
 ## Estructura del proyecto
 
