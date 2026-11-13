@@ -31,7 +31,7 @@ class Page extends Component
 
     public function updatedFormParcels($parcels): void
     {
-        $this->form->value = Parcel::whereIn('id', $parcels)->sum('value');
+        $this->form->value = PromiseForm::pesos(Parcel::whereIn('id', $parcels)->sum('value'));
     }
 
     public function mount(): void

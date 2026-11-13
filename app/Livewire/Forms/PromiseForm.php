@@ -85,6 +85,14 @@ class PromiseForm extends Form
     #[Validate('nullable', 'observaciones')]
     public $observations;
 
+    /**
+     * A money amount as whole pesos, the way the currency inputs expect it.
+     */
+    public static function pesos(mixed $amount): int
+    {
+        return (int) round((float) $amount);
+    }
+
     public function setModel(Promise $model): void
     {
         $this->model = $model;
@@ -106,6 +114,12 @@ class PromiseForm extends Form
             'observations',
             'number_of_fees',
         ]));
+
+        // MariaDB returns decimal columns as text ("68000000.00"); the currency inputs, with a comma for decimals,
+        // would read that dot as a thousands separator and show the amount a hundred times bigger
+        $this->value = self::pesos($model->value);
+        $this->initial_fee = self::pesos($model->initial_fee);
+        $this->quota_amount = self::pesos($model->quota_amount);
 
         $this->has_extraordinary = (int) $model->extraordinary_amount > 0;
         $this->extraordinary_months = $model->extraordinary_months ?: [6, 12];
